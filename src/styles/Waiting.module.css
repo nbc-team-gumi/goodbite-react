@@ -1,0 +1,88 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #333;
+}
+
+header {
+  background-color: #ff8800;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+main {
+  padding: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.waiting-count-box {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.waiting-count {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, textarea {
+  padding: 10px;
+  border: 1px solid #ff8800;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+button {
+  background-color: #ff8800;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #ff7700;
+}
+
+.waitingTypeContainer {
+  border: 1px solid #ff8800;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.radioLabel {
+  margin-left: 10px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.radioLabel input {
+  margin-right: 5px;
+}
