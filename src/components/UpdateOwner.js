@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
+import '../styles/UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
 
 function UpdateOwner() {
   const [currentPassword, setCurrentPassword] = useState('');

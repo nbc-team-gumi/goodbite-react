@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Link } from 'react-router-dom';
 import Signup from '../components/Signup';
 import Login from '../components/Login';
+import UpdateCustomer from '../components/UpdateCustomer';
+import UpdateOwner from "../components/UpdateOwner";
 import logo from '../good-bite-logo.png';
 import './App.css';
 
@@ -40,6 +42,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             {/* 다른 경로를 추가할 수 있습니다. */}
             <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<UpdateCustomer />} />
+            <Route path="/login" element={<UpdateOwner />} />
           </Routes>
         </Layout>
       </Router>
