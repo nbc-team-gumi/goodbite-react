@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Login.css';
-import { useNavigate } from 'react-router-dom';
-import { fetchData } from '../util/api'; // utils/api 파일 경로에 맞게 수정
+import {Link, useNavigate} from 'react-router-dom';
+import { fetchData } from '../util/api';
+import goodBiteTitle from '../images/good-bite-title.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.classList.add('login-body');
+    return () => {
+      document.body.classList.remove('login-body');
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,17 +54,13 @@ const Login = () => {
   };
 
   return (
-      <div className="container">
+      <div className="login-container">
         <div className="logo">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" fill="#FF8C00" r="45" />
-            <path d="M30 40 Q50 20 70 40 T90 60" fill="none" stroke="white" strokeWidth="5" />
-            <circle cx="35" cy="40" fill="white" r="5" />
-            <circle cx="65" cy="40" fill="white" r="5" />
-            <path d="M40 60 Q50 70 60 60" fill="none" stroke="white" strokeWidth="3" />
-          </svg>
+          <Link to="/">
+            <img src={goodBiteTitle} alt="GoodBite Title" className="title-image" />
+          </Link>
         </div>
-        <h1>GoodBite 로그인</h1>
+        <h1>로그인</h1>
         <form id="loginForm" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">이메일</label>
