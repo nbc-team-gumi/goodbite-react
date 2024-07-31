@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/Signup.css';
 import goodBiteTitle from '../images/good-bite-title.png';
@@ -15,6 +15,8 @@ function Signup() {
   });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.classList.add('signup-body');
@@ -84,14 +86,8 @@ function Signup() {
         });
 
         setMessage(`Signup successful: ${JSON.stringify(data)}`);
-        setFormData({
-          email: '',
-          nickname: '',
-          password: '',
-          phoneNumber: '',
-          userType: '',
-          businessNumber: '',
-        });
+        alert('회원가입에 성공하였습니다.');
+        navigate('/login');
       } catch (error) {
         setMessage(`Signup failed: ${error.message}`);
       }
