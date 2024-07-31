@@ -1,4 +1,4 @@
-제목 : [✨FEAT] / [♻️REFACTOR] / [🩹FIX] + 제목입력하기
+제목 : [💄FRONT] / [✨FEAT] / [♻️REFACTOR] / [🩹FIX] + 제목입력하기
 feat(issue 번호):
 
 ## 🔎 작업 내용
