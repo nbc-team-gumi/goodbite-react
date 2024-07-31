@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Link } from 'react-router-dom';
 import Signup from '../components/Signup';
-import logo from '../good-bite-logo.png';
+import logo from '../images/good-bite-logo.png';
 import './App.css';
 
 const Header = () => (
