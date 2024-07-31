@@ -101,7 +101,7 @@ function Signup() {
   return (
       <div className="container">
         <div className="title">
-          <Link to="/"> {/* Link 컴포넌트를 사용하여 홈으로 이동하도록 설정 */}
+          <Link to="/">
             <img src={goodBiteTitle} alt="GoodBite Title" className="title-image" />
           </Link>
         </div>
