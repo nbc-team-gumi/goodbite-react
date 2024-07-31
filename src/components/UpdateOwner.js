@@ -8,20 +8,91 @@ function UpdateOwner() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
 
-  const updatePassword = () => {
-    alert('비밀번호가 수정되었습니다.');
+  const updatePassword = async () => {
+    try {
+      const response = await fetch('/api/updatePassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        alert('비밀번호가 수정되었습니다.');
+      } else {
+        alert('비밀번호 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('비밀번호 수정 중 오류가 발생했습니다.');
+    }
   };
 
-  const updateNickname = () => {
-    alert('닉네임이 수정되었습니다.');
+  const updateNickname = async () => {
+    try {
+      const response = await fetch('/api/updateNickname', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nickname }),
+      });
+
+      if (response.ok) {
+        alert('닉네임이 수정되었습니다.');
+      } else {
+        alert('닉네임 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error updating nickname:', error);
+      alert('닉네임 수정 중 오류가 발생했습니다.');
+    }
   };
 
-  const updatePhoneNumber = () => {
-    alert('휴대폰번호가 수정되었습니다.');
+  const updatePhoneNumber = async () => {
+    try {
+      const response = await fetch('/api/updatePhoneNumber', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      if (response.ok) {
+        alert('휴대폰번호가 수정되었습니다.');
+      } else {
+        alert('휴대폰번호 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error updating phone number:', error);
+      alert('휴대폰번호 수정 중 오류가 발생했습니다.');
+    }
   };
 
-  const updateBusinessNumber = () => {
-    alert('사업자번호가 수정되었습니다.');
+  const updateBusinessNumber = async () => {
+    try {
+      const response = await fetch('/api/updateBusinessNumber', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ businessNumber }),
+      });
+
+      if (response.ok) {
+        alert('사업자번호가 수정되었습니다.');
+      } else {
+        alert('사업자번호 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error updating business number:', error);
+      alert('사업자번호 수정 중 오류가 발생했습니다.');
+    }
   };
 
   return (

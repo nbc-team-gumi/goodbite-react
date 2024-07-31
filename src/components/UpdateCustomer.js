@@ -7,16 +7,70 @@ function UpdateCustomer() {
   const [nickname, setNickname] = useState('');
   const [phone, setPhone] = useState('');
 
-  const changePassword = () => {
-    alert('비밀번호 변경 요청');
+  const changePassword = async () => {
+    try {
+      const response = await fetch('/api/changePassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        alert('비밀번호가 변경되었습니다.');
+      } else {
+        alert('비밀번호 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      alert('비밀번호 변경 중 오류가 발생했습니다.');
+    }
   };
 
-  const changeNickname = () => {
-    alert('닉네임 변경 요청');
+  const changeNickname = async () => {
+    try {
+      const response = await fetch('/api/changeNickname', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nickname }),
+      });
+
+      if (response.ok) {
+        alert('닉네임이 변경되었습니다.');
+      } else {
+        alert('닉네임 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error changing nickname:', error);
+      alert('닉네임 변경 중 오류가 발생했습니다.');
+    }
   };
 
-  const changePhoneNumber = () => {
-    alert('휴대폰 번호 변경 요청');
+  const changePhoneNumber = async () => {
+    try {
+      const response = await fetch('/api/changePhoneNumber', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone }),
+      });
+
+      if (response.ok) {
+        alert('휴대폰 번호가 변경되었습니다.');
+      } else {
+        alert('휴대폰 번호 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error changing phone number:', error);
+      alert('휴대폰 번호 변경 중 오류가 발생했습니다.');
+    }
   };
 
   return (

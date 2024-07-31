@@ -4,6 +4,8 @@ import Home from './Home';
 import Signup from './Signup';
 import Login from './Login';
 import '../styles/App.css';
+import UpdateCustomer from "./UpdateCustomer";
+import UpdateOwner from "./UpdateOwner";
 
 const App = () => (
     <Router>
@@ -11,8 +13,13 @@ const App = () => (
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/customers/update" element={<UpdateCustomer />} />
+        <Route path="/owners/update" element={<UpdateOwner />} />
+        <Route path="/customers/delete" element={<UpdateOwner />} />
       </Routes>
     </Router>
 );
 
 export default App;
+
+
