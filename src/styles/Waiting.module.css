@@ -1,9 +1,21 @@
-body {
+.waitingContainer {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.waitingFormContainer {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
 header {
@@ -28,7 +40,7 @@ form {
   margin: 0 auto;
 }
 
-.waiting-count-box {
+.waitingCountBox {
   background-color: #f4f4f4;
   padding: 20px;
   border-radius: 4px;
@@ -36,7 +48,7 @@ form {
   margin-bottom: 20px;
 }
 
-.waiting-count {
+.waitingCount {
   font-size: 36px;
   font-weight: bold;
 }

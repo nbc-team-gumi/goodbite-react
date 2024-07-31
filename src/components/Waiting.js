@@ -29,60 +29,62 @@ function Waiting() {
   };
 
   return (
-      <div>
-        <h1>waiting</h1>
-        <form onSubmit={handleSignup}>
-          <div className={styles.waitingCountBox}>
-            <div>현재 대기중인 팀</div>
-            <div className={styles.waitingCount} id="waiting-count"></div>
-          </div>
-          <label htmlFor="party-size">인원 수:</label>
-          <input
-              type="number"
-              id="party-size"
-              name="partySize"
-              required
-              value={partySize}
-              onChange={(e) => setPartySize(e.target.value)}
-              className={styles.input}
-          />
+      <div className={styles.waitingContainer}>
+        <div className={styles.waitingFormContainer}>
+          <h1>waiting</h1>
+          <form onSubmit={handleSignup}>
+            <div className={styles.waitingCountBox}>
+              <div>현재 대기중인 팀</div>
+              <div className={styles.waitingCount} id="waiting-count"></div>
+            </div>
+            <label htmlFor="party-size">인원 수:</label>
+            <input
+                type="number"
+                id="party-size"
+                name="partySize"
+                required
+                value={partySize}
+                onChange={(e) => setPartySize(e.target.value)}
+                className={styles.input}
+            />
 
-          <label htmlFor="requirements">요청사항:</label>
-          <textarea
-              id="requirements"
-              name="requirements"
-              rows="3"
-              required
-              value={demand}
-              onChange={(e) => setDemand(e.target.value)}
-              className={styles.textarea}
-          ></textarea>
+            <label htmlFor="requirements">요청사항:</label>
+            <textarea
+                id="requirements"
+                name="requirements"
+                rows="3"
+                required
+                value={demand}
+                onChange={(e) => setDemand(e.target.value)}
+                className={styles.textarea}
+            ></textarea>
 
-          <div className={styles.waitingTypeContainer}>
-            <span>웨이팅 타입:</span>
-            <label className={styles.radioLabel}>
-              <input
-                  type="radio"
-                  value="ONLINE"
-                  checked={waitingType === 'ONLINE'}
-                  onChange={(e) => setWaitingType(e.target.value)}
-              />
-              온라인
-            </label>
-            <label className={styles.radioLabel}>
-              <input
-                  type="radio"
-                  value="OFFLINE"
-                  checked={waitingType === 'OFFLINE'}
-                  onChange={(e) => setWaitingType(e.target.value)}
-              />
-              오프라인
-            </label>
-          </div>
+            <div className={styles.waitingTypeContainer}>
+              <span>웨이팅 타입:</span>
+              <label className={styles.radioLabel}>
+                <input
+                    type="radio"
+                    value="ONLINE"
+                    checked={waitingType === 'ONLINE'}
+                    onChange={(e) => setWaitingType(e.target.value)}
+                />
+                온라인
+              </label>
+              <label className={styles.radioLabel}>
+                <input
+                    type="radio"
+                    value="OFFLINE"
+                    checked={waitingType === 'OFFLINE'}
+                    onChange={(e) => setWaitingType(e.target.value)}
+                />
+                오프라인
+              </label>
+            </div>
 
-          <button type="submit" className={styles.button}>등록</button>
-        </form>
-        {message && <p>{message}</p>}
+            <button type="submit" className={styles.button}>등록</button>
+          </form>
+          {message && <p>{message}</p>}
+        </div>
       </div>
   );
 }
