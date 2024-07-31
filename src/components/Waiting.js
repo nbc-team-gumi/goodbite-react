@@ -3,7 +3,7 @@ import { fetchData } from '../util/api';
 import styles from '../styles/Waiting.module.css'; // CSS 모듈 import
 
 function Waiting() {
-  const [restaurantId, setRestaurantId] = useState(2);
+  const [restaurantId] = useState(2);
   const [partySize, setPartySize] = useState(1);
   const [waitingType, setWaitingType] = useState('ONLINE');
   const [demand, setDemand] = useState('');
