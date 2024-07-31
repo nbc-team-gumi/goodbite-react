@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Login.css';
 import { useNavigate } from 'react-router-dom';
-import { fetchData } from '../util/api'; // utils/api 파일 경로에 맞게 수정
+import { fetchData } from '../util/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -46,7 +46,7 @@ const Login = () => {
   };
 
   return (
-      <div className="container">
+      <div className="login-container">
         <div className="logo">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" fill="#FF8C00" r="45" />
