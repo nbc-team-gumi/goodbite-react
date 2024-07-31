@@ -13,6 +13,9 @@ const Home = () => (
       <Link className="home-link" to="/login">
         Sign in
       </Link>
+      <Link className="home-link" to="/waiting">
+        Waiting
+      </Link>
     </div>
 );
 
