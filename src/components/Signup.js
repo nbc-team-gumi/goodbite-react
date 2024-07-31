@@ -23,8 +23,18 @@ function Signup() {
     };
   }, []);
 
+  useEffect(() => {
+    const businessNumberGroup = document.getElementById('businessNumberGroup');
+    if (formData.userType === 'owner') {
+      businessNumberGroup.style.display = 'block';
+    } else {
+      businessNumberGroup.style.display = 'none';
+    }
+  }, [formData.userType]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`handleChange: ${name} = ${value}`);  // Debugging line
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -154,25 +164,23 @@ function Signup() {
               <option value="">선택해주세요</option>
               <option value="customer">일반 사용자</option>
               <option value="owner">사업자</option>
-              {/*<option value="admin">관리자</option>*/}
+              {/* <option value="admin">관리자</option> */}
             </select>
             {errors.userType && <div className="error-message">{errors.userType}</div>}
           </div>
-          {formData.userType === 'owner' && (
-              <div className="form-group" id="businessNumberGroup">
-                <label htmlFor="businessNumber">사업자 등록 번호</label>
-                <input
-                    id="businessNumber"
-                    name="businessNumber"
-                    placeholder="예: 123-45-67890"
-                    type="text"
-                    value={formData.businessNumber}
-                    onChange={handleChange}
-                    required
-                />
-                {errors.businessNumber && <div className="error-message">{errors.businessNumber}</div>}
-              </div>
-          )}
+          <div className="form-group" id="businessNumberGroup">
+            <label htmlFor="businessNumber">사업자 등록 번호</label>
+            <input
+                id="businessNumber"
+                name="businessNumber"
+                placeholder="예: 123-45-67890"
+                type="text"
+                value={formData.businessNumber}
+                onChange={handleChange}
+                required={formData.userType === 'owner'}
+            />
+            {errors.businessNumber && <div className="error-message">{errors.businessNumber}</div>}
+          </div>
           <button className="submit-btn" type="submit">회원가입</button>
         </form>
         {message && <p>{message}</p>}
