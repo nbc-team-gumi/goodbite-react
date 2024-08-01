@@ -1,4 +1,4 @@
-import '../style/RestaurantDetail.css';
+import '../styles/RestaurantDetail.css';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchData } from '../util/api';
