@@ -4,6 +4,7 @@ import Home from './Home';
 import Signup from './Signup';
 import Login from './Login';
 import Waiting from './Waiting';
+import RestaurantList from "./RestaurantList";
 import '../styles/App.css';
 import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
@@ -19,6 +20,7 @@ const App = () => (
         <Route path="/restaurant-detail" element={<RestaurantDetail/>}/>
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
+        <Route path="/restaurants" element={<RestaurantList />} />
       </Routes>
     </Router>
 );
