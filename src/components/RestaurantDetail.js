@@ -1,10 +1,10 @@
-import '../styles/RestaurantDetail.css';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchData } from '../util/api';
+import '../styles/RestaurantDetail.css';
 
-function RestaurantDetail() {
-  const { id } = useParams();
+const RestaurantDetail = () => {
+  const { restaurantName } = useParams(); // useParams 훅을 사용하여 URL에서 restaurantName 추출
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,20 +12,29 @@ function RestaurantDetail() {
   const [menu, setMenu] = useState([]);
 
   useEffect(() => {
-    const fetchRestaurant = async () => {
+    const fetchRestaurantByName = async (name) => {
       try {
-        const response = await fetchData(`/restaurants/1`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        console.log('Response:', response);
+        const restaurants = await fetchData('/restaurants');
+        const restaurant = restaurants.data.find(r => r.name === name);
 
-        if (response.statusCode === 200) {
-          setRestaurant(response.data);
+        if (restaurant) {
+          const response = await fetchData(`/restaurants/${restaurant.restaurantId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.statusCode === 200) {
+            setRestaurant(response.data);
+            // Fetch operating hours and menu
+            fetchRestaurantOperatingHour(restaurant.restaurantId);
+            fetchMenuList(restaurant.restaurantId);
+          } else {
+            throw new Error(`Unexpected response data: ${response.message}`);
+          }
         } else {
-          throw new Error(`Unexpected response data: ${response.message}`);
+          throw new Error('Restaurant not found');
         }
       } catch (error) {
         setError(error.message);
@@ -35,42 +44,34 @@ function RestaurantDetail() {
       }
     };
 
-    fetchRestaurant();
-
-  const fetchRestaurantOperatingHour = async () => {
-    try {
-      const response = await fetchData(`/restaurants/1/operating-hours`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Response:', response);
-
-      if (response.statusCode === 200) {
-        setOperatingHour(response.data);
-      } else {
-        throw new Error(`Unexpected response data: ${response.message}`);
-      }
-    } catch (error) {
-      setError(error.message);
-      console.error('Fetch error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchRestaurantOperatingHour();
-
-    const fetchMenuList = async () => {
+    const fetchRestaurantOperatingHour = async (restaurantId) => {
       try {
-        const response = await fetchData(`/restaurants/1/menus`, {
+        const response = await fetchData(`/restaurants/${restaurantId}/operating-hours`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        console.log('Response:', response);
+
+        if (response.statusCode === 200) {
+          setOperatingHour(response.data);
+        } else {
+          throw new Error(`Unexpected response data: ${response.message}`);
+        }
+      } catch (error) {
+        setError(error.message);
+        console.error('Fetch error:', error);
+      }
+    };
+
+    const fetchMenuList = async (restaurantId) => {
+      try {
+        const response = await fetchData(`/restaurants/${restaurantId}/menus`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (response.statusCode === 200) {
           setMenu(response.data);
@@ -80,13 +81,11 @@ function RestaurantDetail() {
       } catch (error) {
         setError(error.message);
         console.error('Fetch error:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchMenuList();
-  }, [id]);
+    fetchRestaurantByName(restaurantName); // 레스토랑 이름으로 레스토랑 정보 가져오기
+  }, [restaurantName]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -102,7 +101,6 @@ function RestaurantDetail() {
           <div className="logo">GOOD BITE</div>
           <nav className="nav-menu">
             <a href="/main">홈</a>
-            {/*<a href={`/restaurants/${id}`}>내 가게</a>*/}
             <a href="/mypage">마이페이지</a>
           </nav>
         </header>
