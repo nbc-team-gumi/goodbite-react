@@ -27,7 +27,7 @@
   margin-bottom: 30px;
 }
 
-.title-image {
+.title-image-login {
   width: 100%; /* 이미지 너비를 컨테이너 너비에 맞추기 */
   height: auto; /* 이미지의 비율을 유지하면서 높이를 자동으로 조절 */
 }
