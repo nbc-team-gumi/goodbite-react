@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const Container = styled.div`
   max-width: 600px;
@@ -55,9 +55,20 @@ const SubmitBtn = styled.button`
   }
 `;
 
+const Btn = styled.button`
+  background-color: #d40000;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+`;
 
-function RegisterMenu() {
-  const restaurantId = 1;
+
+function UpdateMenu() {
+  // const { id } = useParams();
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
@@ -68,29 +79,45 @@ function RegisterMenu() {
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      await fetchData('/menus', {
-        method: 'POST',
+      await fetchData('/menus/4', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          restaurantId,
           name,
           price,
           description
         }),
       });
-      alert('메뉴 등록이 완료되었습니다!');
+      alert('메뉴 수정이 완료되었습니다!');
       navigate('/restaurant-detail');
     } catch (error) {
-      alert('메뉴 등록 실패');
+      alert('메뉴 수정 실패');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      try {
+        await fetchData(`/menus/4`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        alert('메뉴가 삭제되었습니다.');
+        navigate('/restaurant-detail');
+      } catch (error) {
+        alert('메뉴 삭제 실패');
+      }
     }
   };
 
   return (
       <div className="container">
         <Header>
-          <h1 style={{color: 'white'}}>GOOD BITE - 메뉴 등록</h1>
+          <h1 style={{color: 'white'}}>GOOD BITE - 메뉴 수정</h1>
         </Header>
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit}>
@@ -127,11 +154,12 @@ function RegisterMenu() {
                   onChange={(e) => setDescription(e.target.value)}
               />
             </FormGroup>
-            <SubmitBtn className="submit-btn" type="submit">메뉴 등록하기</SubmitBtn>
+            <SubmitBtn className="submit-btn" type="submit">메뉴 수정하기</SubmitBtn>
+            <Btn className="btn-danger" type="button" onClick={handleDelete}>메뉴 삭제하기</Btn>
           </Form>
         </Container>
       </div>
   );
 }
 
-export default RegisterMenu;
+export default UpdateMenu;
