@@ -6,10 +6,12 @@ import Login from './Login';
 import Waiting from './Waiting';
 import Dashboard from './Dashboard';
 import RestaurantList from "./RestaurantList";
-import '../styles/App.css';
+import RegisterOperatingHour from "./RegisterOperatingHour";
+import UpdateOperatingHour from "./UpdateOperatingHour";
 import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
 import UpdateRestaurant from "./UpdateRestaurant";
+import '../styles/App.css';
 
 const App = () => (
     <Router>
@@ -18,6 +20,8 @@ const App = () => (
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
+        <Route path="/register-operatinghour" element={<RegisterOperatingHour />} />
+        <Route path="/update-operatinghour" element={<UpdateOperatingHour />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
         <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
