@@ -4,6 +4,7 @@ import Home from './Home';
 import Signup from './Signup';
 import Login from './Login';
 import Waiting from './Waiting';
+import Dashboard from './Dashboard';
 import RestaurantList from "./RestaurantList";
 import '../styles/App.css';
 import RestaurantDetail from "./RestaurantDetail";
@@ -17,6 +18,7 @@ const App = () => (
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
         <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
