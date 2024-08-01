@@ -98,7 +98,7 @@ function Signup() {
       <div className="container">
         <div className="title">
           <Link to="/">
-            <img src={goodBiteTitle} alt="GoodBite Title" className="title-image" />
+            <img src={goodBiteTitle} alt="GoodBite Title" className="title-image-login" />
           </Link>
         </div>
         <form id="signupForm" onSubmit={handleSignup}>
