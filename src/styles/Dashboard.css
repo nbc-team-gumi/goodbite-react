@@ -15,56 +15,131 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  box-sizing: border-box; /* 패딩 포함 크기 계산 */
-  height: 60px; /* 높이를 줄임 */
+  box-sizing: border-box;
+  height: 60px;
 }
 
 .title-image {
-  height: 40px; /* 필요에 따라 높이를 조정 */
-  width: auto; /* 너비 자동 조정 */
-  margin-left: 20px; /* 왼쪽 여백 조정 */
-  object-fit: contain; /* 이미지 비율 유지 */
+  height: 40px;
+  width: auto;
+  margin-left: 20px;
+  object-fit: contain;
 }
 
 .profile-icon img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 20px; /* 오른쪽 여백 조정 */
+  margin-right: 20px;
 }
 
 .dashboard-main {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
+  align-items: flex-start;
   flex-grow: 1;
   background-color: #FFFFFF;
   width: 80%;
   margin-top: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-.register-restaurant {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.statistics-box, .waiting-list-box {
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 45%;
 }
 
-.register-message {
-  color: #FF6347;
-  font-size: 20px;
-  margin-bottom: 10px;
+.statistics-box {
+  order: 2;
 }
 
-.register-button {
-  background-color: #32CD32;
+.waiting-list-box {
+  order: 1;
+}
+
+.statistics-box h2, .waiting-list-box h2 {
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.accept-button {
+  background-color: #007bff;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
-.register-button:hover {
-  background-color: #28a745;
+.reject-button {
+  background-color: #FF6347;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.edit-button {
+  background-color: #FFA500;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination button {
+  background-color: #858585;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  margin: 0 10px;
+}
+
+.accepted-text {
+  color: blue;
+  font-weight: bold;
+}
+
+.cancelled-text {
+  color: red;
+  font-weight: bold;
 }
