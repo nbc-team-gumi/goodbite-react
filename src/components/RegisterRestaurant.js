@@ -55,7 +55,7 @@ const SubmitBtn = styled.button`
 `;
 
 
-function RestaurantSignup() {
+function RegisterRestaurant() {
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [address, setAddress] = useState('');
@@ -174,4 +174,4 @@ function RestaurantSignup() {
   );
 }
 
-export default RestaurantSignup;
+export default RegisterRestaurant;
