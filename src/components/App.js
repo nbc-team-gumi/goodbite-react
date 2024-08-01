@@ -4,6 +4,7 @@ import Home from './Home';
 import Signup from './Signup';
 import Login from './Login';
 import Waiting from './Waiting';
+import RestaurantList from "./RestaurantList";
 import '../styles/App.css';
 import UpdateCustomer from "./UpdateCustomer";
 import UpdateOwner from "./UpdateOwner";
@@ -18,6 +19,7 @@ return (
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
+        <Route path="/restaurants" element={<RestaurantList />} />
         <Route path="/customers" element={<UpdateCustomer />} />
         <Route path="/owners" element={<UpdateOwner />} />
       </Routes>
