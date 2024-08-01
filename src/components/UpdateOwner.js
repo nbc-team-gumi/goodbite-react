@@ -10,8 +10,8 @@ function UpdateOwner() {
 
   const updatePassword = async () => {
     try {
-      const response = await fetch('/api/updatePassword', {
-        method: 'POST',
+      const response = await fetch('/owners/password', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -34,8 +34,8 @@ function UpdateOwner() {
 
   const updateNickname = async () => {
     try {
-      const response = await fetch('/api/updateNickname', {
-        method: 'POST',
+      const response = await fetch('/owners/nickname', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -55,8 +55,8 @@ function UpdateOwner() {
 
   const updatePhoneNumber = async () => {
     try {
-      const response = await fetch('/api/updatePhoneNumber', {
-        method: 'POST',
+      const response = await fetch('/owners/phone-number', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -76,8 +76,8 @@ function UpdateOwner() {
 
   const updateBusinessNumber = async () => {
     try {
-      const response = await fetch('/api/updateBusinessNumber', {
-        method: 'POST',
+      const response = await fetch('/owners/business-number', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

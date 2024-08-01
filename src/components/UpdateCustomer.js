@@ -9,8 +9,8 @@ function UpdateCustomer() {
 
   const changePassword = async () => {
     try {
-      const response = await fetch('/api/changePassword', {
-        method: 'POST',
+      const response = await fetch('/customers/password', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -33,8 +33,8 @@ function UpdateCustomer() {
 
   const changeNickname = async () => {
     try {
-      const response = await fetch('/api/changeNickname', {
-        method: 'POST',
+      const response = await fetch('/customers/nickname', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,8 +54,8 @@ function UpdateCustomer() {
 
   const changePhoneNumber = async () => {
     try {
-      const response = await fetch('/api/changePhoneNumber', {
-        method: 'POST',
+      const response = await fetch('/customers/phone-number', {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

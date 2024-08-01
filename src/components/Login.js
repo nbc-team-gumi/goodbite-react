@@ -3,12 +3,14 @@ import '../styles/Login.css';
 import {Link, useNavigate} from 'react-router-dom';
 import { fetchData } from '../util/api';
 import goodBiteTitle from '../images/good-bite-title.png';
+import { useUser } from '../UserContext';//추가
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { setUser } = useUser();//추가
 
   useEffect(() => {
     document.body.classList.add('login-body');
@@ -42,6 +44,9 @@ const Login = () => {
       });
 
       console.log("responseData: ", responseData);
+
+      // 로그인 성공 시 유저 정보를 Context에 저장
+      setUser(responseData.user);
 
       alert('로그인에 성공했습니다!');
       setEmail('');

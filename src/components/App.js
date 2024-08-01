@@ -7,19 +7,29 @@ import Waiting from './Waiting';
 import '../styles/App.css';
 import UpdateCustomer from "./UpdateCustomer";
 import UpdateOwner from "./UpdateOwner";
+import { UserProvider } from './UserContext';
 
-const App = () => (
+const App = () => {
+return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
-        <Route path="/customers/update" element={<UpdateCustomer />} />
-        <Route path="/owners/update" element={<UpdateOwner />} />
-        <Route path="/customers/delete" element={<UpdateOwner />} />
+        <Route path="/customers" element={<UpdateCustomer />} />
+        <Route path="/owners" element={<UpdateOwner />} />
       </Routes>
     </Router>
-);
+    </UserProvider>
+  );
+};
+
+const OwnerDashboard = () => <div>Owner Dashboard</div>;
+const CustomerDashboard = () => <div>Customer Dashboard</div>;
+const AdminDashboard = () => <div>Admin Dashboard</div>;
+const MyPage = () => <div>My Page</div>;
+const Waiting = () => <div>Waiting</div>;
 
 export default App;
