@@ -6,6 +6,7 @@ import Login from './Login';
 import Waiting from './Waiting';
 import '../styles/App.css';
 import RegisterOperatingHour from "./RegisterOperatingHour";
+import UpdateOperatingHour from "./UpdateOperatingHour";
 
 const App = () => (
     <Router>
@@ -15,6 +16,7 @@ const App = () => (
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
         <Route path="/register-operatinghour" element={<RegisterOperatingHour />} />
+        <Route path="/update-operatinghour" element={<UpdateOperatingHour />} />
       </Routes>
     </Router>
 );
