@@ -1,3 +1,4 @@
+/* 기본 스타일 */
 body {
   font-family: 'Nanum Gothic', Arial, sans-serif;
   margin: 0;
@@ -144,6 +145,7 @@ th {
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+  width: 100%; /* 너비 조정 */
 }
 
 .review-form textarea {
@@ -151,13 +153,17 @@ th {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  font-size: 16px;
+  height: 150px; /* 높이 조정 */
 }
 
 .review-form select {
-  width: 100px;
+  width: 100%;
+  max-width: 200px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  font-size: 16px;
 }
 
 .review-form button {
@@ -167,6 +173,8 @@ th {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  align-self: flex-start;
 }
 
 .review-form button:hover {
@@ -194,4 +202,12 @@ th {
 
 .empty-star {
   color: #ddd;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; /* 가로 중앙 정렬 */
 }
