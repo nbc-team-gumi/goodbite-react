@@ -17,7 +17,8 @@ const App = () => (
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
-        <Route path="/restaurant-detail" element={<RestaurantDetail/>}/>
+        {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
+        <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
