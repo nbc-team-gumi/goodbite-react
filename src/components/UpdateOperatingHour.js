@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {fetchData} from '../util/api';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/RegisterOperatingHour.css';
 
 const dayOfWeekMapping = {
@@ -15,6 +15,7 @@ const dayOfWeekMapping = {
 
 function UpdateOperatingHour() {
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [operatingHour, setOperatingHour] = useState(null);
   const [openTime, setOpenTime] = useState('');
   const [closeTime, setCloseTime] = useState('');
@@ -77,6 +78,23 @@ if (error) {
     }
   };
 
+  const handleDelete = async () => {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      try {
+        await fetchData(`/operating-hours/1`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        alert('영업 시간이 삭제되었습니다.');
+        navigate('/restaurant-detail');
+      } catch (error) {
+        alert('영업 시간 삭제 실패');
+      }
+    }
+  };
+
   const koreanDayOfWeek = operatingHour ? dayOfWeekMapping[operatingHour.dayOfWeek] : '';
 
   return (
@@ -114,6 +132,9 @@ if (error) {
             </div>
             <button type="submit" className="btn">
               영업시간 수정
+            </button>
+            <button type="button" className="btn-danger" onClick={handleDelete}>
+              삭제
             </button>
           </form>
         </div>
