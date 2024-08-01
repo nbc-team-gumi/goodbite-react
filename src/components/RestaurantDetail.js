@@ -10,6 +10,9 @@ const RestaurantDetail = () => {
   const [error, setError] = useState(null);
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [reviewContent, setReviewContent] = useState('');
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     const fetchRestaurantByName = async (name) => {
@@ -27,9 +30,10 @@ const RestaurantDetail = () => {
 
           if (response.statusCode === 200) {
             setRestaurant(response.data);
-            // Fetch operating hours and menu
+            // Fetch operating hours, menu, and reviews
             fetchRestaurantOperatingHour(restaurant.restaurantId);
             fetchMenuList(restaurant.restaurantId);
+            fetchReviews(restaurant.restaurantId);
           } else {
             throw new Error(`Unexpected response data: ${response.message}`);
           }
@@ -84,8 +88,55 @@ const RestaurantDetail = () => {
       }
     };
 
+    const fetchReviews = async (restaurantId) => {
+      try {
+        const response = await fetchData(`/restaurants/${restaurantId}/reviews`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.statusCode === 200) {
+          setReviews(response.data);
+        } else {
+          throw new Error(`Unexpected response data: ${response.message}`);
+        }
+      } catch (error) {
+        setError(error.message);
+        console.error('Fetch error:', error);
+      }
+    };
+
     fetchRestaurantByName(restaurantName); // 레스토랑 이름으로 레스토랑 정보 가져오기
   }, [restaurantName]);
+
+  const handleReviewSubmit = async () => {
+    try {
+      const response = await fetchData('/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          restaurantId: restaurant.restaurantId,
+          content: reviewContent,
+          rating: rating,
+        }),
+      });
+
+      if (response.statusCode === 200) {
+        setReviews(prevReviews => [...prevReviews, response.data]);
+        setReviewContent('');
+        setRating(0);
+      } else {
+        throw new Error(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -112,7 +163,7 @@ const RestaurantDetail = () => {
                 style={{ backgroundImage: `url(${restaurant.imageUrl})` }}
             ></div>
             <div className="rating">
-              ★★★★☆ <span className="review-count">(리뷰 152개)</span>
+              ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
             </div>
             <p>{restaurant.category}</p>
             <table>
@@ -150,9 +201,53 @@ const RestaurantDetail = () => {
               ))}
             </div>
           </div>
+
+          <div className="review-section">
+            <h3>리뷰</h3>
+            <div className="review-form">
+            <textarea
+                placeholder="리뷰 내용을 입력하세요"
+                value={reviewContent}
+                onChange={e => setReviewContent(e.target.value)}
+            />
+              <select
+                  value={rating}
+                  onChange={e => setRating(e.target.value)}
+              >
+                <option value="0">평점: 0</option>
+                <option value="0.5">평점: 0.5</option>
+                <option value="1.0">평점: 1.0</option>
+                <option value="1.5">평점: 1.5</option>
+                <option value="2.0">평점: 2.0</option>
+                <option value="2.5">평점: 2.5</option>
+                <option value="3.0">평점: 3.0</option>
+                <option value="3.5">평점: 3.5</option>
+                <option value="4.0">평점: 4.0</option>
+                <option value="4.5">평점: 4.5</option>
+                <option value="5.0">평점: 5.0</option>
+              </select>
+              <button onClick={handleReviewSubmit}>리뷰 등록</button>
+            </div>
+
+            <div className="review-list">
+              {reviews.map((review, index) => (
+                  <div key={index} className="review-item">
+                    <p>{review.content}</p>
+                    <div>
+                      {Array.from({ length: 5 }, (_, i) => (
+                          <span key={i} className={i < review.rating ? 'filled-star' : 'empty-star'}>
+                      ★
+                    </span>
+                      ))}
+                      <span>({review.rating})</span>
+                    </div>
+                  </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
   );
-}
+};
 
 export default RestaurantDetail;
