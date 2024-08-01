@@ -57,7 +57,7 @@ const Login = () => {
       <div className="login-container">
         <div className="logo">
           <Link to="/">
-            <img src={goodBiteTitle} alt="GoodBite Title" className="title-image" />
+            <img src={goodBiteTitle} alt="GoodBite Title" className="title-image-login" />
           </Link>
         </div>
         <h1>로그인</h1>

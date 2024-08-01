@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
 import { fetchData } from '../util/api'; // 기존 유틸리티 함수 임포트
 import '../styles/RestaurantList.css';
 
@@ -9,6 +10,7 @@ const RestaurantList = () => {
   const [filterSubLocation, setFilterSubLocation] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -32,7 +34,11 @@ const RestaurantList = () => {
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
-        <div key={restaurant.restaurantId} className="restaurant-card">
+        <div
+            key={restaurant.restaurantId}
+            className="restaurant-card"
+            onClick={() => navigate(`/restaurants/${restaurant.name}`)} // 클릭 시 상세 페이지로 이동
+        >
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
             <h2 className="restaurant-name">{restaurant.name}</h2>
