@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setUser } = useUser();//추가
+  const { setRole } = useUser();//추가
 
   useEffect(() => {
     document.body.classList.add('login-body');
@@ -38,20 +38,31 @@ const Login = () => {
     }
 
     try {
-      const responseData = await fetchData('/users/login', {
+      const response = await fetchData('/users/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
 
-      console.log("responseData: ", responseData);
+      console.log("response: ", response);
 
-      // 로그인 성공 시 유저 정보를 Context에 저장
-      setUser(responseData.user);
+      // 응답 데이터가 올바른지 확인합니다.
+      if (!response.role) {
+        throw new Error("응답 데이터에 역할 정보가 없습니다.");
+      }
+
+      // 역할 정보를 Context에 저장합니다
+      setRole(response.role);
 
       alert('로그인에 성공했습니다!');
       setEmail('');
       setPassword('');
-      navigate('/');
+      if (response.role === 'ROLE_OWNER') {
+        navigate('/dashboard');
+      } else if (response.role === 'ROLE_CUSTOMER') {
+        navigate('/restaurants');
+      } else {
+        navigate('/');
+      }
     } catch (error) {
       console.error('로그인 에러:', error);
       setError(`로그인 중 오류가 발생했습니다: ${error.message}`);

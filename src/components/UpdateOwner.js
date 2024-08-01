@@ -154,7 +154,7 @@ function UpdateOwner() {
               사업자번호 수정
             </button>
           </form>
-          <p className="forgot-password">회원탈퇴하시겠습니까?</p>
+          <p className="delete-account">회원탈퇴하시겠습니까?</p>
         </div>
       </div>
   );
