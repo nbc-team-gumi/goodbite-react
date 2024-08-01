@@ -5,7 +5,17 @@ import '../styles/RestaurantList.css';
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterLocation, setFilterLocation] = useState('all');
+  const [filterSubLocation, setFilterSubLocation] = useState('all');
   const [filterType, setFilterType] = useState('all');
+  const [filterRating, setFilterRating] = useState('all');
+
+  const subLocations = {
+    seoul: ["마포구", "영등포구", "강남구"],
+    gyeonggi: ["성남시", "수원시", "고양시"],
+    gangwon: ["춘천시", "원주시", "강릉시"],
+    // 다른 위치 추가
+  };
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -55,10 +65,19 @@ const RestaurantList = () => {
   const filterRestaurants = () => {
     const filteredRestaurants = restaurants.filter(restaurant => {
       const nameMatch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const locationMatch = filterLocation === 'all' || restaurant.area === filterLocation;
+      const subLocationMatch = filterSubLocation === 'all' || (restaurant.address && restaurant.address.includes(filterSubLocation));
       const typeMatch = filterType === 'all' || restaurant.category === filterType;
-      return nameMatch && typeMatch;
+      const ratingMatch = filterRating === 'all' || restaurant.rating >= parseFloat(filterRating);
+      return nameMatch && locationMatch && subLocationMatch && typeMatch && ratingMatch;
     });
     return filteredRestaurants;
+  };
+
+  const handleLocationChange = (e) => {
+    const selectedLocation = e.target.value;
+    setFilterLocation(selectedLocation);
+    setFilterSubLocation('all'); // Reset sub-location when main location changes
   };
 
   return (
@@ -69,18 +88,31 @@ const RestaurantList = () => {
         </div>
         <div className="container">
           <div className="search-filter">
-            <div className="search-bar">
-              <input
-                  type="text"
-                  id="searchInput"
-                  placeholder="식당 이름 검색..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="filter-dropdown">
+            <div className="filter-dropdowns">
               <select
-                  id="filterSelect"
+                  id="filterLocation"
+                  value={filterLocation}
+                  onChange={handleLocationChange}
+              >
+                <option value="all">모든 위치</option>
+                <option value="seoul">서울</option>
+                <option value="gyeonggi">경기</option>
+                <option value="gangwon">강원</option>
+                {/* 다른 위치 추가 */}
+              </select>
+              <select
+                  id="filterSubLocation"
+                  value={filterSubLocation}
+                  onChange={e => setFilterSubLocation(e.target.value)}
+                  disabled={filterLocation === 'all'}
+              >
+                <option value="all">모든 세부 위치</option>
+                {filterLocation !== 'all' && subLocations[filterLocation].map(subLocation => (
+                    <option key={subLocation} value={subLocation}>{subLocation}</option>
+                ))}
+              </select>
+              <select
+                  id="filterType"
                   value={filterType}
                   onChange={e => setFilterType(e.target.value)}
               >
@@ -92,6 +124,26 @@ const RestaurantList = () => {
                 <option value="seafood">해산물</option>
                 <option value="bbq">바베큐</option>
               </select>
+              <select
+                  id="filterRating"
+                  value={filterRating}
+                  onChange={e => setFilterRating(e.target.value)}
+              >
+                <option value="all">모든 평점</option>
+                <option value="4.0">4.0 이상</option>
+                <option value="3.0">3.0 이상</option>
+                <option value="2.0">2.0 이상</option>
+                <option value="1.0">1.0 이상</option>
+              </select>
+            </div>
+            <div className="search-bar">
+              <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="식당 이름 검색..."
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
           <div className="restaurant-grid">
