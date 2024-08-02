@@ -86,7 +86,6 @@ function RegisterRestaurant() {
         }),
       });
       alert('가게 등록이 완료되었습니다!');
-      setMessage(`Signup successful: ${JSON.stringify(data)}`);
       navigate('/dashboard');
     } catch (error) {
       alert('가게 등록 실패');
