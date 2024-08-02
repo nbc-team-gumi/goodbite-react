@@ -123,6 +123,10 @@ const Dashboard = () => {
     navigate('/register-restaurant'); // Navigate to the desired route
   };
 
+  const navigateToMyRestaurant = () => {
+    navigate('/owner-restaurant-detail'); // Navigate to the desired route
+  };
+
   return (
       <div className="dashboard-container">
         <header className="dashboard-header">
@@ -130,10 +134,20 @@ const Dashboard = () => {
             <img src={titleImage} alt="GOOD BITE" className="title-image" />
           </Link>
           <div className="profile-icon">
-            <img
-                src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                alt="Profile"
-            />
+            {apiSuccess ? (
+                <>
+                  <button onClick={navigateToMyRestaurant}>내 가게</button>
+                  <img
+                      src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
+                      alt="Profile"
+                  />
+                </>
+            ) : (
+                <img
+                    src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
+                    alt="Profile"
+                />
+            )}
           </div>
         </header>
         <main className="dashboard-main">
