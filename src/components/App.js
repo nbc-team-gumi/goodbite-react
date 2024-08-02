@@ -15,8 +15,17 @@ import UpdateRestaurant from "./UpdateRestaurant";
 import RegisterMenu from "./RegisterMenu";
 import UpdateMenu from "./UpdateMenu";
 import '../styles/App.css';
+import UpdateCustomer from "./UpdateCustomer";
+import UpdateOwner from "./UpdateOwner";
+import {UserProvider}  from "../UserContext";
+import CustomerMypage from "./CustomerMypage";
+import OwnerMypage from "./OwnerMypage";
+import DeactivateCustomer from "./DeactivateCustomer";
+import DeactivateOwner from "./DeactivateOwner";
 
-const App = () => (
+const App = () => {
+return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,11 +40,19 @@ const App = () => (
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
+        <Route path="/customers" element={<CustomerMypage />} />
+        <Route path="/owners" element={<OwnerMypage />} />
+        <Route path="/update-customer" element={<UpdateCustomer />} />
+        <Route path="/update-owner" element={<UpdateOwner />} />
+        <Route path="/delete-customer" element={<DeactivateCustomer />} />
+        <Route path="/delete-owner" element={<DeactivateOwner />} />
         <Route path="/waitings" element={<CustomerWaitingList />} />
         <Route path="/register-menu" element={<RegisterMenu />} />
         <Route path="/update-menu" element={<UpdateMenu />} />
       </Routes>
     </Router>
-);
+    </UserProvider>
+  );
+};
 
 export default App;
