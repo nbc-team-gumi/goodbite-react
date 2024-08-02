@@ -66,7 +66,7 @@ const CustomerMypage = () => {
             </div>
             <a href="/update-customer" className="edit-button">회원정보 수정</a>
             <div className="footer-link">
-              <a href="/">홈으로 돌아가기</a>
+              <a href="/restaurants">홈으로 돌아가기</a>
             </div>
           </div>
         </main>
