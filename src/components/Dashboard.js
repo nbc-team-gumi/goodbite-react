@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
 import titleImage from '../images/good-bite-title.png';
 import { fetchData } from '../util/api';
@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [currentWaitingId, setCurrentWaitingId] = useState(null);
   const [currentPartySize, setCurrentPartySize] = useState(0);
   const [currentDemand, setCurrentDemand] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -118,6 +119,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleClick = () => {
+    navigate('/register-restaurant'); // Navigate to the desired route
+  };
+
   return (
       <div className="dashboard-container">
         <header className="dashboard-header">
@@ -148,7 +153,7 @@ const Dashboard = () => {
           ) : (
               <div className="register-restaurant">
                 <p className="register-message">새로운 식당을 등록하세요</p>
-                <button className="register-button">식당을 등록해주세요</button>
+                <button className="register-button" onClick={handleClick}>식당을 등록해주세요</button>
               </div>
           )}
           <DashboardModal
