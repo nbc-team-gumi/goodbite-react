@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const Container = styled.div`
   max-width: 600px;
@@ -57,7 +57,7 @@ const SubmitBtn = styled.button`
 
 
 function RegisterMenu() {
-  const restaurantId = 1;
+  const { restaurantId } = useParams();
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
@@ -81,9 +81,10 @@ function RegisterMenu() {
         }),
       });
       alert('메뉴 등록이 완료되었습니다!');
-      navigate('/restaurant-detail');
+      navigate('/owner-restaurant-detail');
     } catch (error) {
       alert('메뉴 등록 실패');
+      navigate('/owner-restaurant-detail');
     }
   };
 

@@ -68,7 +68,7 @@ const Btn = styled.button`
 
 
 function UpdateMenu() {
-  // const { id } = useParams();
+  const { menuId } = useParams();
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
@@ -79,7 +79,7 @@ function UpdateMenu() {
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      await fetchData('/menus/4', {
+      await fetchData(`/menus/${menuId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -91,25 +91,27 @@ function UpdateMenu() {
         }),
       });
       alert('메뉴 수정이 완료되었습니다!');
-      navigate('/restaurant-detail');
+      navigate('/owner-restaurant-detail');
     } catch (error) {
       alert('메뉴 수정 실패');
+      navigate('/owner-restaurant-detail');
     }
   };
 
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await fetchData(`/menus/4`, {
+        await fetchData(`/menus/${menuId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },
         });
         alert('메뉴가 삭제되었습니다.');
-        navigate('/restaurant-detail');
+        navigate('/owner-restaurant-detail');
       } catch (error) {
         alert('메뉴 삭제 실패');
+        navigate('/owner-restaurant-detail');
       }
     }
   };

@@ -33,15 +33,16 @@ return (
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
-        <Route path="/register-operatinghour" element={<RegisterOperatingHour />} />
-        <Route path="/update-operatinghour" element={<UpdateOperatingHour />} />
+        <Route path="/register-operatinghour/:restaurantId" element={<RegisterOperatingHour />} />
+        <Route path="/update-operatinghour/:operatingHourId" element={<UpdateOperatingHour />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
         <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
-        <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
+        {/*<Route path="/update-restaurant" element={<UpdateRestaurant/>}/>*/}
+        <Route path="/update-restaurant/:restaurantId" element={<UpdateRestaurant />} />
         <Route path="/restaurants" element={<RestaurantList />} />
-        <Route path="/owner-restaurants-detail" element={<OwnerRestaurantDetail />} />
+        <Route path="/owner-restaurant-detail" element={<OwnerRestaurantDetail />} />
         <Route path="/customers" element={<CustomerMypage />} />
         <Route path="/owners" element={<OwnerMypage />} />
         <Route path="/update-customer" element={<UpdateCustomer />} />
@@ -49,8 +50,8 @@ return (
         <Route path="/delete-customer" element={<DeactivateCustomer />} />
         <Route path="/delete-owner" element={<DeactivateOwner />} />
         <Route path="/waitings" element={<CustomerWaitingList />} />
-        <Route path="/register-menu" element={<RegisterMenu />} />
-        <Route path="/update-menu" element={<UpdateMenu />} />
+        <Route path="/register-menu/:restaurantId" element={<RegisterMenu />} />
+        <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
       </Routes>
     </Router>
     </UserProvider>

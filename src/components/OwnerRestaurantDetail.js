@@ -70,6 +70,7 @@ function OwnerRestaurantDetail() {
 
     if (response.statusCode === 200) {
       setOperatingHour(response.data);
+
     } else {
       throw new Error(`Unexpected response data: ${response.message}`);
     }
@@ -83,20 +84,20 @@ function OwnerRestaurantDetail() {
 //
 // fetchRestaurantOperatingHour();
   const navigateToUpdateRestaurant  = () => {
-    navigate('/update-restaurant'); // Navigate to the desired route
+    navigate(`/update-restaurant/${restaurantId}`); // Navigate to the desired route
   };
 
   const navigateToRegisterOperatingHour  = () => {
-    navigate('/register-operatinghour'); // Navigate to the desired route
+    navigate(`/register-operatinghour/${restaurantId}`); // Navigate to the desired route
   };
   const navigateToRegisterMenu  = () => {
-    navigate('/register-menu'); // Navigate to the desired route
+    navigate(`/register-menu/${restaurantId}`); // Navigate to the desired route
   };
-  const navigateToUpdateOperatingHour  = () => {
-    navigate('/update-operatinghour'); // Navigate to the desired route
+  const navigateToUpdateOperatingHour  = (operatingHourId) => {
+    navigate(`/update-operatinghour/${operatingHourId}`); // Navigate to the desired route
   };
-  const navigateToUpdateMenu  = () => {
-    navigate('/update-menu'); // Navigate to the desired route
+  const navigateToUpdateMenu  = (menuId) => {
+    navigate(`/update-menu/${menuId}`); // Navigate to the desired route
   };
 
 const fetchMenuList = async (restaurantId) => {
@@ -169,7 +170,7 @@ return (
                 {operatingHour.map((hour, index) => (
                     <div key={index}>
                       {hour.dayOfWeek}: {hour.openTime} - {hour.closeTime}
-                      <button className="btn-update" onClick={navigateToUpdateOperatingHour}>수정하기</button>
+                      <button className="btn-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
                     </div>
                 ))}
               </td>
@@ -182,7 +183,7 @@ return (
             {menu.map((item, index) => (
                 <div key={index} className="menu-item">
                   <img src={item.img} alt={item.name} width="100%" height="150" />
-                  <button className="btn-update" onClick={navigateToUpdateMenu}>수정하기</button>
+                  <button className="btn-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
                   <p className="price">{item.price}</p>

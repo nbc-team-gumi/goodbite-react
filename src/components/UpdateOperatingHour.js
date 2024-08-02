@@ -14,7 +14,7 @@ const dayOfWeekMapping = {
 };
 
 function UpdateOperatingHour() {
-  const { id } = useParams();
+  const { operatingHourId } = useParams();
   const navigate = useNavigate(); // Initialize useNavigate
   const [operatingHour, setOperatingHour] = useState(null);
   const [openTime, setOpenTime] = useState('');
@@ -25,7 +25,7 @@ function UpdateOperatingHour() {
 useEffect(() => {
   const fetchOperatinghour = async () => {
     try {
-      const response = await fetchData(`/operating-hours/2`, {
+      const response = await fetchData(`/operating-hours/${operatingHourId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ useEffect(() => {
   };
 
   fetchOperatinghour();
-}, [id]);
+}, [operatingHourId]);
 
 if (loading) {
   return <div>Loading...</div>;
@@ -61,7 +61,7 @@ if (error) {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     try {
-      await fetchData('/operating-hours/1', {
+      await fetchData(`/operating-hours/${operatingHourId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,24 +73,26 @@ if (error) {
         }),
       });
       alert('영업 시간 수정이 완료되었습니다!');
+      navigate('/owner-restaurant-detail');
     } catch (error) {
       alert('영업 시간 수정 실패');
+      navigate('/owner-restaurant-detail');
     }
   };
 
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await fetchData(`/operating-hours/1`, {
+        await fetchData(`/operating-hours/${operatingHourId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },
         });
         alert('영업 시간이 삭제되었습니다.');
-        navigate('/restaurant-detail');
+        navigate('/owner-restaurant-detail');
       } catch (error) {
-        alert('영업 시간 삭제 실패');
+        navigate('/owner-restaurant-detail');
       }
     }
   };
