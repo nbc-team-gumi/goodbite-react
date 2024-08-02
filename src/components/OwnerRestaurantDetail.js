@@ -1,10 +1,11 @@
 import '../styles/RestaurantDetail.css';
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../util/api';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 function OwnerRestaurantDetail() {
-  const [restaurantId, setRestaurantId] = useState(null);
+  const { restaurantId: paramRestaurantId } = useParams();
+  const [restaurantId, setRestaurantId] = useState(paramRestaurantId || null);
   const [apiSuccess, setApiSuccess] = useState(false);
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,22 +17,31 @@ function OwnerRestaurantDetail() {
   useEffect(() => {
     const fetchRestaurantId = async () => {
       try {
-        const response = await fetchData('/restaurants/my', {
-          method: 'GET',
-        });
-        setRestaurantId(response.data.restaurantId);
+        if (!restaurantId) {
+          // Fetch restaurantId from /restaurants/my if not provided in URL
+          const response = await fetchData('/restaurants/my', {
+            method: 'GET',
+          });
+          setRestaurantId(response.data.restaurantId);
+          fetchRestaurant(response.data.restaurantId);
+          fetchRestaurantOperatingHour(response.data.restaurantId);
+          fetchMenuList(response.data.restaurantId);
+        } else {
+          // Fetch restaurant details directly if restaurantId is provided
+          fetchRestaurant(restaurantId);
+          fetchRestaurantOperatingHour(restaurantId);
+          fetchMenuList(restaurantId);
+        }
         setApiSuccess(true);
-        fetchRestaurant(response.data.restaurantId);
-        fetchRestaurantOperatingHour(response.data.restaurantId);
-        fetchMenuList(response.data.restaurantId);
       } catch (error) {
         console.error('Error:', error);
+        setError(error.message);
         setApiSuccess(false);
       }
     };
 
     fetchRestaurantId();
-  }, []);
+  }, [restaurantId]);
 
   const fetchRestaurant = async (restaurantId) => {
     try {
@@ -140,7 +150,7 @@ return (
         <div className="logo">GOOD BITE</div>
         <nav className="nav-menu">
           <a href="/dashboard">홈</a>
-          <a href="/mypage">마이페이지</a>
+          <a href="/owners">마이페이지</a>
         </nav>
       </header>
       <div className="content">

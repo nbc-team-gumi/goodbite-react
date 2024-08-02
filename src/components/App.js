@@ -42,6 +42,7 @@ return (
         {/*<Route path="/update-restaurant" element={<UpdateRestaurant/>}/>*/}
         <Route path="/update-restaurant/:restaurantId" element={<UpdateRestaurant />} />
         <Route path="/restaurants" element={<RestaurantList />} />
+        <Route path="/owner-restaurant-detail/:restaurantId" element={<OwnerRestaurantDetail />} />
         <Route path="/owner-restaurant-detail" element={<OwnerRestaurantDetail />} />
         <Route path="/customers" element={<CustomerMypage />} />
         <Route path="/owners" element={<OwnerMypage />} />

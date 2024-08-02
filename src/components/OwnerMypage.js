@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/OwnerMypage.css';
+// import '../styles/OwnerMypage.css';
 import { fetchData } from '../util/api';
 import { Link } from 'react-router-dom';
 
@@ -70,7 +70,7 @@ const OwnerMypage = () => {
             </div>
             <Link to="/update-owner" className="edit-button">회원정보 수정</Link>
             <div className="footer-link">
-              <a href="/">홈으로 돌아가기</a>
+              <a href="/dashboard">홈으로 돌아가기</a>
             </div>
           </div>
         </main>
