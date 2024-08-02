@@ -67,7 +67,7 @@ const Waiting = () => {
         method: 'POST',
         body: JSON.stringify(requestBody),
       });
-      setMessage(`waiting 등록 성공: ${JSON.stringify(data)}`);
+      setMessage(`waiting 등록을 성공했습니다.`);
       setShowModal(true); // 모달 표시
       // Re-fetch waiting count after successful registration
       fetchWaitingCount();
