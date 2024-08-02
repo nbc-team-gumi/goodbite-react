@@ -17,6 +17,8 @@ import UpdateOwner from "./UpdateOwner";
 import {UserProvider}  from "../UserContext";
 import CustomerMypage from "./CustomerMypage";
 import OwnerMypage from "./OwnerMypage";
+import DeactivateCustomer from "./DeactivateCustomer";
+import DeactivateOwner from "./DeactivateOwner";
 
 const App = () => {
 return (
@@ -39,6 +41,8 @@ return (
         <Route path="/owners" element={<OwnerMypage />} />
         <Route path="/update-customer" element={<UpdateCustomer />} />
         <Route path="/update-owner" element={<UpdateOwner />} />
+        <Route path="/delete-customer" element={<DeactivateCustomer />} />
+        <Route path="/delete-owner" element={<DeactivateOwner />} />
       </Routes>
     </Router>
     </UserProvider>

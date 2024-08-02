@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
+import { fetchData } from '../util/api'; // fetchData 메서드 가져오기
 
 function UpdateOwner() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -7,93 +8,90 @@ function UpdateOwner() {
   const [nickname, setNickname] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [businessNumber, setBusinessNumber] = useState('');
+  const [user, setUser] = useState(null); // 사용자 정보 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
+  const [error, setError] = useState(null); // 오류 상태
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetchData('/owners', {
+          method: 'GET',
+        });
+        setUser(response.data);
+        setNickname(response.data.nickname);
+        setPhoneNumber(response.data.phoneNumber);
+        setBusinessNumber(response.data.businessNumber);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);//추가
 
   const updatePassword = async () => {
     try {
-      const response = await fetch('/owners/password', {
+      await fetchData('/owners/password', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
+        body: JSON.stringify({   "currentPassword": currentPassword,
+          "newPassword": newPassword }),
       });
-
-      if (response.ok) {
-        alert('비밀번호가 수정되었습니다.');
-      } else {
-        alert('비밀번호 수정에 실패했습니다.');
-      }
+      alert('비밀번호가 수정되었습니다.');
     } catch (error) {
-      console.error('Error updating password:', error);
       alert('비밀번호 수정 중 오류가 발생했습니다.');
+      console.error('Error updating password:', error);
     }
   };
 
   const updateNickname = async () => {
     try {
-      const response = await fetch('/owners/nickname', {
+      await fetchData('/owners/nickname', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nickname }),
+        body: JSON.stringify({ "newNickname": nickname }),
       });
-
-      if (response.ok) {
-        alert('닉네임이 수정되었습니다.');
-      } else {
-        alert('닉네임 수정에 실패했습니다.');
-      }
+      alert('닉네임이 수정되었습니다.');
     } catch (error) {
-      console.error('Error updating nickname:', error);
       alert('닉네임 수정 중 오류가 발생했습니다.');
+      console.error('Error updating nickname:', error);
     }
   };
 
   const updatePhoneNumber = async () => {
     try {
-      const response = await fetch('/owners/phone-number', {
+      await fetchData('/owners/phone-number', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phoneNumber }),
+        body: JSON.stringify({ "newPhoneNumber": phoneNumber }),
       });
-
-      if (response.ok) {
-        alert('휴대폰번호가 수정되었습니다.');
-      } else {
-        alert('휴대폰번호 수정에 실패했습니다.');
-      }
+      alert('휴대폰번호가 수정되었습니다.');
     } catch (error) {
-      console.error('Error updating phone number:', error);
       alert('휴대폰번호 수정 중 오류가 발생했습니다.');
+      console.error('Error updating phone number:', error);
     }
   };
 
   const updateBusinessNumber = async () => {
     try {
-      const response = await fetch('/owners/business-number', {
+      await fetchData('/owners/business-number', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ businessNumber }),
+        body: JSON.stringify({ "newBusinessNumber": businessNumber }),
       });
-
-      if (response.ok) {
-        alert('사업자번호가 수정되었습니다.');
-      } else {
-        alert('사업자번호 수정에 실패했습니다.');
-      }
+      alert('사업자번호가 수정되었습니다.');
     } catch (error) {
-      console.error('Error updating business number:', error);
       alert('사업자번호 수정 중 오류가 발생했습니다.');
+      console.error('Error updating business number:', error);
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
       <div className="App">
@@ -154,7 +152,9 @@ function UpdateOwner() {
               사업자번호 수정
             </button>
           </form>
-          <p className="delete-account">회원탈퇴하시겠습니까?</p>
+          <div className="footer-link">
+            <a href="/delete-owner">탈퇴하시겠습니까?</a>
+          </div>
         </div>
       </div>
   );
