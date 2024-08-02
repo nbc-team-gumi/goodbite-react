@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/CustomerWaitingList.module.css';
-import { fetchData } from "../util/api";
+import { fetchData } from '../util/api';
 
 function CustomerWaitingList() {
   const [waitingList, setWaitingList] = useState([]);
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
-  const [currentWaitingId, setCurrentWaitingId] = useState(null);
-  const [currentRestaurantId, setCurrentRestaurantId] = useState(null);
+  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [cancelModalVisible, setCancelModalVisible] = useState(false);
+  const [currentWaiting, setCurrentWaiting] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -27,20 +28,17 @@ function CustomerWaitingList() {
         method: 'GET',
       });
 
-      // 데이터 필터링
       const filteredWaitings = response.data.content.filter(waiting => {
-        const value = waiting[searchColumn] || ''; // null 값을 공백으로 처리
+        const value = waiting[searchColumn] || '';
         const matchesSearch = value.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter ? waiting.waitingStatus === statusFilter : true;
         return matchesSearch && matchesStatus;
       });
 
-      // 데이터를 등록 시간(createAt) 기준으로 내림차순 정렬
       const sortedWaitings = filteredWaitings.sort((a, b) =>
           new Date(b.createAt) - new Date(a.createAt)
       );
 
-      // 웨이팅 항목의 restaurantId도 포함시켜서 상태 업데이트
       setWaitingList(sortedWaitings);
       setTotalPages(response.data.totalPages);
       setLoading(false);
@@ -52,15 +50,33 @@ function CustomerWaitingList() {
   };
 
   const openReviewModal = (waitingId, restaurantId) => {
-    setCurrentWaitingId(waitingId);
-    setCurrentRestaurantId(restaurantId); // 현재 선택된 웨이팅의 restaurantId 설정
+    setCurrentWaiting({ waitingId, restaurantId });
     setReviewModalVisible(true);
   };
 
   const closeReviewModal = () => {
     setReviewModalVisible(false);
-    setCurrentWaitingId(null);
-    setCurrentRestaurantId(null); // 리뷰 모달 닫을 때 restaurantId 초기화
+    setCurrentWaiting(null);
+  };
+
+  const openDetailsModal = (waiting) => {
+    setCurrentWaiting(waiting);
+    setDetailsModalVisible(true);
+  };
+
+  const closeDetailsModal = () => {
+    setDetailsModalVisible(false);
+    setCurrentWaiting(null);
+  };
+
+  const openCancelModal = (waiting) => {
+    setCurrentWaiting(waiting);
+    setCancelModalVisible(true);
+  };
+
+  const closeCancelModal = () => {
+    setCancelModalVisible(false);
+    setCurrentWaiting(null);
   };
 
   const submitReview = async (e) => {
@@ -73,30 +89,41 @@ function CustomerWaitingList() {
       return;
     }
 
-    console.log(currentRestaurantId);
-    console.log(rating);
-    console.log(reviewText);
-
     try {
-      const response = await fetchData('/reviews', {
+      await fetchData('/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          restaurantId: currentRestaurantId, // 선택된 웨이팅의 restaurantId 사용
-          rating:  Number(rating),
+          restaurantId: currentWaiting.restaurantId,
+          rating: Number(rating),
           content: reviewText,
         }),
       });
 
-      // 리뷰 제출 후 처리
       closeReviewModal();
       alert('리뷰가 성공적으로 제출되었습니다!');
     } catch (error) {
       console.error('리뷰 제출 에러:', error);
       alert('리뷰 제출 중 오류가 발생했습니다.');
       closeReviewModal();
+    }
+  };
+
+  const cancelWaiting = async () => {
+    try {
+      await fetchData(`/waitings/${currentWaiting.waitingId}`, {
+        method: 'DELETE',
+      });
+
+      closeCancelModal();
+      fetchWaitings(page, pageSize); // 목록 갱신
+      alert('웨이팅이 성공적으로 취소되었습니다!');
+    } catch (error) {
+      console.error('웨이팅 취소 에러:', error);
+      alert('웨이팅 취소 중 오류가 발생했습니다.');
+      closeCancelModal();
     }
   };
 
@@ -107,7 +134,7 @@ function CustomerWaitingList() {
   };
 
   const handleSearch = () => {
-    setPage(0); // 검색 시 페이지를 첫 페이지로 초기화
+    setPage(0);
   };
 
   const handleSearchColumnChange = (e) => {
@@ -120,12 +147,12 @@ function CustomerWaitingList() {
 
   const handleStatusFilterChange = (e) => {
     setStatusFilter(e.target.value);
-    setPage(0); // 상태 필터 변경 시 페이지를 첫 페이지로 초기화
+    setPage(0);
   };
 
   const handlePageSizeChange = (e) => {
-    setPageSize(Number(e.target.value)); // 페이지 사이즈 변경
-    setPage(0); // 페이지 사이즈 변경 시 페이지를 첫 페이지로 초기화
+    setPageSize(Number(e.target.value));
+    setPage(0);
   };
 
   return (
@@ -139,8 +166,7 @@ function CustomerWaitingList() {
           <div className={styles.searchContainer}>
             <div className={styles.searchFilter}>
               <label htmlFor="statusFilter">대기 상태:</label>
-              <select id="statusFilter" value={statusFilter}
-                      onChange={handleStatusFilterChange}>
+              <select id="statusFilter" value={statusFilter} onChange={handleStatusFilterChange}>
                 <option value="">전체</option>
                 <option value="WAITING">대기 중</option>
                 <option value="SEATED">착석</option>
@@ -148,8 +174,7 @@ function CustomerWaitingList() {
               </select>
 
               <label htmlFor="searchColumn">검색 칼럼:</label>
-              <select id="searchColumn" value={searchColumn}
-                      onChange={handleSearchColumnChange}>
+              <select id="searchColumn" value={searchColumn} onChange={handleSearchColumnChange}>
                 <option value="restaurantName">식당 이름</option>
                 <option value="demand">요청 사항</option>
               </select>
@@ -163,8 +188,7 @@ function CustomerWaitingList() {
 
               <div className={styles.pageSize}>
                 <label htmlFor="pageSize">페이지 사이즈:</label>
-                <select id="pageSize" value={pageSize}
-                        onChange={handlePageSizeChange}>
+                <select id="pageSize" value={pageSize} onChange={handlePageSizeChange}>
                   <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="15">15</option>
@@ -193,42 +217,73 @@ function CustomerWaitingList() {
                     </thead>
                     <tbody>
                     {waitingList.map(waiting => (
-                        <tr key={waiting.waitingId}>
+                        <tr
+                            key={waiting.waitingId}
+                            className={styles.waitingRow}
+                            onClick={() => openDetailsModal(waiting)}
+                        >
                           <td>{waiting.restaurantName}</td>
-                          <td>{waiting.demand || 'N/A'}</td>
-                          <td>{new Date(waiting.createAt).toLocaleString()}</td>
-                          <td>{waiting.deletedAt ? new Date(
-                              waiting.deletedAt).toLocaleString() : 'N/A'}</td>
                           <td>
-                      <span
-                          className={`${styles.status} ${styles[`status-${waiting.waitingStatus.toLowerCase()}`]}`}>
-                        {waiting.waitingStatus === 'WAITING' ? '대기 중' :
-                            waiting.waitingStatus === 'SEATED' ? '착석' : '취소됨'}
-                      </span>
+                            {waiting.demand ? (
+                                waiting.demand.length > 20
+                                    ? `${waiting.demand.substring(0, 20)}...`
+                                    : waiting.demand
+                            ) : 'N/A'}
+                          </td>
+                          <td>{new Date(waiting.createAt).toLocaleString()}</td>
+                          <td>{waiting.deletedAt ? new Date(waiting.deletedAt).toLocaleString() : 'N/A'}</td>
+                          <td>
+                        <span
+                            className={`${styles.status} ${styles[`status-${waiting.waitingStatus.toLowerCase()}`]}`}
+                        >
+                          {waiting.waitingStatus === 'WAITING'
+                              ? '대기 중'
+                              : waiting.waitingStatus === 'SEATED'
+                                  ? '착석'
+                                  : '취소됨'}
+                        </span>
+                            {waiting.waitingStatus === 'WAITING' && (
+                                <button
+                                    className={styles.cancelBtn}
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                      openCancelModal(waiting);
+                                    }}
+                                >
+                                  취소
+                                </button>
+                            )}
                             {waiting.waitingStatus === 'SEATED' && (
-                                <button className={styles.reviewBtn}
-                                        onClick={() => openReviewModal(
-                                            waiting.waitingId,
-                                            waiting.restaurantId)}>리뷰</button>
+                                <button
+                                    className={styles.reviewBtn}
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                      openReviewModal(waiting.waitingId, waiting.restaurantId);
+                                    }}
+                                >
+                                  리뷰
+                                </button>
                             )}
                           </td>
                         </tr>
-                    ))}
+                      )
+                    )}
                     </tbody>
                   </table>
                 </div>
-
-                <div className={styles.pagination}>
-                  <button onClick={() => handlePageChange(page - 1)}
-                          disabled={page === 0}>이전
-                  </button>
-                  <span>페이지 {page + 1} / {totalPages}</span>
-                  <button onClick={() => handlePageChange(page + 1)}
-                          disabled={page >= totalPages - 1}>다음
-                  </button>
-                </div>
                 <h5>검색은 현재 페이지에서만 가능합니다.</h5>
                 <h5>웨이팅은 등록 시간 기준으로 현재 페이지 내 최신 순으로 정렬됩니다.</h5>
+                <div className={styles.pagination}>
+                  <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
+                    이전
+                  </button>
+                  <span>
+                페이지 {page + 1} / {totalPages}
+              </span>
+                  <button onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages - 1}>
+                    다음
+                  </button>
+                </div>
               </>
           )}
         </div>
@@ -261,6 +316,32 @@ function CustomerWaitingList() {
                   <textarea name="reviewText" required></textarea>
                   <button type="submit">제출</button>
                 </form>
+              </div>
+            </div>
+        )}
+
+        {detailsModalVisible && currentWaiting && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <span className={styles.close} onClick={closeDetailsModal}>&times;</span>
+                <h2>웨이팅 상세 정보</h2>
+                <p><strong>식당 이름:</strong> {currentWaiting.restaurantName}</p>
+                <p><strong>요청 사항:</strong> {currentWaiting.demand || 'N/A'}</p>
+                <p><strong>등록 시간:</strong> {new Date(currentWaiting.createAt).toLocaleString()}</p>
+                <p><strong>삭제 시간:</strong> {currentWaiting.deletedAt ? new Date(currentWaiting.deletedAt).toLocaleString() : 'N/A'}</p>
+                <p><strong>대기 상태:</strong> {currentWaiting.waitingStatus === 'WAITING' ? '대기 중' : currentWaiting.waitingStatus === 'SEATED' ? '착석' : '취소됨'}</p>
+              </div>
+            </div>
+        )}
+
+        {cancelModalVisible && currentWaiting && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <span className={styles.close} onClick={closeCancelModal}>&times;</span>
+                <h2>웨이팅 취소 확인</h2>
+                <p>이 웨이팅을 취소하시겠습니까?</p>
+                <button onClick={cancelWaiting}>확인</button>
+                <button onClick={closeCancelModal}>취소</button>
               </div>
             </div>
         )}
