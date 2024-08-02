@@ -131,7 +131,7 @@ th {
   transform: scale(1.05);
 }
 
-.btn-update{
+.btn-update {
   background-color: #ff9800;
   color: white;
   border: none;
@@ -140,6 +140,7 @@ th {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
   
 /* 리뷰 섹션 스타일 */
 .review-section {
