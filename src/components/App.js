@@ -12,7 +12,7 @@ import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
 import UpdateRestaurant from "./UpdateRestaurant";
 import '../styles/App.css';
-import OwnerRestaurantDetail from "./OwnerRestaurant";
+import OwnerRestaurantDetail from "./OwnerRestaurantDetail";
 
 const App = () => (
     <Router>
