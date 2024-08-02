@@ -124,7 +124,7 @@ const Dashboard = () => {
   };
 
   const navigateToMyRestaurant = () => {
-    navigate('/owner-restaurant-detail'); // Navigate to the desired route
+    navigate(`/owner-restaurant-detail/${restaurantId}`); // Navigate to the desired route
   };
 
   return (
