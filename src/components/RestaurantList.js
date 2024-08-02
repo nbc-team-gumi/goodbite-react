@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
 import { fetchData } from '../util/api'; // 기존 유틸리티 함수 임포트
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons'; // FontAwesome 아이콘 임포트
 import '../styles/RestaurantList.css';
 
 const RestaurantList = () => {
@@ -37,16 +39,21 @@ const RestaurantList = () => {
         <div
             key={restaurant.restaurantId}
             className="restaurant-card"
-            onClick={() => navigate(`/restaurants/${restaurant.name}`)} // 클릭 시 상세 페이지로 이동
         >
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
-            <h2 className="restaurant-name">{restaurant.name}</h2>
+            <h2 className="restaurant-name" onClick={() => navigate(`/restaurants/${restaurant.name}`)}>{restaurant.name}</h2>
             <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
             <div className="restaurant-rating">
               <span className="stars">{getStars(restaurant.rating)}</span>
               <span className="rating-value">{restaurant.rating ? restaurant.rating.toFixed(1) : 'N/A'}</span>
             </div>
+            <button
+                className="waiting-button"
+                onClick={() => navigate(`/waiting?restaurantId=${restaurant.restaurantId}`)}
+            >
+              웨이팅 등록
+            </button>
           </div>
         </div>
     ));
@@ -86,11 +93,29 @@ const RestaurantList = () => {
     setFilterSubLocation('all'); // Reset sub-location when main location changes
   };
 
+  // 사용자 아이콘 클릭 핸들러
+  const handleUserIconClick = () => {
+    navigate('/customers');
+  };
+
   return (
       <div>
         <div className="header">
           <h1>GoodBite</h1>
           <p>당신의 완벽한 식사를 위한 간편한 예약 서비스</p>
+          <div className="header-buttons">
+            <button
+                className="view-waitings-button"
+                onClick={() => navigate('/waitings')}
+            >
+              내 웨이팅 보기
+            </button>
+            <FontAwesomeIcon
+                icon={faUser}
+                className="user-icon"
+                onClick={handleUserIconClick} // 클릭 시 페이지 이동
+            />
+          </div>
         </div>
         <div className="container">
           <div className="search-filter">

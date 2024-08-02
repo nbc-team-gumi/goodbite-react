@@ -28,6 +28,7 @@ body {
 .search-filter {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
@@ -46,8 +47,8 @@ body {
 
 .filter-dropdowns {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .filter-dropdowns select {
@@ -55,6 +56,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
+  min-width: 160px; /* 최소 너비 설정 */
 }
 
 .restaurant-grid {
@@ -111,4 +113,40 @@ body {
 .rating-value {
   font-weight: bold;
   font-size: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.view-waitings-button {
+  margin-right: 10px;
+}
+
+.user-icon {
+  font-size: 24px;
+  color: #333;
+}
+.header-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.view-waitings-button {
+  margin-right: 10px;
+}
+
+.user-icon {
+  font-size: 24px;
+  color: #333;
+  cursor: pointer; /* 클릭할 수 있음을 시각적으로 표시 */
 }
