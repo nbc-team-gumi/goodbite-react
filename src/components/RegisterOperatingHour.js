@@ -2,12 +2,13 @@ import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 // import { useParams } from 'react-router-dom';
 import '../styles/RegisterOperatingHour.css';
+import {useNavigate, useParams} from "react-router-dom";
 function RegisterOperatingHour() {
-  // const { restaurantId } = useParams();
-  const restaurantId = 1;
+  const { restaurantId } = useParams();
   const [dayOfWeek, setDayOfWeek] = useState('');
   const [openTime, setOpenTime] = useState('');
   const [closeTime, setCloseTime] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,8 +27,10 @@ function RegisterOperatingHour() {
         }),
       });
       alert('영업 시간 등록이 완료되었습니다!');
+      navigate('/owner-restaurant-detail');
     } catch (error) {
       alert('영업 시간 등록 실패');
+      navigate('/owner-restaurant-detail');
     }
   };
 
