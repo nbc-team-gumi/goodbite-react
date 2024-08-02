@@ -127,14 +127,14 @@ const RestaurantList = () => {
           <h1>GoodBite</h1>
           <p>당신의 완벽한 식사를 위한 간편한 예약 서비스</p>
           <div className="header-buttons">
-            <button
-                className="view-waitings-button"
-                onClick={() => navigate('/waitings')}
-            >
-              내 웨이팅 보기
-            </button>
             {role ? (
                 <>
+                  <button
+                      className="view-waitings-button"
+                      onClick={() => navigate('/waitings')}
+                  >
+                    내 웨이팅 보기
+                  </button>
                   <FontAwesomeIcon
                       icon={faUser}
                       className="user-icon"
