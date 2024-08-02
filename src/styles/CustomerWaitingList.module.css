@@ -1,0 +1,208 @@
+.userInfo {
+  background-color: #f8f8f8;
+  padding: 10px;
+  text-align: right;
+  border-bottom: 1px solid #ddd;
+}
+.userInfo span {
+  font-weight: bold;
+  margin-right: 10px;
+}
+.userInfo button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.userInfo button:hover {
+  background-color: #0056b3;
+}
+.banner {
+  background-color: #FF8C00;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.waitingList {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.waitingList th, .waitingList td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+.waitingList th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+.waitingList tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.waitingList tr:hover {
+  background-color: #f5f5f5;
+}
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.status-waiting {
+  background-color: #FFA500;
+  color: white;
+}
+.status-seated {
+  background-color: #4CAF50;
+  color: white;
+}
+.status-cancelled {
+  background-color: #f44336;
+  color: white;
+}
+.reviewBtn {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.reviewBtn:hover {
+  background-color: #0056b3;
+}
+.modal {
+  display: block; /* Initially hidden */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modalContent {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reviewForm {
+  display: flex;
+  flex-direction: column;
+}
+.reviewForm label {
+  margin-top: 10px;
+}
+.reviewForm textarea {
+  height: 100px;
+  resize: none;
+  margin-top: 5px;
+}
+.starRating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+.starRating input[type="radio"] {
+  display: none;
+}
+.starRating label {
+  font-size: 24px;
+  color: #ddd;
+  cursor: pointer;
+}
+.starRating input:checked ~ label,
+.starRating label:hover,
+.starRating label:hover ~ label {
+  color: #FFD700;
+}
+
+/* CustomerWaitingList.module.css */
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.searchFilter {
+  display: flex;
+  align-items: center;
+}
+
+.searchFilter label,
+.searchFilter select,
+.searchFilter input,
+.searchFilter button {
+  margin-right: 10px;
+}
+
+.searchFilter input {
+  flex: 1;
+}
+
+.searchFilter select {
+  flex-shrink: 0;
+}
+
+.pageSize {
+  margin-left: auto; /* Push the page size select to the right */
+}
+
+.waitingListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.waitingList {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.waitingList th,
+.waitingList td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.waitingList th {
+  background-color: #f4f4f4;
+}
+
+.pagination {
+  margin-top: 10px;
+  text-align: center;
+}

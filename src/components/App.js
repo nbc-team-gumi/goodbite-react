@@ -6,6 +6,7 @@ import Login from './Login';
 import Waiting from './Waiting';
 import Dashboard from './Dashboard';
 import RestaurantList from "./RestaurantList";
+import CustomerWaitingList from './CustomerWaitingList';
 import RegisterOperatingHour from "./RegisterOperatingHour";
 import UpdateOperatingHour from "./UpdateOperatingHour";
 import RestaurantDetail from "./RestaurantDetail";
@@ -30,6 +31,7 @@ const App = () => (
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
+        <Route path="/waitings" element={<CustomerWaitingList />} />
         <Route path="/register-menu" element={<RegisterMenu />} />
         <Route path="/update-menu" element={<UpdateMenu />} />
       </Routes>
