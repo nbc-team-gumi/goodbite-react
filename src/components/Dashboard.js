@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Dashboard.css';
 import titleImage from '../images/good-bite-title.png';
-import { fetchData } from '../util/api';
+import {fetchData} from '../util/api';
 import DashboardModal from './Dashboard-modal';
+import {useUser} from "../UserContext";
 
 const Dashboard = () => {
   const [restaurantId, setRestaurantId] = useState(null);
@@ -17,6 +18,7 @@ const Dashboard = () => {
   const [currentPartySize, setCurrentPartySize] = useState(0);
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
+  const {role, setRole} = useUser();
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -38,9 +40,10 @@ const Dashboard = () => {
 
   const fetchStatisticsAndWaitingList = async (restaurantId, page) => {
     try {
-      const waitingListData = await fetchData(`/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
-        method: 'GET',
-      });
+      const waitingListData = await fetchData(
+          `/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
+            method: 'GET',
+          });
       setWaitingList(waitingListData.data.content);
       setTotalPages(waitingListData.data.totalPages);
     } catch (error) {
@@ -56,7 +59,8 @@ const Dashboard = () => {
   };
 
   const handleAcceptClick = async (waitingId) => {
-    const confirmed = window.confirm(`Waiting ID: ${waitingId}\n이 요청을 수락하시겠습니까?`);
+    const confirmed = window.confirm(
+        `Waiting ID: ${waitingId}\n이 요청을 수락하시겠습니까?`);
     if (confirmed) {
       try {
         await fetchData(`/waitings/${waitingId}`, {
@@ -127,11 +131,25 @@ const Dashboard = () => {
     navigate('/owner-restaurant-detail'); // Navigate to the desired route
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetchData('/users/logout', {
+        method: 'POST',
+      });
+
+      setRole(null);
+
+      navigate('/restaurants');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
   return (
       <div className="dashboard-container">
         <header className="dashboard-header">
           <Link to="/">
-            <img src={titleImage} alt="GOOD BITE" className="title-image" />
+            <img src={titleImage} alt="GOOD BITE" className="title-image"/>
           </Link>
           <div className="profile-icon">
             {apiSuccess ? (
@@ -148,6 +166,9 @@ const Dashboard = () => {
                     alt="Profile"
                 />
             )}
+            <button className="logout-button" onClick={handleLogout}>
+              로그아웃
+            </button>
           </div>
         </header>
         <main className="dashboard-main">
@@ -162,12 +183,14 @@ const Dashboard = () => {
                     onRejectClick={handleRejectClick}
                     onEditClick={handleEditClick}
                 />
-                <StatisticsBox statistics={statistics} />
+                <StatisticsBox statistics={statistics}/>
               </>
           ) : (
               <div className="register-restaurant">
                 <p className="register-message">새로운 식당을 등록하세요</p>
-                <button className="register-button" onClick={handleClick}>식당을 등록해주세요</button>
+                <button className="register-button" onClick={handleClick}>식당을
+                  등록해주세요
+                </button>
               </div>
           )}
           <DashboardModal
@@ -183,7 +206,7 @@ const Dashboard = () => {
   );
 };
 
-const StatisticsBox = ({ statistics }) => (
+const StatisticsBox = ({statistics}) => (
     <div className="statistics-box">
       <h2>오늘의 통계</h2>
       <p>별점, 리뷰 통계</p>
@@ -191,7 +214,15 @@ const StatisticsBox = ({ statistics }) => (
     </div>
 );
 
-const WaitingListBox = ({ waitingList, page, totalPages, onPageChange, onAcceptClick, onRejectClick, onEditClick }) => (
+const WaitingListBox = ({
+  waitingList,
+  page,
+  totalPages,
+  onPageChange,
+  onAcceptClick,
+  onRejectClick,
+  onEditClick
+}) => (
     <div className="waiting-list-box">
       <h2>오늘의 대기 손님</h2>
       <table>
@@ -216,12 +247,20 @@ const WaitingListBox = ({ waitingList, page, totalPages, onPageChange, onAcceptC
               <td>
                 {guest.waitingStatus === 'WAITING' && (
                     <>
-                      <button className="accept-button" onClick={() => onAcceptClick(guest.waitingId)}>수락</button>
-                      <button className="reject-button" onClick={() => onRejectClick(guest.waitingId)}>거절</button>
-                      <button className="edit-button" onClick={() => onEditClick(guest.waitingId, guest.partySize, guest.demand)}>수정</button>
+                      <button className="accept-button"
+                              onClick={() => onAcceptClick(guest.waitingId)}>수락
+                      </button>
+                      <button className="reject-button"
+                              onClick={() => onRejectClick(guest.waitingId)}>거절
+                      </button>
+                      <button className="edit-button"
+                              onClick={() => onEditClick(guest.waitingId,
+                                  guest.partySize, guest.demand)}>수정
+                      </button>
                     </>
                 )}
-                {guest.waitingStatus === 'SEATED' && <span className="accepted-text">수락됨</span>}
+                {guest.waitingStatus === 'SEATED' && <span
+                    className="accepted-text">수락됨</span>}
                 {guest.waitingStatus === 'CANCELLED' && (
                     <span className="cancelled-text">거절됨</span>
                 )}
@@ -235,7 +274,8 @@ const WaitingListBox = ({ waitingList, page, totalPages, onPageChange, onAcceptC
           이전
         </button>
         <span>{page + 1} / {totalPages}</span>
-        <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages - 1}>
+        <button onClick={() => onPageChange(page + 1)}
+                disabled={page >= totalPages - 1}>
           다음
         </button>
       </div>
