@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import styles from '../styles/Waiting.module.css'; // CSS 모듈 import
 
 function Waiting() {
-  const [restaurantId, setRestaurantId] = useState(1);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const restaurantIdFromQuery = queryParams.get('restaurantId');
+
+  const [restaurantId, setRestaurantId] = useState(restaurantIdFromQuery || -1); // 초기값을 쿼리 파라미터로 설정
   const [partySize, setPartySize] = useState(1);
   const [waitingType, setWaitingType] = useState('ONLINE');
   const [demand, setDemand] = useState('');
