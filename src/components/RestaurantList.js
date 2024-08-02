@@ -37,16 +37,21 @@ const RestaurantList = () => {
         <div
             key={restaurant.restaurantId}
             className="restaurant-card"
-            onClick={() => navigate(`/restaurants/${restaurant.name}`)} // 클릭 시 상세 페이지로 이동
         >
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
-            <h2 className="restaurant-name">{restaurant.name}</h2>
+            <h2 className="restaurant-name" onClick={() => navigate(`/restaurants/${restaurant.name}`)}>{restaurant.name}</h2>
             <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
             <div className="restaurant-rating">
               <span className="stars">{getStars(restaurant.rating)}</span>
               <span className="rating-value">{restaurant.rating ? restaurant.rating.toFixed(1) : 'N/A'}</span>
             </div>
+            <button
+                className="waiting-button"
+                onClick={() => navigate(`/waiting?restaurantId=${restaurant.restaurantId}`)}
+            >
+              웨이팅 등록
+            </button>
           </div>
         </div>
     ));
@@ -91,6 +96,12 @@ const RestaurantList = () => {
         <div className="header">
           <h1>GoodBite</h1>
           <p>당신의 완벽한 식사를 위한 간편한 예약 서비스</p>
+          <button
+              className="view-waitings-button"
+              onClick={() => navigate('/waitings')}
+          >
+            내 웨이팅 보기
+          </button>
         </div>
         <div className="container">
           <div className="search-filter">

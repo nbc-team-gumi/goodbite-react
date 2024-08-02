@@ -6,11 +6,14 @@ import Login from './Login';
 import Waiting from './Waiting';
 import Dashboard from './Dashboard';
 import RestaurantList from "./RestaurantList";
+import CustomerWaitingList from './CustomerWaitingList';
 import RegisterOperatingHour from "./RegisterOperatingHour";
 import UpdateOperatingHour from "./UpdateOperatingHour";
 import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
 import UpdateRestaurant from "./UpdateRestaurant";
+import RegisterMenu from "./RegisterMenu";
+import UpdateMenu from "./UpdateMenu";
 import '../styles/App.css';
 import UpdateCustomer from "./UpdateCustomer";
 import UpdateOwner from "./UpdateOwner";
@@ -43,6 +46,9 @@ return (
         <Route path="/update-owner" element={<UpdateOwner />} />
         <Route path="/delete-customer" element={<DeactivateCustomer />} />
         <Route path="/delete-owner" element={<DeactivateOwner />} />
+        <Route path="/waitings" element={<CustomerWaitingList />} />
+        <Route path="/register-menu" element={<RegisterMenu />} />
+        <Route path="/update-menu" element={<UpdateMenu />} />
       </Routes>
     </Router>
     </UserProvider>

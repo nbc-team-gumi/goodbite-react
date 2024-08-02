@@ -29,9 +29,8 @@ const Home = () => {
             <>
               {role === 'ROLE_OWNER' && <Link className="home-link" to="/owners">Mypage</Link>}
               {role === 'ROLE_CUSTOMER' && <Link className="home-link" to="/customers">Mypage</Link>}
-              <Link className="home-link" to="/waiting">
-                Waiting
-              </Link>
+              <Link className="home-link" to="/waiting"> Waiting </Link>
+               <Link className="home-link" to="/waitings"> waiting-list </Link>
             </>
         )}
       </div>
