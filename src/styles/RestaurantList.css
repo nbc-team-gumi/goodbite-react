@@ -28,6 +28,7 @@ body {
 .search-filter {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
 
@@ -46,8 +47,8 @@ body {
 
 .filter-dropdowns {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .filter-dropdowns select {
@@ -55,6 +56,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
+  min-width: 160px; /* 최소 너비 설정 */
 }
 
 .restaurant-grid {

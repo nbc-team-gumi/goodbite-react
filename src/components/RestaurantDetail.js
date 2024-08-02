@@ -4,12 +4,35 @@ import { fetchData } from '../util/api';
 import '../styles/RestaurantDetail.css';
 
 const RestaurantDetail = () => {
-  const { restaurantName } = useParams(); // useParams 훅을 사용하여 URL에서 restaurantName 추출
+  const { restaurantName } = useParams();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [newReviewContent, setNewReviewContent] = useState('');
+  const [newReviewRating, setNewReviewRating] = useState(0);
+
+  const fetchReviews = async (restaurantId) => {
+    try {
+      const response = await fetchData(`/restaurants/${restaurantId}/reviews`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.statusCode === 200) {
+        setReviews(response.data);
+      } else {
+        setError(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchRestaurantByName = async (name) => {
@@ -27,14 +50,14 @@ const RestaurantDetail = () => {
 
           if (response.statusCode === 200) {
             setRestaurant(response.data);
-            // Fetch operating hours and menu
-            fetchRestaurantOperatingHour(restaurant.restaurantId);
-            fetchMenuList(restaurant.restaurantId);
+            await fetchRestaurantOperatingHour(restaurant.restaurantId);
+            await fetchMenuList(restaurant.restaurantId);
+            await fetchReviews(restaurant.restaurantId); // Fetch reviews for the restaurant
           } else {
-            throw new Error(`Unexpected response data: ${response.message}`);
+            setError(`Unexpected response data: ${response.message}`);
           }
         } else {
-          throw new Error('Restaurant not found');
+          setError('Restaurant not found');
         }
       } catch (error) {
         setError(error.message);
@@ -56,7 +79,7 @@ const RestaurantDetail = () => {
         if (response.statusCode === 200) {
           setOperatingHour(response.data);
         } else {
-          throw new Error(`Unexpected response data: ${response.message}`);
+          setError(`Unexpected response data: ${response.message}`);
         }
       } catch (error) {
         setError(error.message);
@@ -76,7 +99,7 @@ const RestaurantDetail = () => {
         if (response.statusCode === 200) {
           setMenu(response.data);
         } else {
-          throw new Error(`Unexpected response data: ${response.message}`);
+          setError(`Unexpected response data: ${response.message}`);
         }
       } catch (error) {
         setError(error.message);
@@ -84,8 +107,36 @@ const RestaurantDetail = () => {
       }
     };
 
-    fetchRestaurantByName(restaurantName); // 레스토랑 이름으로 레스토랑 정보 가져오기
+    fetchRestaurantByName(restaurantName);
   }, [restaurantName]);
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetchData('/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          restaurantId: restaurant.restaurantId,
+          content: newReviewContent,
+          rating: newReviewRating,
+        }),
+      });
+
+      if (response.statusCode === 200) {
+        setNewReviewContent('');
+        setNewReviewRating(0);
+        await fetchReviews(restaurant.restaurantId); // Fetch reviews again after successful submission
+      } else {
+        setError(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -112,7 +163,7 @@ const RestaurantDetail = () => {
                 style={{ backgroundImage: `url(${restaurant.imageUrl})` }}
             ></div>
             <div className="rating">
-              ★★★★☆ <span className="review-count">(리뷰 152개)</span>
+              ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
             </div>
             <p>{restaurant.category}</p>
             <table>
@@ -146,6 +197,40 @@ const RestaurantDetail = () => {
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>
+                  </div>
+              ))}
+            </div>
+
+            <h3>리뷰</h3>
+            <form className="review-form" onSubmit={handleReviewSubmit}>
+              <textarea
+                  value={newReviewContent}
+                  onChange={(e) => setNewReviewContent(e.target.value)}
+                  placeholder="리뷰 내용을 입력하세요"
+              ></textarea>
+              <select
+                  value={newReviewRating}
+                  onChange={(e) => setNewReviewRating(e.target.value)}
+              >
+                <option value="0">평점: 0</option>
+                <option value="0.5">평점: 0.5</option>
+                <option value="1">평점: 1</option>
+                <option value="1.5">평점: 1.5</option>
+                <option value="2">평점: 2</option>
+                <option value="2.5">평점: 2.5</option>
+                <option value="3">평점: 3</option>
+                <option value="3.5">평점: 3.5</option>
+                <option value="4">평점: 4</option>
+                <option value="4.5">평점: 4.5</option>
+                <option value="5">평점: 5</option>
+              </select>
+              <button type="submit">리뷰 등록</button>
+            </form>
+            <div className="reviews">
+              {reviews.map((review, index) => (
+                  <div key={index} className="review">
+                    <p>{review.content}</p>
+                    <span>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
                   </div>
               ))}
             </div>
