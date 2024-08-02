@@ -128,7 +128,11 @@ const Dashboard = () => {
   };
 
   const navigateToMyRestaurant = () => {
-    navigate('/owner-restaurant-detail'); // Navigate to the desired route
+    navigate(`/owner-restaurant-detail/${restaurantId}`); // Navigate to the desired route
+  };
+
+  const navigateToMyPage = () => {
+    navigate('/owners'); // Redirect to the desired route
   };
 
   const handleLogout = async () => {
@@ -157,7 +161,7 @@ const Dashboard = () => {
                   <button onClick={navigateToMyRestaurant}>내 가게</button>
                   <img
                       src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                      alt="Profile"
+                      alt="Profile" onClick={navigateToMyPage}
                   />
                 </>
             ) : (

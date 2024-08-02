@@ -81,10 +81,10 @@ function RegisterMenu() {
         }),
       });
       alert('메뉴 등록이 완료되었습니다!');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     } catch (error) {
       alert('메뉴 등록 실패');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     }
   };
 

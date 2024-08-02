@@ -27,10 +27,10 @@ function RegisterOperatingHour() {
         }),
       });
       alert('영업 시간 등록이 완료되었습니다!');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     } catch (error) {
       alert('영업 시간 등록 실패');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     }
   };
 

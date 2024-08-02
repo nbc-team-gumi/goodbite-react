@@ -87,10 +87,10 @@ function UpdateRestaurant() {
         }),
       });
       alert('가게 수정이 완료되었습니다!');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     } catch (error) {
       alert('가게 수정 실패');
-      navigate('/owner-restaurant-detail');
+      navigate(`/owner-restaurant-detail/${restaurantId}`);
     }
   };
 
