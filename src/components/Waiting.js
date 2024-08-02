@@ -3,17 +3,36 @@ import { useLocation } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import styles from '../styles/Waiting.module.css'; // CSS 모듈 import
 
-function Waiting() {
+const Waiting = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const restaurantIdFromQuery = queryParams.get('restaurantId');
 
-  const [restaurantId, setRestaurantId] = useState(restaurantIdFromQuery || -1); // 초기값을 쿼리 파라미터로 설정
+  const [restaurantId, setRestaurantId] = useState(restaurantIdFromQuery || 1); // 초기값을 쿼리 파라미터로 설정
   const [partySize, setPartySize] = useState(1);
   const [waitingType, setWaitingType] = useState('ONLINE');
   const [demand, setDemand] = useState('');
   const [message, setMessage] = useState('');
   const [waitingCount, setWaitingCount] = useState(0);
+  const [showModal, setShowModal] = useState(false); // 모달 표시 상태
+
+  // 모달 컴포넌트
+  const Modal = ({ show, onClose, children }) => {
+    if (!show) {
+      return null;
+    }
+
+    return (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalContent}>
+              {children}
+            </div>
+            <button className={styles.closeButton} onClick={onClose}>닫기</button>
+          </div>
+        </div>
+    );
+  };
 
   // Function to fetch waiting count
   const fetchWaitingCount = async () => {
@@ -32,7 +51,6 @@ function Waiting() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     try {
       const requestBody = {
         restaurantId,
@@ -50,10 +68,12 @@ function Waiting() {
         body: JSON.stringify(requestBody),
       });
       setMessage(`waiting 등록 성공: ${JSON.stringify(data)}`);
+      setShowModal(true); // 모달 표시
       // Re-fetch waiting count after successful registration
       fetchWaitingCount();
     } catch (error) {
       setMessage(`waiting 등록 실패: ${error.message}`);
+      setShowModal(true); // 모달 표시
     }
   };
 
@@ -110,7 +130,11 @@ function Waiting() {
 
           <button type="submit" className={styles.button}>등록</button>
         </form>
-        {message && <p>{message}</p>}
+        {message && (
+            <Modal show={showModal} onClose={() => setShowModal(false)}>
+              <p>{message}</p>
+            </Modal>
+        )}
       </div>
   );
 }
