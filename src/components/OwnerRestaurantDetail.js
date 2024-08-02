@@ -70,6 +70,7 @@ function OwnerRestaurantDetail() {
 
     if (response.statusCode === 200) {
       setOperatingHour(response.data);
+
     } else {
       throw new Error(`Unexpected response data: ${response.message}`);
     }
@@ -92,8 +93,8 @@ function OwnerRestaurantDetail() {
   const navigateToRegisterMenu  = () => {
     navigate(`/register-menu/${restaurantId}`); // Navigate to the desired route
   };
-  const navigateToUpdateOperatingHour  = () => {
-    navigate('/update-operatinghour'); // Navigate to the desired route
+  const navigateToUpdateOperatingHour  = (operatingHourId) => {
+    navigate(`/update-operatinghour/${operatingHourId}`); // Navigate to the desired route
   };
   const navigateToUpdateMenu  = () => {
     navigate('/update-menu'); // Navigate to the desired route
@@ -169,7 +170,7 @@ return (
                 {operatingHour.map((hour, index) => (
                     <div key={index}>
                       {hour.dayOfWeek}: {hour.openTime} - {hour.closeTime}
-                      <button className="btn-update" onClick={navigateToUpdateOperatingHour}>수정하기</button>
+                      <button className="btn-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
                     </div>
                 ))}
               </td>

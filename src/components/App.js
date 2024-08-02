@@ -34,7 +34,7 @@ return (
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
         <Route path="/register-operatinghour/:restaurantId" element={<RegisterOperatingHour />} />
-        <Route path="/update-operatinghour" element={<UpdateOperatingHour />} />
+        <Route path="/update-operatinghour/:operatingHourId" element={<UpdateOperatingHour />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
         <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
