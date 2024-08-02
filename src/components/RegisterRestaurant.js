@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   max-width: 600px;
@@ -63,6 +64,7 @@ function RegisterRestaurant() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,9 +86,10 @@ function RegisterRestaurant() {
         }),
       });
       alert('가게 등록이 완료되었습니다!');
-      setMessage(`Signup successful: ${JSON.stringify(data)}`);
+      navigate('/dashboard');
     } catch (error) {
       alert('가게 등록 실패');
+      navigate('/dashboard');
     }
   };
 

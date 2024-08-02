@@ -15,6 +15,7 @@ import UpdateRestaurant from "./UpdateRestaurant";
 import RegisterMenu from "./RegisterMenu";
 import UpdateMenu from "./UpdateMenu";
 import '../styles/App.css';
+import OwnerRestaurantDetail from "./OwnerRestaurantDetail";
 import UpdateCustomer from "./UpdateCustomer";
 import UpdateOwner from "./UpdateOwner";
 import {UserProvider}  from "../UserContext";
@@ -40,6 +41,7 @@ return (
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
+        <Route path="/owner-restaurants-detail" element={<OwnerRestaurantDetail />} />
         <Route path="/customers" element={<CustomerMypage />} />
         <Route path="/owners" element={<OwnerMypage />} />
         <Route path="/update-customer" element={<UpdateCustomer />} />

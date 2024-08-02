@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
+import {useNavigate} from "react-router-dom";
 
 const Container = styled.div`
   max-width: 600px;
@@ -63,13 +64,14 @@ function UpdateRestaurant() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      const data = await fetchData('/restaurants/7', {
+      const data = await fetchData('/restaurants/1', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -84,9 +86,10 @@ function UpdateRestaurant() {
         }),
       });
       alert('가게 수정이 완료되었습니다!');
-      setMessage(`Signup successful: ${JSON.stringify(data)}`);
+      navigate('/dashboard'); // 가게 상세 페이지연결로 수정해야됨
     } catch (error) {
       alert('가게 수정 실패');
+      navigate('/dashboard'); // 가게 상세 페이지연결로 수정해야됨
     }
   };
 
