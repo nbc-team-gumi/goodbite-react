@@ -87,10 +87,10 @@ function OwnerRestaurantDetail() {
   };
 
   const navigateToRegisterOperatingHour  = () => {
-    navigate('/register-operatinghour'); // Navigate to the desired route
+    navigate(`/register-operatinghour/${restaurantId}`); // Navigate to the desired route
   };
   const navigateToRegisterMenu  = () => {
-    navigate('/register-menu'); // Navigate to the desired route
+    navigate(`/register-menu/${restaurantId}`); // Navigate to the desired route
   };
   const navigateToUpdateOperatingHour  = () => {
     navigate('/update-operatinghour'); // Navigate to the desired route
