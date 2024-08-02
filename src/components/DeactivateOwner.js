@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import { fetchData } from "../util/api";
+import {useNavigate} from "react-router-dom";
+import {useUser} from "../UserContext";
 // import './DeactivateUser.css';
 
 function DeactivateOwner() {
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
   const [error, setError] = useState(null); // 오류 상태 추가
+  const navigate = useNavigate();
+  const { role, setRole } = useUser();
+
+  const handleLogout = async () => {
+    try {
+      await fetchData('/users/logout', {
+        method: 'POST',
+      });
+
+      setRole(null);
+
+      navigate('/restaurants');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +36,7 @@ function DeactivateOwner() {
           alert(response.message || '회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
           // 로컬 스토리지에 저장된 역할(role)을 비웁니다.
           localStorage.removeItem('role');
-          window.location.href = '/'; // Redirect to homepage or login page after deletion
+          handleLogout();
         } else {
           alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
         }

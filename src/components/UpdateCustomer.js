@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import '../styles/UpdateCustomer.css';
 import {fetchData} from "../util/api";
+import {useNavigate} from "react-router-dom";
+import {useUser} from "../UserContext";
 
 function UpdateCustomer() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -10,6 +12,8 @@ function UpdateCustomer() {
   const [user, setUser] = useState(null); // 사용자 정보 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 오류 상태
+  const navigate = useNavigate();
+  const { role, setRole } = useUser();
 
 
   useEffect(() => {
@@ -31,6 +35,20 @@ function UpdateCustomer() {
     fetchUser();
   }, []);//추가
 
+  const handleLogout = async () => {
+    try {
+      await fetchData('/users/logout', {
+        method: 'POST',
+      });
+
+      setRole(null);
+
+      navigate('/restaurants');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
   const changePassword = async () => {
     try {
       const response = await fetchData('/customers/password', {
@@ -46,6 +64,7 @@ function UpdateCustomer() {
 
       if (response.statusCode===200) {
         alert('비밀번호가 변경되었습니다.');
+        await handleLogout();
       } else {
         alert('비밀번호 변경에 실패했습니다.');
       }

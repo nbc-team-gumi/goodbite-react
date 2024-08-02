@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
-import { fetchData } from '../util/api'; // fetchData 메서드 가져오기
+// import '../styles/UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
+import { fetchData } from '../util/api';
+import {useNavigate} from "react-router-dom";
+import {useUser} from "../UserContext"; // fetchData 메서드 가져오기
 
 function UpdateOwner() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -11,6 +13,8 @@ function UpdateOwner() {
   const [user, setUser] = useState(null); // 사용자 정보 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 오류 상태
+  const navigate = useNavigate();
+  const { role, setRole } = useUser();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -32,6 +36,20 @@ function UpdateOwner() {
     fetchUser();
   }, []);//추가
 
+  const handleLogout = async () => {
+    try {
+      await fetchData('/users/logout', {
+        method: 'POST',
+      });
+
+      setRole(null);
+
+      navigate('/restaurants');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
   const updatePassword = async () => {
     try {
       await fetchData('/owners/password', {
@@ -40,6 +58,7 @@ function UpdateOwner() {
           "newPassword": newPassword }),
       });
       alert('비밀번호가 수정되었습니다.');
+      await handleLogout();
     } catch (error) {
       alert('비밀번호 수정 중 오류가 발생했습니다.');
       console.error('Error updating password:', error);
