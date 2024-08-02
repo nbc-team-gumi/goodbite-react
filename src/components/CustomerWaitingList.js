@@ -135,12 +135,12 @@ function CustomerWaitingList() {
         </div>
         <div className={styles.container}>
           <h1>내가 등록한 웨이팅</h1>
-          <h2>검색은 현재 페이지에서만 가능합니다. 웨이팅은 등록 시간 기준으로 최신 순으로 정렬됩니다.</h2>
 
           <div className={styles.searchContainer}>
             <div className={styles.searchFilter}>
               <label htmlFor="statusFilter">대기 상태:</label>
-              <select id="statusFilter" value={statusFilter} onChange={handleStatusFilterChange}>
+              <select id="statusFilter" value={statusFilter}
+                      onChange={handleStatusFilterChange}>
                 <option value="">전체</option>
                 <option value="WAITING">대기 중</option>
                 <option value="SEATED">착석</option>
@@ -148,7 +148,8 @@ function CustomerWaitingList() {
               </select>
 
               <label htmlFor="searchColumn">검색 칼럼:</label>
-              <select id="searchColumn" value={searchColumn} onChange={handleSearchColumnChange}>
+              <select id="searchColumn" value={searchColumn}
+                      onChange={handleSearchColumnChange}>
                 <option value="restaurantName">식당 이름</option>
                 <option value="demand">요청 사항</option>
               </select>
@@ -162,7 +163,8 @@ function CustomerWaitingList() {
 
               <div className={styles.pageSize}>
                 <label htmlFor="pageSize">페이지 사이즈:</label>
-                <select id="pageSize" value={pageSize} onChange={handlePageSizeChange}>
+                <select id="pageSize" value={pageSize}
+                        onChange={handlePageSizeChange}>
                   <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="15">15</option>
@@ -195,14 +197,19 @@ function CustomerWaitingList() {
                           <td>{waiting.restaurantName}</td>
                           <td>{waiting.demand || 'N/A'}</td>
                           <td>{new Date(waiting.createAt).toLocaleString()}</td>
-                          <td>{waiting.deletedAt ? new Date(waiting.deletedAt).toLocaleString() : 'N/A'}</td>
+                          <td>{waiting.deletedAt ? new Date(
+                              waiting.deletedAt).toLocaleString() : 'N/A'}</td>
                           <td>
-                      <span className={`${styles.status} ${styles[`status-${waiting.waitingStatus.toLowerCase()}`]}`}>
+                      <span
+                          className={`${styles.status} ${styles[`status-${waiting.waitingStatus.toLowerCase()}`]}`}>
                         {waiting.waitingStatus === 'WAITING' ? '대기 중' :
                             waiting.waitingStatus === 'SEATED' ? '착석' : '취소됨'}
                       </span>
                             {waiting.waitingStatus === 'SEATED' && (
-                                <button className={styles.reviewBtn} onClick={() => openReviewModal(waiting.waitingId, waiting.restaurantId)}>리뷰</button>
+                                <button className={styles.reviewBtn}
+                                        onClick={() => openReviewModal(
+                                            waiting.waitingId,
+                                            waiting.restaurantId)}>리뷰</button>
                             )}
                           </td>
                         </tr>
@@ -212,10 +219,16 @@ function CustomerWaitingList() {
                 </div>
 
                 <div className={styles.pagination}>
-                  <button onClick={() => handlePageChange(page - 1)} disabled={page === 0}>이전</button>
+                  <button onClick={() => handlePageChange(page - 1)}
+                          disabled={page === 0}>이전
+                  </button>
                   <span>페이지 {page + 1} / {totalPages}</span>
-                  <button onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages - 1}>다음</button>
+                  <button onClick={() => handlePageChange(page + 1)}
+                          disabled={page >= totalPages - 1}>다음
+                  </button>
                 </div>
+                <h5>검색은 현재 페이지에서만 가능합니다.</h5>
+                <h5>웨이팅은 등록 시간 기준으로 현재 페이지 내 최신 순으로 정렬됩니다.</h5>
               </>
           )}
         </div>
