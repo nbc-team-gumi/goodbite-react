@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
 import { fetchData } from '../util/api'; // 기존 유틸리티 함수 임포트
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons'; // FontAwesome 아이콘 임포트
 import '../styles/RestaurantList.css';
 
 const RestaurantList = () => {
@@ -91,17 +93,29 @@ const RestaurantList = () => {
     setFilterSubLocation('all'); // Reset sub-location when main location changes
   };
 
+  // 사용자 아이콘 클릭 핸들러
+  const handleUserIconClick = () => {
+    navigate('/customers');
+  };
+
   return (
       <div>
         <div className="header">
           <h1>GoodBite</h1>
           <p>당신의 완벽한 식사를 위한 간편한 예약 서비스</p>
-          <button
-              className="view-waitings-button"
-              onClick={() => navigate('/waitings')}
-          >
-            내 웨이팅 보기
-          </button>
+          <div className="header-buttons">
+            <button
+                className="view-waitings-button"
+                onClick={() => navigate('/waitings')}
+            >
+              내 웨이팅 보기
+            </button>
+            <FontAwesomeIcon
+                icon={faUser}
+                className="user-icon"
+                onClick={handleUserIconClick} // 클릭 시 페이지 이동
+            />
+          </div>
         </div>
         <div className="container">
           <div className="search-filter">
