@@ -12,6 +12,7 @@ import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
 import UpdateRestaurant from "./UpdateRestaurant";
 import '../styles/App.css';
+import OwnerRestaurantDetail from "./OwnerRestaurant";
 
 const App = () => (
     <Router>
@@ -28,6 +29,7 @@ const App = () => (
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
+        <Route path="/owner-restaurants-detail" element={<OwnerRestaurantDetail />} />
       </Routes>
     </Router>
 );
