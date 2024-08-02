@@ -96,8 +96,8 @@ function OwnerRestaurantDetail() {
   const navigateToUpdateOperatingHour  = (operatingHourId) => {
     navigate(`/update-operatinghour/${operatingHourId}`); // Navigate to the desired route
   };
-  const navigateToUpdateMenu  = () => {
-    navigate('/update-menu'); // Navigate to the desired route
+  const navigateToUpdateMenu  = (menuId) => {
+    navigate(`/update-menu/${menuId}`); // Navigate to the desired route
   };
 
 const fetchMenuList = async (restaurantId) => {
@@ -183,7 +183,7 @@ return (
             {menu.map((item, index) => (
                 <div key={index} className="menu-item">
                   <img src={item.img} alt={item.name} width="100%" height="150" />
-                  <button className="btn-update" onClick={navigateToUpdateMenu}>수정하기</button>
+                  <button className="btn-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
                   <p className="price">{item.price}</p>

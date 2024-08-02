@@ -51,7 +51,7 @@ return (
         <Route path="/delete-owner" element={<DeactivateOwner />} />
         <Route path="/waitings" element={<CustomerWaitingList />} />
         <Route path="/register-menu/:restaurantId" element={<RegisterMenu />} />
-        <Route path="/update-menu" element={<UpdateMenu />} />
+        <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
       </Routes>
     </Router>
     </UserProvider>
