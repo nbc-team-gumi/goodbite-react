@@ -150,7 +150,7 @@ return (
         <div className="logo">GOOD BITE</div>
         <nav className="nav-menu">
           <a href="/dashboard">홈</a>
-          <a href="/mypage">마이페이지</a>
+          <a href="/owners">마이페이지</a>
         </nav>
       </header>
       <div className="content">

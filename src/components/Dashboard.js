@@ -127,19 +127,23 @@ const Dashboard = () => {
     navigate(`/owner-restaurant-detail/${restaurantId}`); // Navigate to the desired route
   };
 
+  const navigateToMyPage = () => {
+    navigate('/owners'); // Redirect to the desired route
+  };
+
   return (
       <div className="dashboard-container">
         <header className="dashboard-header">
-          <Link to="/">
-            <img src={titleImage} alt="GOOD BITE" className="title-image" />
-          </Link>
+                <Link to="/">
+                  <img src={titleImage} alt="GOOD BITE" className="title-image" />
+                </Link>
           <div className="profile-icon">
             {apiSuccess ? (
                 <>
                   <button onClick={navigateToMyRestaurant}>내 가게</button>
                   <img
                       src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                      alt="Profile"
+                      alt="Profile" onClick={navigateToMyPage}
                   />
                 </>
             ) : (
