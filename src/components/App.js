@@ -12,6 +12,8 @@ import UpdateOperatingHour from "./UpdateOperatingHour";
 import RestaurantDetail from "./RestaurantDetail";
 import RegisterRestaurant from "./RegisterRestaurant";
 import UpdateRestaurant from "./UpdateRestaurant";
+import RegisterMenu from "./RegisterMenu";
+import UpdateMenu from "./UpdateMenu";
 import '../styles/App.css';
 
 const App = () => (
@@ -30,6 +32,8 @@ const App = () => (
         <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
         <Route path="/restaurants" element={<RestaurantList />} />
         <Route path="/waitings" element={<CustomerWaitingList />} />
+        <Route path="/register-menu" element={<RegisterMenu />} />
+        <Route path="/update-menu" element={<UpdateMenu />} />
       </Routes>
     </Router>
 );
