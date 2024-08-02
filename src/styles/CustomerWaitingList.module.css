@@ -29,12 +29,13 @@
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 .container {
-  max-width: 1200px;
+  max-width: 80%; /* 너비를 80%로 설정 */
   margin: 20px auto;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow-x: auto;
 }
 .waitingList {
   width: 100%;
@@ -45,6 +46,7 @@
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
+  white-space: nowrap; /* 칼럼 이름이 한 줄로 표시되도록 설정 */
 }
 .waitingList th {
   background-color: #f2f2f2;
@@ -160,6 +162,7 @@
 .searchFilter {
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* Added to allow wrapping on smaller screens */
 }
 
 .searchFilter label,
@@ -190,12 +193,14 @@
 .waitingList {
   width: 100%;
   border-collapse: collapse;
+  overflow-x: auto; /* Added to allow horizontal scrolling */
 }
 
 .waitingList th,
 .waitingList td {
   border: 1px solid #ddd;
   padding: 8px;
+  white-space: nowrap; /* 칼럼 이름이 한 줄로 표시되도록 설정 */
 }
 
 .waitingList th {
