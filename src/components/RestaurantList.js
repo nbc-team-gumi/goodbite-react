@@ -4,6 +4,7 @@ import { fetchData } from '../util/api'; // 기존 유틸리티 함수 임포트
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons'; // FontAwesome 아이콘 임포트
 import '../styles/RestaurantList.css';
+import { useUser } from '../UserContext';
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -13,6 +14,7 @@ const RestaurantList = () => {
   const [filterType, setFilterType] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
   const navigate = useNavigate(); // useNavigate 훅 사용
+  const { role, setRole } = useUser();
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -95,7 +97,28 @@ const RestaurantList = () => {
 
   // 사용자 아이콘 클릭 핸들러
   const handleUserIconClick = () => {
-    navigate('/customers');
+    if (role === 'ROLE_OWNER') {
+      navigate('/owners');
+    } else if (role === 'ROLE_CUSTOMER') {
+      navigate('/customers');
+    } else {
+      navigate('/login');
+    }
+  };
+
+
+  const handleLogout = async () => {
+    try {
+      await fetchData('/users/logout', {
+        method: 'POST',
+      });
+
+      setRole(null);
+
+      navigate('/restaurants');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
   };
 
   return (
@@ -110,11 +133,28 @@ const RestaurantList = () => {
             >
               내 웨이팅 보기
             </button>
-            <FontAwesomeIcon
-                icon={faUser}
-                className="user-icon"
-                onClick={handleUserIconClick} // 클릭 시 페이지 이동
-            />
+            {role ? (
+                <>
+                  <FontAwesomeIcon
+                      icon={faUser}
+                      className="user-icon"
+                      onClick={handleUserIconClick} // 클릭 시 페이지 이동
+                  />
+                  <button
+                      className="logout-button"
+                      onClick={handleLogout}
+                  >
+                    로그아웃
+                  </button>
+                </>
+            ) : (
+                <button
+                    className="login-button"
+                    onClick={() => navigate('/login')}
+                >
+                  로그인
+                </button>
+            )}
           </div>
         </div>
         <div className="container">
