@@ -39,9 +39,10 @@ return (
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
         <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
-        <Route path="/update-restaurant" element={<UpdateRestaurant/>}/>
+        {/*<Route path="/update-restaurant" element={<UpdateRestaurant/>}/>*/}
+        <Route path="/update-restaurant/:restaurantId" element={<UpdateRestaurant />} />
         <Route path="/restaurants" element={<RestaurantList />} />
-        <Route path="/owner-restaurants-detail" element={<OwnerRestaurantDetail />} />
+        <Route path="/owner-restaurant-detail" element={<OwnerRestaurantDetail />} />
         <Route path="/customers" element={<CustomerMypage />} />
         <Route path="/owners" element={<OwnerMypage />} />
         <Route path="/update-customer" element={<UpdateCustomer />} />

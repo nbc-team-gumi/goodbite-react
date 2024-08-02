@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const Container = styled.div`
   max-width: 600px;
@@ -57,6 +57,7 @@ const SubmitBtn = styled.button`
 
 
 function UpdateRestaurant() {
+  const { restaurantId } = useParams();
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [address, setAddress] = useState('');
@@ -71,7 +72,7 @@ function UpdateRestaurant() {
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      const data = await fetchData('/restaurants/1', {
+      const data = await fetchData(`/restaurants/${restaurantId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -86,10 +87,10 @@ function UpdateRestaurant() {
         }),
       });
       alert('가게 수정이 완료되었습니다!');
-      navigate('/dashboard'); // 가게 상세 페이지연결로 수정해야됨
+      navigate('/owner-restaurant-detail');
     } catch (error) {
       alert('가게 수정 실패');
-      navigate('/dashboard'); // 가게 상세 페이지연결로 수정해야됨
+      navigate('/owner-restaurant-detail');
     }
   };
 

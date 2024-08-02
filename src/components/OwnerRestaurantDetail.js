@@ -83,7 +83,7 @@ function OwnerRestaurantDetail() {
 //
 // fetchRestaurantOperatingHour();
   const navigateToUpdateRestaurant  = () => {
-    navigate('/update-restaurant'); // Navigate to the desired route
+    navigate(`/update-restaurant/${restaurantId}`); // Navigate to the desired route
   };
 
   const navigateToRegisterOperatingHour  = () => {
