@@ -114,6 +114,7 @@ const RestaurantList = () => {
       });
 
       setRole(null);
+      localStorage.removeItem('userRole');
 
       navigate('/restaurants');
     } catch (error) {
