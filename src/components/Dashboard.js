@@ -158,11 +158,11 @@ const Dashboard = () => {
           <div className="profile-icon">
             {apiSuccess ? (
                 <>
-                  <button onClick={navigateToMyRestaurant}>내 가게</button>
                   <img
                       src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
                       alt="Profile" onClick={navigateToMyPage}
                   />
+                  <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
                 </>
             ) : (
                 <img

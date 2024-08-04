@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import '../styles/UpdateOwner.css'; // 스타일을 이 파일로 분리했습니다.
+import '../styles/UpdateOwner.module.css'; // 스타일을 이 파일로 분리했습니다.
 import { fetchData } from '../util/api';
 import {useNavigate} from "react-router-dom";
 import {useUser} from "../UserContext"; // fetchData 메서드 가져오기
