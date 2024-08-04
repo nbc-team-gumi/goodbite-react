@@ -130,17 +130,17 @@ const RestaurantList = () => {
           <div className="header-buttons">
             {role ? (
                 <>
+                  <FontAwesomeIcon
+                      icon={faUser}
+                      className="user-icon"
+                      onClick={handleUserIconClick} // 클릭 시 페이지 이동
+                  />
                   <button
                       className="view-waitings-button"
                       onClick={() => navigate('/waitings')}
                   >
                     내 웨이팅 보기
                   </button>
-                  <FontAwesomeIcon
-                      icon={faUser}
-                      className="user-icon"
-                      onClick={handleUserIconClick} // 클릭 시 페이지 이동
-                  />
                   <button
                       className="logout-button"
                       onClick={handleLogout}

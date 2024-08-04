@@ -151,8 +151,8 @@ const RestaurantDetail = () => {
         <header className="header">
           <div className="logo">GOOD BITE</div>
           <nav className="nav-menu">
-            <a href="/main">홈</a>
-            <a href="/mypage">마이페이지</a>
+            <a href="/restaurants">홈</a>
+            <a href="/customers">마이페이지</a>
           </nav>
         </header>
         <div className="content">
