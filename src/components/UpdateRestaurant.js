@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
 import {useNavigate, useParams} from "react-router-dom";
@@ -66,6 +66,30 @@ function UpdateRestaurant() {
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        const response = await fetchData(`/restaurants/${restaurantId}`, {
+          method: 'GET',
+        });
+        setName(response.data.name);
+        setImageUrl(response.data.imageUrl);
+        setAddress(response.data.address);
+        setArea(response.data.area);
+        setPhoneNumber(response.data.phoneNumber);
+        setCategory(response.data.category);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurant();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

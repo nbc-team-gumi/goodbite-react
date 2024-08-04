@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {fetchData} from '../util/api';
 import styled from 'styled-components';
 import {useNavigate, useParams} from "react-router-dom";
@@ -73,6 +73,27 @@ function UpdateMenu() {
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await fetchData(`/menus/${menuId}`, {
+          method: 'GET',
+        });
+        setName(response.data.name);
+        setPrice(response.data.price);
+        setDescription(response.data.description);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
