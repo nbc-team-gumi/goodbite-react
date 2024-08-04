@@ -27,7 +27,11 @@ const RestaurantList = () => {
     const fetchRestaurants = async () => {
       try {
         const data = await fetchData('/restaurants'); // getAllRestaurants 엔드포인트 호출
-        setRestaurants(data.data); // DataResponseDto의 data 필드를 사용
+        if (data && data.data && Array.isArray(data.data)) {
+          setRestaurants(data.data); // DataResponseDto의 data 필드를 사용
+        } else {
+          throw new Error('Invalid data format received from server');
+        }
       } catch (error) {
         console.error('Error fetching restaurants:', error);
       }
@@ -78,6 +82,10 @@ const RestaurantList = () => {
   };
 
   const filterRestaurants = () => {
+    if (!Array.isArray(restaurants)) {
+      console.error('restaurants is not an array:', restaurants);
+      return [];
+    }
     const filteredRestaurants = restaurants.filter(restaurant => {
       const nameMatch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase());
       const locationMatch = filterLocation === 'all' || restaurant.area === filterLocation;
@@ -115,12 +123,15 @@ const RestaurantList = () => {
 
       setRole(null);
       localStorage.removeItem('userRole');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('accessToken');
 
       navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
     }
   };
+
 
   return (
       <div>
@@ -133,14 +144,23 @@ const RestaurantList = () => {
                   <FontAwesomeIcon
                       icon={faUser}
                       className="user-icon"
-                      onClick={handleUserIconClick} // 클릭 시 페이지 이동
+                      onClick={handleUserIconClick}
                   />
-                  <button
-                      className="view-waitings-button"
-                      onClick={() => navigate('/waitings')}
-                  >
-                    내 웨이팅 보기
-                  </button>
+                  {role === 'ROLE_OWNER' ? (
+                      <button
+                          className="view-waitings-button"
+                          onClick={() => navigate('/dashboard')}
+                      >
+                        대시보드
+                      </button>
+                  ) : (
+                      <button
+                          className="view-waitings-button"
+                          onClick={() => navigate('/waitings')}
+                      >
+                        내 웨이팅 보기
+                      </button>
+                  )}
                   <button
                       className="logout-button"
                       onClick={handleLogout}

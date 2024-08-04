@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Login.css';
-import {Link, useNavigate} from 'react-router-dom';
-import { fetchData } from '../util/api';
+import { Link, useNavigate } from 'react-router-dom';
 import goodBiteTitle from '../images/good-bite-title.png';
-import { useUser } from '../UserContext';//추가
+import { useUser } from '../UserContext';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { setRole } = useUser();//추가
+  const { setRole } = useUser();
 
   useEffect(() => {
     document.body.classList.add('login-body');
@@ -38,27 +39,48 @@ const Login = () => {
     }
 
     try {
-      const response = await fetchData('/users/login', {
+      // 로그인 요청을 보냅니다.
+      const response = await fetch(`${API_BASE_URL}/users/login`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email, password }),
       });
 
-      console.log("response: ", response);
+      const responseBody = await response.json();
+
+      console.log("response: ", responseBody);
+      console.log("role: ", responseBody.role);
 
       // 응답 데이터가 올바른지 확인합니다.
-      if (!response.role) {
+      if (!responseBody.role) {
         throw new Error("응답 데이터에 역할 정보가 없습니다.");
       }
 
       // 역할 정보를 Context에 저장합니다
-      setRole(response.role);
+      setRole(responseBody.role);
+
+      // 토큰을 로컬 스토리지에 저장하기 전에 콘솔에 출력합니다.
+      const accessToken = response.headers.get('Authorization');
+      const refreshToken = response.headers.get('Refresh');
+
+      console.log('accessToken:', accessToken);
+      console.log('refreshToken:', refreshToken);
+
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+      }
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
 
       alert('로그인에 성공했습니다!');
       setEmail('');
       setPassword('');
-      if (response.role === 'ROLE_OWNER') {
+      if (responseBody.role === 'ROLE_OWNER') {
         navigate('/dashboard');
-      } else if (response.role === 'ROLE_CUSTOMER') {
+      } else if (responseBody.role === 'ROLE_CUSTOMER') {
         navigate('/restaurants');
       } else {
         navigate('/');
