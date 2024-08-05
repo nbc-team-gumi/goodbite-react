@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
-import styles from '../styles/Waiting.module.css'; // CSS 모듈 import
+import styles from '../styles/Waiting.module.css';
 
 const Waiting = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const restaurantIdFromQuery = queryParams.get('restaurantId');
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const [restaurantId, setRestaurantId] = useState(restaurantIdFromQuery || 1); // 초기값을 쿼리 파라미터로 설정
   const [partySize, setPartySize] = useState(1);
@@ -69,11 +70,18 @@ const Waiting = () => {
       });
       setMessage(`waiting 등록을 성공했습니다.`);
       setShowModal(true); // 모달 표시
+
       // Re-fetch waiting count after successful registration
-      fetchWaitingCount();
+      await fetchWaitingCount();
+
+      // 모달을 닫은 후 /CustomerWaitingList 페이지로 이동
+      setTimeout(() => {
+        setShowModal(false);
+        navigate('/Waitings');
+      }, 2000); // 2초
     } catch (error) {
       setMessage(`waiting 등록 실패: ${error.message}`);
-      setShowModal(true); // 모달 표시
+      setShowModal(true);
     }
   };
 
