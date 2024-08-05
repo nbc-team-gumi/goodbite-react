@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Dashboard.css';
 import titleImage from '../images/good-bite-title.png';
-import { fetchData } from '../util/api';
+import {fetchData} from '../util/api';
 import DashboardModal from './Dashboard-modal';
-import { useUser } from "../UserContext";
+import {useUser} from "../UserContext";
 
 const Dashboard = () => {
   const [restaurantId, setRestaurantId] = useState(null);
@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [currentPartySize, setCurrentPartySize] = useState(0);
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
-  const { role, setRole } = useUser();
+  const {role, setRole} = useUser();
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -26,19 +26,11 @@ const Dashboard = () => {
         const response = await fetchData('/restaurants/my', {
           method: 'GET',
         });
-        console.log("Restaurant ID API Response:", response);
-
-        if (response && response.statusCode === 200) {
-          const restaurantId = response.data.restaurantId;
-          setRestaurantId(restaurantId);
-          setApiSuccess(true);
-          fetchStatisticsAndWaitingList(restaurantId, 0);
-        } else {
-          console.error('Invalid API response:', response);
-          setApiSuccess(false);
-        }
+        setRestaurantId(response.data.restaurantId);
+        setApiSuccess(true);
+        fetchStatisticsAndWaitingList(response.data.restaurantId, 0);
       } catch (error) {
-        console.error('Error fetching restaurant ID:', error);
+        console.error('Error:', error);
         setApiSuccess(false);
       }
     };
@@ -49,19 +41,11 @@ const Dashboard = () => {
   const fetchStatisticsAndWaitingList = async (restaurantId, page) => {
     try {
       const waitingListData = await fetchData(
-          `/restaurants/${restaurantId}/waitings?page=${page}&size=5`,
-          {
+          `/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
             method: 'GET',
-          }
-      );
-      console.log("Waiting List Data:", waitingListData);
-
-      if (waitingListData && waitingListData.statusCode === 200) {
-        setWaitingList(waitingListData.data.content);
-        setTotalPages(waitingListData.data.totalPages);
-      } else {
-        console.error('Invalid waiting list data:', waitingListData);
-      }
+          });
+      setWaitingList(waitingListData.data.content);
+      setTotalPages(waitingListData.data.totalPages);
     } catch (error) {
       console.error('Error fetching statistics and waiting list:', error);
     }
@@ -76,8 +60,7 @@ const Dashboard = () => {
 
   const handleAcceptClick = async (waitingId) => {
     const confirmed = window.confirm(
-        `Waiting ID: ${waitingId}\n이 요청을 수락하시겠습니까?`
-    );
+        `Waiting ID: ${waitingId}\n이 요청을 수락하시겠습니까?`);
     if (confirmed) {
       try {
         await fetchData(`/waitings/${waitingId}`, {
@@ -170,20 +153,16 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <Link to="/">
-            <img src={titleImage} alt="GOOD BITE" className="title-image" />
+            <img src={titleImage} alt="GOOD BITE" className="title-image"/>
           </Link>
           <div className="profile-icon">
             {apiSuccess ? (
                 <>
-                  <button className="my-restaurant-button" onClick={navigateToMyRestaurant}>
-                    내 가게
-                  </button>
-                  <Link to="/owners">
-                    <img
-                        src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                        alt="Profile"
-                    />
-                  </Link>
+                  <img
+                      src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
+                      alt="Profile" onClick={navigateToMyPage}
+                  />
+                  <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
                 </>
             ) : (
                 <img
@@ -208,13 +187,13 @@ const Dashboard = () => {
                     onRejectClick={handleRejectClick}
                     onEditClick={handleEditClick}
                 />
-                <StatisticsBox statistics={statistics} />
+                <StatisticsBox statistics={statistics}/>
               </>
           ) : (
               <div className="register-restaurant">
                 <p className="register-message">새로운 식당을 등록하세요</p>
-                <button className="register-button" onClick={handleClick}>
-                  식당을 등록해주세요
+                <button className="register-button" onClick={handleClick}>식당을
+                  등록해주세요
                 </button>
               </div>
           )}
@@ -231,7 +210,7 @@ const Dashboard = () => {
   );
 };
 
-const StatisticsBox = ({ statistics }) => (
+const StatisticsBox = ({statistics}) => (
     <div className="statistics-box">
       <h2>오늘의 통계</h2>
       <p>별점, 리뷰 통계</p>
@@ -246,7 +225,7 @@ const WaitingListBox = ({
   onPageChange,
   onAcceptClick,
   onRejectClick,
-  onEditClick,
+  onEditClick
 }) => (
     <div className="waiting-list-box">
       <h2>오늘의 대기 손님</h2>
@@ -272,31 +251,20 @@ const WaitingListBox = ({
               <td>
                 {guest.waitingStatus === 'WAITING' && (
                     <>
-                      <button
-                          className="accept-button"
-                          onClick={() => onAcceptClick(guest.waitingId)}
-                      >
-                        수락
+                      <button className="accept-button"
+                              onClick={() => onAcceptClick(guest.waitingId)}>수락
                       </button>
-                      <button
-                          className="reject-button"
-                          onClick={() => onRejectClick(guest.waitingId)}
-                      >
-                        거절
+                      <button className="reject-button"
+                              onClick={() => onRejectClick(guest.waitingId)}>거절
                       </button>
-                      <button
-                          className="edit-button"
-                          onClick={() =>
-                              onEditClick(guest.waitingId, guest.partySize, guest.demand)
-                          }
-                      >
-                        수정
+                      <button className="edit-button"
+                              onClick={() => onEditClick(guest.waitingId,
+                                  guest.partySize, guest.demand)}>수정
                       </button>
                     </>
                 )}
-                {guest.waitingStatus === 'SEATED' && (
-                    <span className="accepted-text">수락됨</span>
-                )}
+                {guest.waitingStatus === 'SEATED' && <span
+                    className="accepted-text">수락됨</span>}
                 {guest.waitingStatus === 'CANCELLED' && (
                     <span className="cancelled-text">거절됨</span>
                 )}
@@ -309,10 +277,9 @@ const WaitingListBox = ({
         <button onClick={() => onPageChange(page - 1)} disabled={page <= 0}>
           이전
         </button>
-        <span>
-        {page + 1} / {totalPages}
-      </span>
-        <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages - 1}>
+        <span>{page + 1} / {totalPages}</span>
+        <button onClick={() => onPageChange(page + 1)}
+                disabled={page >= totalPages - 1}>
           다음
         </button>
       </div>
