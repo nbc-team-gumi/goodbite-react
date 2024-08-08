@@ -156,19 +156,14 @@ const Dashboard = () => {
             <img src={titleImage} alt="GOOD BITE" className="title-image"/>
           </Link>
           <div className="profile-icon">
-            {apiSuccess ? (
-                <>
-                  <img
-                      src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                      alt="Profile" onClick={navigateToMyPage}
-                  />
-                  <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
-                </>
-            ) : (
-                <img
-                    src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                    alt="Profile"
-                />
+            <Link to="/owners">
+              <img
+                  src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
+                  alt="Profile"
+              />
+            </Link>
+            {apiSuccess && (
+                <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
             )}
             <button className="logout-button" onClick={handleLogout}>
               로그아웃
