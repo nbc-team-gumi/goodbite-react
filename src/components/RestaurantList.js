@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 사용
-import { fetchData } from '../util/api'; // 기존 유틸리티 함수 임포트
+import { useNavigate } from 'react-router-dom';
+import { fetchData } from '../util/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons'; // FontAwesome 아이콘 임포트
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import '../styles/RestaurantList.css';
 import { useUser } from '../UserContext';
 
@@ -13,22 +13,21 @@ const RestaurantList = () => {
   const [filterSubLocation, setFilterSubLocation] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
   const { role, setRole } = useUser();
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
     gyeonggi: ["성남시", "수원시", "고양시"],
     gangwon: ["춘천시", "원주시", "강릉시"],
-    // 다른 위치 추가
   };
 
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const data = await fetchData('/restaurants'); // getAllRestaurants 엔드포인트 호출
+        const data = await fetchData('/restaurants');
         if (data && data.data && Array.isArray(data.data)) {
-          setRestaurants(data.data); // DataResponseDto의 data 필드를 사용
+          setRestaurants(data.data);
         } else {
           throw new Error('Invalid data format received from server');
         }
@@ -42,10 +41,7 @@ const RestaurantList = () => {
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
-        <div
-            key={restaurant.restaurantId}
-            className="restaurant-card"
-        >
+        <div key={restaurant.restaurantId} className="restaurant-card">
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
             <h2 className="restaurant-name" onClick={() => navigate(`/restaurants/${restaurant.name}`)}>{restaurant.name}</h2>
@@ -56,7 +52,16 @@ const RestaurantList = () => {
             </div>
             <button
                 className="waiting-button"
-                onClick={() => navigate(`/waiting?restaurantId=${restaurant.restaurantId}`)}
+                onClick={() => {
+                  if (role === 'ROLE_CUSTOMER') {
+                    navigate(`/waiting?restaurantId=${restaurant.restaurantId}`);
+                  } else if (role === 'ROLE_OWNER') {
+                    alert('손님 유저만 등록할 수 있습니다.');
+                  }
+                  else {
+                    navigate('/login');
+                  }
+                }}
             >
               웨이팅 등록
             </button>
@@ -100,20 +105,16 @@ const RestaurantList = () => {
   const handleLocationChange = (e) => {
     const selectedLocation = e.target.value;
     setFilterLocation(selectedLocation);
-    setFilterSubLocation('all'); // Reset sub-location when main location changes
+    setFilterSubLocation('all');
   };
 
-  // 사용자 아이콘 클릭 핸들러
   const handleUserIconClick = () => {
     if (role === 'ROLE_OWNER') {
       navigate('/owners');
     } else if (role === 'ROLE_CUSTOMER') {
       navigate('/customers');
-    } else {
-      navigate('/login');
     }
   };
-
 
   const handleLogout = async () => {
     try {
@@ -126,12 +127,11 @@ const RestaurantList = () => {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('accessToken');
 
-      navigate('/restaurants');
+      navigate('/login');
     } catch (error) {
       console.error('로그아웃 오류:', error);
     }
   };
-
 
   return (
       <div>
@@ -190,7 +190,6 @@ const RestaurantList = () => {
                 <option value="seoul">서울</option>
                 <option value="gyeonggi">경기</option>
                 <option value="gangwon">강원</option>
-                {/* 다른 위치 추가 */}
               </select>
               <select
                   id="filterSubLocation"
