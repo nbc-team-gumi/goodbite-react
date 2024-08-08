@@ -24,7 +24,7 @@ const Dashboard = () => {
     const fetchRestaurantId = async () => {
       try {
         const response = await fetchData('/restaurants/my', {
-          method: 'GET',
+          method: 'POST',
         });
         setRestaurantId(response.data.restaurantId);
         setApiSuccess(true);
@@ -42,7 +42,7 @@ const Dashboard = () => {
     try {
       const waitingListData = await fetchData(
           `/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
-            method: 'GET',
+            method: 'POST',
           });
       setWaitingList(waitingListData.data.content);
       setTotalPages(waitingListData.data.totalPages);
