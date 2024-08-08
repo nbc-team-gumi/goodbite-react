@@ -17,17 +17,16 @@ export const fetchData = async (endpoint, options = {}) => {
 
   // 토큰이 만료된 경우 갱신 시도
   if (response.status === 401 && refreshToken) {
-    const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    const refreshResponse = await fetch(`${API_BASE_URL}/users/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': refreshToken,
+        'Refresh': refreshToken,
       },
     });
 
     if (refreshResponse.ok) {
-      const refreshData = await refreshResponse.json();
-      accessToken = refreshData.accessToken;
+      accessToken = refreshResponse.headers.get('Authorization');
       localStorage.setItem('accessToken', accessToken);
 
       // 갱신된 토큰으로 원래 요청을 다시 시도
