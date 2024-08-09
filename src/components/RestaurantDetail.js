@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/RestaurantDetail.css';
+import { useUser } from '../UserContext';
 
 const RestaurantDetail = () => {
   const { restaurantName } = useParams();
+  const { role } = useUser();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -152,7 +154,14 @@ const RestaurantDetail = () => {
           <div className="logo">GOOD BITE</div>
           <nav className="nav-menu">
             <a href="/restaurants">홈</a>
-            <a href="/customers">마이페이지</a>
+            {role === 'ROLE_OWNER' ? (
+                <>
+                  <a href="/owners">마이페이지</a>
+                  <a href="/dashboard">대시보드</a>
+                </>
+            ) : role === 'ROLE_CUSTOMER' ? (
+                <a href="/customer">마이페이지</a>
+            ) : null}
           </nav>
         </header>
         <div className="content">
@@ -202,30 +211,32 @@ const RestaurantDetail = () => {
             </div>
 
             <h3>리뷰</h3>
-            <form className="review-form" onSubmit={handleReviewSubmit}>
+            {role === 'ROLE_CUSTOMER' ? (
+                <form className="review-form" onSubmit={handleReviewSubmit}>
               <textarea
                   value={newReviewContent}
                   onChange={(e) => setNewReviewContent(e.target.value)}
                   placeholder="리뷰 내용을 입력하세요"
               ></textarea>
-              <select
-                  value={newReviewRating}
-                  onChange={(e) => setNewReviewRating(e.target.value)}
-              >
-                <option value="0">평점: 0</option>
-                <option value="0.5">평점: 0.5</option>
-                <option value="1">평점: 1</option>
-                <option value="1.5">평점: 1.5</option>
-                <option value="2">평점: 2</option>
-                <option value="2.5">평점: 2.5</option>
-                <option value="3">평점: 3</option>
-                <option value="3.5">평점: 3.5</option>
-                <option value="4">평점: 4</option>
-                <option value="4.5">평점: 4.5</option>
-                <option value="5">평점: 5</option>
-              </select>
-              <button type="submit">리뷰 등록</button>
-            </form>
+                  <select
+                      value={newReviewRating}
+                      onChange={(e) => setNewReviewRating(e.target.value)}
+                  >
+                    <option value="0">평점: 0</option>
+                    <option value="0.5">평점: 0.5</option>
+                    <option value="1">평점: 1</option>
+                    <option value="1.5">평점: 1.5</option>
+                    <option value="2">평점: 2</option>
+                    <option value="2.5">평점: 2.5</option>
+                    <option value="3">평점: 3</option>
+                    <option value="3.5">평점: 3.5</option>
+                    <option value="4">평점: 4</option>
+                    <option value="4.5">평점: 4.5</option>
+                    <option value="5">평점: 5</option>
+                  </select>
+                  <button type="submit">리뷰 등록</button>
+                </form>
+            ) : null}
             <div className="reviews">
               {reviews.map((review, index) => (
                   <div key={index} className="review">

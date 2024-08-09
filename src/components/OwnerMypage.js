@@ -70,7 +70,7 @@ const OwnerMypage = () => {
             </div>
             <Link to="/update-owner" className="edit-button">회원정보 수정</Link>
             <div className="footer-link">
-              <a href="/dashboard">홈으로 돌아가기</a>
+              <a href="/restaurants">홈으로 돌아가기</a>
             </div>
           </div>
         </main>
