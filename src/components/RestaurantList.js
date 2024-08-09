@@ -122,12 +122,13 @@ const RestaurantList = () => {
         method: 'POST',
       });
 
+      alert('로그아웃되었습니다.')
       setRole(null);
       localStorage.removeItem('userRole');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('accessToken');
 
-      navigate('/login');
+      navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
     }
