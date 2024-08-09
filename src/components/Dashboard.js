@@ -5,6 +5,7 @@ import titleImage from '../images/good-bite-title.png';
 import { fetchData } from '../util/api';
 import DashboardModal from './Dashboard-modal';
 import { useUser } from "../UserContext";
+import logo from '../images/good-bite-logo.png';
 
 const Dashboard = () => {
   const [restaurantId, setRestaurantId] = useState(null);
@@ -152,7 +153,7 @@ const Dashboard = () => {
   };
 
   const subscribeToRestaurant = (restaurantId) => {
-    const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/${restaurantId}`);
+    const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/restaurant/${restaurantId}`);
 
     eventSource.onopen = (event) => {
       console.log(`Subscribed to restaurant ${restaurantId}`, event);
@@ -179,7 +180,7 @@ const Dashboard = () => {
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          new Notification(title, { body });
+          new Notification(title, { body, icon: logo});
         }
       });
     }
