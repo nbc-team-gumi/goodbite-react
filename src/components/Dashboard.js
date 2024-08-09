@@ -140,7 +140,7 @@ const Dashboard = () => {
       await fetchData('/users/logout', {
         method: 'POST',
       });
-
+      alert('로그아웃되었습니다.');
       setRole(null);
 
       navigate('/restaurants');
