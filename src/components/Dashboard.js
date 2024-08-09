@@ -24,7 +24,7 @@ const Dashboard = () => {
     const fetchRestaurantId = async () => {
       try {
         const response = await fetchData('/restaurants/my', {
-          method: 'GET',
+          method: 'POST',
         });
         setRestaurantId(response.data.restaurantId);
         setApiSuccess(true);
@@ -42,7 +42,7 @@ const Dashboard = () => {
     try {
       const waitingListData = await fetchData(
           `/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
-            method: 'GET',
+            method: 'POST',
           });
       setWaitingList(waitingListData.data.content);
       setTotalPages(waitingListData.data.totalPages);
@@ -156,19 +156,14 @@ const Dashboard = () => {
             <img src={titleImage} alt="GOOD BITE" className="title-image"/>
           </Link>
           <div className="profile-icon">
-            {apiSuccess ? (
-                <>
-                  <img
-                      src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                      alt="Profile" onClick={navigateToMyPage}
-                  />
-                  <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
-                </>
-            ) : (
-                <img
-                    src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
-                    alt="Profile"
-                />
+            <Link to="/owners">
+              <img
+                  src="https://image.ajunews.com/content/image/2019/12/25/20191225170826943516.jpg"
+                  alt="Profile"
+              />
+            </Link>
+            {apiSuccess && (
+                <button className="myrestaurant-button" onClick={navigateToMyRestaurant}>내 가게</button>
             )}
             <button className="logout-button" onClick={handleLogout}>
               로그아웃
