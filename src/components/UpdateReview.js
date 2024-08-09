@@ -78,7 +78,7 @@ function UpdateReview() {
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        const response = await fetchData(`/reviews/5`, {
+        const response = await fetchData(`/reviews/${reviewId}`, {
           method: 'GET',
         });
         setRating(response.data.rating);
@@ -98,7 +98,7 @@ function UpdateReview() {
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      await fetchData(`/reviews/5`, {
+      await fetchData(`/reviews/${reviewId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -109,27 +109,27 @@ function UpdateReview() {
         }),
       });
       alert('리뷰 수정이 완료되었습니다!');
-      navigate('/restaurants');
+      navigate('/my-reviews');
     } catch (error) {
       alert('리뷰 수정 실패');
-      navigate('/restaurants');
+      navigate('/my-reviews');
     }
   };
 
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await fetchData(`/reviews/5`, {
+        await fetchData(`/reviews/${reviewId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
           },
         });
         alert('리뷰가 삭제되었습니다.');
-        navigate('/restaurants');
+        navigate('/my-reviews');
       } catch (error) {
         alert('리뷰 삭제 실패');
-        navigate('/restaurants');
+        navigate('/my-reviews');
       }
     }
   };
