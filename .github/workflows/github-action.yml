@@ -70,5 +70,4 @@ jobs:
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
 
               sudo docker run -d -p 80:80 \
-              -e REACT_APP_API_BASE_URL=${{vars.REACT_APP_API_BASE_URL}} \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
