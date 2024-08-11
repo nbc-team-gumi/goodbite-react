@@ -170,15 +170,27 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-category">분류</Label>
-              <Input
+              <Label htmlFor="store-category">카테고리</Label>
+              <select
                   id="store-category"
                   name="storeCategory"
                   required
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-              />
+              >
+                <option value="">카테고리 선택</option>
+                <option value="KOREAN">한식</option>
+                <option value="JAPANESE">일식</option>
+                <option value="CHINESE">중식</option>
+                <option value="WESTERN">양식</option>
+                <option value="ASIAN">아시안</option>
+                <option value="BUNSIK">분식</option>
+                <option value="PIZZA">피자</option>
+                <option value="CHICKEN">치킨</option>
+                <option value="BURGER">버거</option>
+                <option value="CAFE">카페,디저트</option>
+              </select>
             </FormGroup>
             <FormGroup>
               <Label htmlFor="store-photo">가게 사진</Label>
