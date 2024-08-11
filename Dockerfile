@@ -1,5 +1,7 @@
 # Step 1: Build the React app
-FROM node:20.16.0 AS build
+FROM node:20 AS build
+
+ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
 
 WORKDIR /app
 

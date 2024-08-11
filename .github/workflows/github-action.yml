@@ -8,7 +8,7 @@ env:
   DOCKER_IMAGE_TAG_NAME: good-bite-react
 
 jobs:
-  build-and-deploy:
+  build-and-docker-push:
     runs-on: ubuntu-20.04
 
     steps:
@@ -27,31 +27,48 @@ jobs:
         run: npm run build
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
 
+  deploy-to-ec2:
+    needs: build-and-docker-push
+    runs-on: ubuntu-20.04
+
+    steps:
       - name: Deploy to EC2
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_SSH_KEY: ${{ secrets.EC2_KEY }}
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-react-app:latest
-            docker stop my-react-app || true
-            docker rm my-react-app || true
-            docker run -d --name my-react-app -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/my-react-app:latest
-          EOF
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USER }}
+            key: ${{ secrets.EC2_KEY }}
+            script: |
+              sudo apt-get update
+              sudo apt-get install -y docker.io
+              sudo usermod -aG docker $USER
+              newgrp docker
+              
+              CONTAINER_ID=$(sudo docker ps -q --filter "publish=80-80")
+          
+              if [ ! -z "$CONTAINER_ID" ]; then
+              sudo docker stop $CONTAINER_ID
+              sudo docker rm $CONTAINER_ID
+              fi
+            
+              sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
+
+              sudo docker run -d -p 80:80 \
+              -e REACT_APP_API_BASE_URL=${{vars.REACT_APP_API_BASE_URL}} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
