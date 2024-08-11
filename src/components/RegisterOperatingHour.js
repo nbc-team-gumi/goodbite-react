@@ -52,13 +52,13 @@ function RegisterOperatingHour() {
                   required
               >
                 <option value="">요일 선택</option>
-                <option value="MON">월요일</option>
-                <option value="TUE">화요일</option>
-                <option value="WED">수요일</option>
-                <option value="THU">목요일</option>
-                <option value="FRI">금요일</option>
-                <option value="SAT">토요일</option>
-                <option value="SUN">일요일</option>
+                <option value="MONDAY">월요일</option>
+                <option value="TUESDAY">화요일</option>
+                <option value="WEDNESDAY">수요일</option>
+                <option value="THURSDAY">목요일</option>
+                <option value="FRIDAY">금요일</option>
+                <option value="SATURDAY">토요일</option>
+                <option value="SUNDAY">일요일</option>
               </select>
             </div>
             <div className="form-group">
