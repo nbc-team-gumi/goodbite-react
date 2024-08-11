@@ -1,3 +1,5 @@
+// src/components/Dashboard.js
+
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
@@ -19,7 +21,7 @@ const Dashboard = () => {
   const [currentPartySize, setCurrentPartySize] = useState(0);
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
-  const { role, setRole } = useUser();
+  const { role, setRole, eventSource, setEventSource, logout } = useUser();
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -31,7 +33,9 @@ const Dashboard = () => {
         setRestaurantId(restaurantId);
         setApiSuccess(true);
         fetchStatisticsAndWaitingList(restaurantId, 0);
-        subscribeToRestaurant(restaurantId); // 구독 함수 호출
+        if (!eventSource) {
+          subscribeToRestaurant(restaurantId); // 구독 함수 호출
+        }
       } catch (error) {
         console.error('Error:', error);
         setApiSuccess(false);
@@ -39,7 +43,15 @@ const Dashboard = () => {
     };
 
     fetchRestaurantId();
-  }, []);
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+        console.log('SSE 연결이 종료되었습니다.');
+        setEventSource(null); // Clear the event source from context
+      }
+    };
+  }, [eventSource, setEventSource]);
 
   const fetchStatisticsAndWaitingList = async (restaurantId, page) => {
     try {
@@ -140,12 +152,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      await fetchData('/users/logout', {
-        method: 'POST',
-      });
-
-      setRole(null);
-
+      await logout(); // Call the logout function from context
       navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
@@ -153,24 +160,22 @@ const Dashboard = () => {
   };
 
   const subscribeToRestaurant = (restaurantId) => {
-    const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/restaurant/${restaurantId}`);
+    const newEventSource = new EventSource(`http://localhost:8080/server-events/subscribe/restaurant/${restaurantId}`);
+    setEventSource(newEventSource);
 
-    eventSource.onopen = (event) => {
+    newEventSource.onopen = (event) => {
       console.log(`Subscribed to restaurant ${restaurantId}`, event);
     };
 
-    eventSource.onmessage = (event) => {
+    newEventSource.onmessage = (event) => {
       console.log(`Message from restaurant ${restaurantId}`, event);
       showNotification(`Restaurant ${restaurantId}`, event.data);
     };
 
-    eventSource.onerror = (event) => {
+    newEventSource.onerror = (event) => {
       console.error('EventSource failed:', event);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
+      newEventSource.close();
+      setEventSource(null); // Clear the event source from context on error
     };
   };
 
@@ -180,7 +185,7 @@ const Dashboard = () => {
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          new Notification(title, { body, icon: logo});
+          new Notification(title, { body, icon: logo });
         }
       });
     }

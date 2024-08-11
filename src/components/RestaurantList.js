@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// src/components/RestaurantList.js
+
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +18,7 @@ const RestaurantList = () => {
   const [filterRating, setFilterRating] = useState('all');
   const [waitingIds, setWaitingIds] = useState([]);
   const navigate = useNavigate();
-  const { role, setRole } = useUser();
+  const { role, setRole, setEventSource, logout } = useUser();
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -54,7 +56,6 @@ const RestaurantList = () => {
             .filter(waiting => waiting.waitingOrder !== null)
             .map(waiting => waiting.waitingId);
 
-
             if (validWaitingIds.length === 0 && response.data.last) {
               break;
             }
@@ -84,7 +85,7 @@ const RestaurantList = () => {
       if (Notification.permission !== 'granted') {
         Notification.requestPermission().then(permission => {
           if (permission !== 'granted') {
-            console.error('Notification permission denied');
+            console.error('알림 권한이 없습니다.(시크릿모드 확인)');
           }
         });
       }
@@ -115,6 +116,8 @@ const RestaurantList = () => {
         eventSource.onerror = (error) => {
           console.error('SSE connection error:', error);
         };
+
+        setEventSource(eventSource); // EventSource를 context에 설정
       });
     };
 
@@ -123,12 +126,9 @@ const RestaurantList = () => {
     }
 
     return () => {
-      waitingIds.forEach(waitingId => {
-        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
-        eventSource.close();
-      });
+      // Cleanup logic handled by UserContext
     };
-  }, [waitingIds]);
+  }, [waitingIds, setEventSource]);
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
@@ -205,15 +205,7 @@ const RestaurantList = () => {
 
   const handleLogout = async () => {
     try {
-      await fetchData('/users/logout', {
-        method: 'POST',
-      });
-
-      setRole(null);
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('accessToken');
-
+      await logout(); // Logout through UserContext
       navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
