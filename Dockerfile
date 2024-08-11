@@ -8,6 +8,7 @@ RUN npm install
 
 COPY . ./
 
+ARG REACT_APP_API_BASE_URL
 RUN REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL} npm run build
 
 # Step 2: Serve the app with Nginx
