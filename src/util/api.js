@@ -4,14 +4,20 @@ export const fetchData = async (endpoint, options = {}) => {
   let accessToken = localStorage.getItem('accessToken');
   const refreshToken = localStorage.getItem('refreshToken');
 
+  // 확인: options.body가 FormData인지 JSON인지 확인
+  const isFormData = options.body instanceof FormData;
+
+  // Content-Type 헤더는 FormData를 사용할 때 자동으로 설정됨
+  const headers = isFormData ? {} : {
+    'Content-Type': 'application/json',
+    'Authorization': accessToken || '',
+    'Refresh': refreshToken || '',
+    ...options.headers,
+  };
+
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': accessToken || '',
-      'Refresh': refreshToken || '',
-      ...options.headers,
-    },
+    headers: headers,
     credentials: 'include', // Cookie
   });
 
@@ -33,10 +39,9 @@ export const fetchData = async (endpoint, options = {}) => {
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
+          ...headers,
           'Authorization': accessToken || '',
           'Refresh': refreshToken || '',
-          ...options.headers,
         },
         credentials: 'include',
       });

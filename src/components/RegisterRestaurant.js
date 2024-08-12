@@ -57,32 +57,45 @@ const SubmitBtn = styled.button`
 
 function RegisterRestaurant() {
   const [name, setName] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(null);
   const [address, setAddress] = useState('');
   const [area, setArea] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageUrl(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
-    // console.log(formData);
+    const formData = new FormData();
+    formData.append('restaurantRequestDto', new Blob([JSON.stringify({
+      name,
+      address,
+      area,
+      phoneNumber,
+      category
+    })], { type: 'application/json' }));
+    if (imageUrl) {
+      formData.append('image', imageUrl);
+    }
     try {
-      const data = await fetchData('/restaurants', {
+      await fetchData('/restaurants', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          imageUrl,
-          address,
-          area,
-          phoneNumber,
-          category
-        }),
+        body: formData,
       });
       alert('가게 등록이 완료되었습니다!');
       navigate('/dashboard');
@@ -98,12 +111,12 @@ function RegisterRestaurant() {
           <h1 style={{color: 'white'}}>GOOD BITE - 가게 등록</h1>
         </Header>
         <Container>
-          <Form id="store-register-form" onSubmit={handleSubmit}>
+          <Form id="store-register-form" onSubmit={handleSubmit} >
             <FormGroup>
               <Label htmlFor="store-name">가게 이름</Label>
               <Input
                   id="store-name"
-                  name="storeName"
+                  name="name"
                   required
                   type="text"
                   value={name}
@@ -114,7 +127,7 @@ function RegisterRestaurant() {
               <Label htmlFor="store-area">지역</Label>
               <Input
                   id="store-area"
-                  name="storeArea"
+                  name="area"
                   required
                   type="text"
                   value={area}
@@ -125,7 +138,7 @@ function RegisterRestaurant() {
               <Label htmlFor="store-address">가게 주소</Label>
               <Input
                   id="store-address"
-                  name="storeAddress"
+                  name="address"
                   required
                   type="text"
                   value={address}
@@ -136,7 +149,7 @@ function RegisterRestaurant() {
               <Label htmlFor="store-phonenumber">가게 전화번호</Label>
               <Input
                   id="store-phonenumber"
-                  name="storePhoneNumber"
+                  name="phoneNumber"
                   required
                   type="text"
                   value={phoneNumber}
@@ -147,7 +160,7 @@ function RegisterRestaurant() {
               <Label htmlFor="store-category">카테고리</Label>
               <select
                   id="store-category"
-                  name="storeCategory"
+                  name="category"
                   required
                   type="text"
                   value={category}
@@ -172,13 +185,18 @@ function RegisterRestaurant() {
                   accept="image/*"
                   id="store-photo"
                   name="imageUrl"
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  type="file"
+                  onChange={handleFileChange}
               />
-              {/*<div id="image-preview">*/}
-              {/*  {imagePreview && <img src={imagePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }} />}*/}
-              {/*</div>*/}
+              <div id="image-preview">
+                {imagePreview && (
+                    <img
+                        src={imagePreview}
+                        alt="Preview"
+                        style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }}
+                    />
+                )}
+              </div>
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">가게 등록하기</SubmitBtn>
           </Form>
