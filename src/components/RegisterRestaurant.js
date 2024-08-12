@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {fetchData} from '../util/api';
+import React, { useState } from 'react';
+import { fetchData } from '../util/api';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -55,7 +55,6 @@ const SubmitBtn = styled.button`
   }
 `;
 
-
 function RegisterRestaurant() {
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -63,13 +62,14 @@ function RegisterRestaurant() {
   const [area, setArea] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
+  const [capacity, setCapacity] = useState(''); // 추가된 state
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
-    // console.log(formData);
+
     try {
       const data = await fetchData('/restaurants', {
         method: 'POST',
@@ -82,7 +82,8 @@ function RegisterRestaurant() {
           address,
           area,
           phoneNumber,
-          category
+          category,
+          capacity: parseInt(capacity, 10), // 수용 인원 포함
         }),
       });
       alert('가게 등록이 완료되었습니다!');
@@ -96,7 +97,7 @@ function RegisterRestaurant() {
   return (
       <div className="container">
         <Header>
-          <h1 style={{color: 'white'}}>GOOD BITE - 가게 등록</h1>
+          <h1 style={{ color: 'white' }}>GOOD BITE - 가게 등록</h1>
         </Header>
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit}>
@@ -165,9 +166,17 @@ function RegisterRestaurant() {
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
               />
-              {/*<div id="image-preview">*/}
-              {/*  {imagePreview && <img src={imagePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }} />}*/}
-              {/*</div>*/}
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="store-capacity">최대 수용 인원</Label> {/* 추가된 필드 */}
+              <Input
+                  id="store-capacity"
+                  name="storeCapacity"
+                  required
+                  type="number"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+              />
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">가게 등록하기</SubmitBtn>
           </Form>
