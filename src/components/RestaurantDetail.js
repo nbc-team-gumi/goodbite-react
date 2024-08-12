@@ -218,7 +218,6 @@ const RestaurantDetail = () => {
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>
-                    <button className="btn-update">수정하기</button>
                   </div>
               ))}
             </div>
