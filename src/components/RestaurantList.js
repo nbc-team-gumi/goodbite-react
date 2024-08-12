@@ -1,5 +1,3 @@
-// src/components/RestaurantList.js
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
@@ -132,10 +130,7 @@ const RestaurantList = () => {
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
-        <div
-            key={restaurant.restaurantId}
-            className="restaurant-card"
-        >
+        <div key={restaurant.restaurantId} className="restaurant-card">
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
             <h2 className="restaurant-name" onClick={() => navigate(`/restaurants/${restaurant.name}`)}>{restaurant.name}</h2>
@@ -146,7 +141,16 @@ const RestaurantList = () => {
             </div>
             <button
                 className="waiting-button"
-                onClick={() => navigate(`/waiting?restaurantId=${restaurant.restaurantId}`)}
+                onClick={() => {
+                  if (role === 'ROLE_CUSTOMER') {
+                    navigate(`/waiting?restaurantId=${restaurant.restaurantId}`);
+                  } else if (role === 'ROLE_OWNER') {
+                    alert('손님 유저만 등록할 수 있습니다.');
+                  }
+                  else {
+                    navigate('/login');
+                  }
+                }}
             >
               웨이팅 등록
             </button>
@@ -198,8 +202,6 @@ const RestaurantList = () => {
       navigate('/owners');
     } else if (role === 'ROLE_CUSTOMER') {
       navigate('/customers');
-    } else {
-      navigate('/login');
     }
   };
 

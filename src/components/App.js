@@ -30,12 +30,21 @@ import DeactivateCustomer from "./DeactivateCustomer";
 import DeactivateOwner from "./DeactivateOwner";
 
 const App = () => {
+  // 역할에 따라 리다이렉트할 경로 결정
+  const getRedirectPath = () => {
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'ROLE_OWNER') {
+      return '/dashboard';
+    }
+    return '/restaurants';
+  };
+
 return (
     <UserProvider>
     <Router>
       <Routes>
         {/*<Route path="/" element={<Home />} />*/}
-        <Route path="/" element={<Navigate to="/restaurants" replace />} />
+        <Route path="/" element={<Navigate to={getRedirectPath()} replace />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/waiting" element={<Waiting />} />
