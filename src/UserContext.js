@@ -26,7 +26,10 @@ export const UserProvider = ({ children }) => {
       });
 
       setRole(null);
+      alert('로그아웃되었습니다.')
       localStorage.removeItem('userRole');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('accessToken');
 
       if (eventSource) {
         eventSource.close();
