@@ -1,0 +1,65 @@
+h1 {
+  color: #e68a00;
+}
+
+.reservation-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.reservation-container h1 {
+  text-align: center;
+}
+
+.reservation-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-selection {
+  margin-top: 20px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.menu-item img {
+  margin-right: 10px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.menu-item label {
+  flex-grow: 1;
+}
+
+.menu-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.menu-item select {
+  margin-left: 10px;
+  padding: 5px;
+}
+
+.reservation-submit-button {
+  margin-top: 20px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reservation-submit-button:hover {
+  background-color: #e68a00;
+}
