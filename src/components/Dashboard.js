@@ -25,7 +25,7 @@ const Dashboard = () => {
     const fetchRestaurantId = async () => {
       try {
         const response = await fetchData('/restaurants/my', {
-          method: 'POST',
+          method: 'GET',
         });
         const { restaurantId } = response.data;
         setRestaurantId(restaurantId);
