@@ -55,7 +55,7 @@ const Dashboard = () => {
     try {
       const waitingListData = await fetchData(
           `/restaurants/${restaurantId}/waitings?page=${page}&size=5`, {
-            method: 'POST',
+            method: 'GET',
           });
       setWaitingList(waitingListData.data.content);
       setTotalPages(waitingListData.data.totalPages);
