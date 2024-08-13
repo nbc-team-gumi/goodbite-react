@@ -28,6 +28,8 @@ import CustomerMypage from "./CustomerMypage";
 import OwnerMypage from "./OwnerMypage";
 import DeactivateCustomer from "./DeactivateCustomer";
 import DeactivateOwner from "./DeactivateOwner";
+import UpdateReview from "./UpdateReview";
+import MyReviewList from "./MyReviewList";
 
 const App = () => {
   // 역할에 따라 리다이렉트할 경로 결정
@@ -68,6 +70,8 @@ return (
         <Route path="/waitings" element={<CustomerWaitingList />} />
         <Route path="/register-menu/:restaurantId" element={<RegisterMenu />} />
         <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
+        <Route path="/update-review/:reviewId" element={<UpdateReview />} />
+        <Route path="/my-reviews" element={<MyReviewList />} />
       </Routes>
     </Router>
     </UserProvider>
