@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { fetchData } from "../util/api";
-import { useUser } from '../UserContext';
+import React, {useEffect} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useUser} from '../UserContext';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const KakaoLoginRedirect = () => {
   const location = useLocation();
@@ -9,57 +10,62 @@ const KakaoLoginRedirect = () => {
   const code = queryParams.get('code');
   const isOwner = queryParams.get('state');
   const navigate = useNavigate();
-  const { setRole } = useUser();
-
-  // 요청이 이미 처리되었는지 추적하기 위한 상태
-  const [hasRequested, setHasRequested] = useState(false);
+  const {setRole} = useUser();
 
   useEffect(() => {
     const handleKakaoLogin = async () => {
-      if (!code || !isOwner || hasRequested) {
+      if (!code || !isOwner) {
         return;
       }
 
-      // 요청이 시작되었음을 표시
-      setHasRequested(true);
-
       try {
         // 카카오 로그인 콜백 엔드포인트에 code를 포함하여 요청
-        const response = await fetchData(`/users/kakao/callback?code=${code}&owner=${isOwner}`, {
-          method: 'GET',
-        });
+        const response = await fetch(
+            `${API_BASE_URL}/users/kakao/callback?code=${code}&owner=${isOwner}`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
 
-        // response의 data 객체에서 id, nickname, email을 추출하여 콘솔에 출력
-        const { id, nickname, email } = response.data;
+        if (!response.ok) {
+          throw new Error('카카오 로그인 요청 실패');
+        }
 
-        console.log('Kakao User ID:', id);
-        console.log('Kakao User Nickname:', nickname);
-        console.log('Kakao User Email:', email);
+        const responseBody = await response.json();
+        if (responseBody && responseBody.data) {
+          const {nickname, email} = responseBody.data;
 
-        // 여기서 responseBody 역할을 하는 부분은 이미 처리된 response의 데이터입니다.
-        // 필요 시 추가 처리 로직을 여기에 작성합니다.
+          // 필요에 따라 role 설정 등의 추가 작업
+          if (isOwner === true) {
+            setRole('ROLE_OWNER');
+          } else {
+            setRole('ROLE_CUSTOMER');
+          }
 
-        // setRole(response.data.role); // 예시: role 설정
-        //
-        // const accessToken = response.headers.get('Authorization');
-        // const refreshToken = response.headers.get('Refresh');
-        //
-        // if (accessToken) {
-        //   localStorage.setItem('accessToken', accessToken);
-        // }
-        // if (refreshToken) {
-        //   localStorage.setItem('refreshToken', refreshToken);
-        // }
-        //
-        // alert('로그인에 성공했습니다!');
-        //
-        // if (response.data.role === 'ROLE_OWNER') {
-        //   navigate('/dashboard');
-        // } else if (response.data.role === 'ROLE_CUSTOMER') {
-        //   navigate('/restaurants');
-        // } else {
-        //   navigate('/');
-        // }
+          const accessToken = response.headers.get('Authorization');
+          const refreshToken = response.headers.get('Refresh');
+
+          // 데이터베이스 일치하는 회원이 존재할 때
+          if (accessToken && refreshToken) {
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            alert('로그인에 성공했습니다!');
+            navigate('/');
+          } else {
+            //-------------------------
+            // 카카오 전용 회원가입 페이지로
+            // 다음 nickname, email 회원가입 페이지에 넘김
+            //-------------------------
+            console.log('Kakao User Nickname:', nickname);
+            console.log('Kakao User Email:', email);
+          }
+
+        } else {
+          throw new Error('Invalid response data');
+        }
 
       } catch (error) {
         console.error(`로그인 에러: ${error.message}`);
@@ -67,10 +73,8 @@ const KakaoLoginRedirect = () => {
       }
     };
 
-    if (code && isOwner) {
-      handleKakaoLogin();
-    }
-  }, [code, isOwner, navigate, hasRequested]);
+    handleKakaoLogin();
+  }, [code, isOwner, navigate]);
 
   return <div>로그인 중입니다.</div>;
 };
