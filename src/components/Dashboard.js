@@ -24,7 +24,7 @@ const Dashboard = () => {
     const fetchRestaurantId = async () => {
       try {
         const response = await fetchData('/restaurants/my', {
-          method: 'GET',
+          method: 'POST',
         });
         setRestaurantId(response.data.restaurantId);
         setApiSuccess(true);

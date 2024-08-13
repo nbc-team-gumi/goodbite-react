@@ -184,12 +184,20 @@ const RestaurantList = () => {
                         대시보드
                       </button>
                   ) : (
-                      <button
-                          className="view-waitings-button"
-                          onClick={() => navigate('/waitings')}
-                      >
-                        내 웨이팅 보기
-                      </button>
+                      <>
+                        <button
+                            className="view-waitings-button"
+                            onClick={() => navigate('/waitings')}
+                        >
+                          내 웨이팅 보기
+                        </button>
+                        <button
+                            className="view-reservations-button" // 내 예약 보기 버튼 추가
+                            onClick={() => navigate('/reservations')}
+                        >
+                          내 예약 보기
+                        </button>
+                      </>
                   )}
                   <button
                       className="logout-button"
