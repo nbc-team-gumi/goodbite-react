@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {fetchData} from '../util/api';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faUser} from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchData } from '../util/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import '../styles/RestaurantList.css';
-import {useUser} from '../UserContext';
+import { useUser } from '../UserContext';
+import logo from '../images/good-bite-logo.png';
+
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -13,8 +15,9 @@ const RestaurantList = () => {
   const [filterSubLocation, setFilterSubLocation] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
+  const [waitingIds, setWaitingIds] = useState([]);
   const navigate = useNavigate();
-  const {role, setRole} = useUser();
+  const { role, setRole, setEventSource, logout } = useUser();
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -38,6 +41,93 @@ const RestaurantList = () => {
 
     fetchRestaurants();
   }, []);
+
+  useEffect(() => {
+    const fetchAllWaitings = async () => {
+      let page = 0;
+      let allWaitingIds = [];
+      while (true) {
+        try {
+          const response = await fetchData(`/waitings?page=${page}`);
+          if (response && response.data && Array.isArray(response.data.content)) {
+            const currentPageWaitings = response.data.content;
+            const validWaitingIds = currentPageWaitings
+            .filter(waiting => waiting.waitingOrder !== null)
+            .map(waiting => waiting.waitingId);
+
+            if (validWaitingIds.length === 0 && response.data.last) {
+              break;
+            }
+
+            allWaitingIds = allWaitingIds.concat(validWaitingIds);
+            page += 1;
+          } else {
+            throw new Error('Invalid data format received from server');
+          }
+        } catch (error) {
+          console.error('Error fetching waitings:', error);
+          break;
+        }
+      }
+
+      setWaitingIds(allWaitingIds);
+    };
+
+    if (role === 'ROLE_CUSTOMER') {
+      fetchAllWaitings();
+    }
+  }, [role]);
+
+  useEffect(() => {
+    // 알림 권한 요청
+    const requestNotificationPermission = () => {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+          if (permission !== 'granted') {
+            console.error('알림 권한이 없습니다.(시크릿모드 확인)');
+          }
+        });
+      }
+    };
+
+    requestNotificationPermission();
+
+    const setupSSEConnections = (waitingIds) => {
+      waitingIds.forEach(waitingId => {
+        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
+
+        eventSource.onopen = () => {
+          console.log(`Successfully subscribed to waitingId: ${waitingId}`);
+        };
+
+        eventSource.onmessage = (event) => {
+          console.log('Received SSE event:', event.data);
+
+          // SSE 메시지에서 알림 생성
+          if (Notification.permission === 'granted') {
+            new Notification('새 웨이팅 알림', {
+              body: event.data,  // 받은 메시지를 알림 내용으로 사용
+              icon: logo  // Optional: 아이콘 경로
+            });
+          }
+        };
+
+        eventSource.onerror = (error) => {
+          console.error('SSE connection error:', error);
+        };
+
+        setEventSource(eventSource); // EventSource를 context에 설정
+      });
+    };
+
+    if (waitingIds.length > 0) {
+      setupSSEConnections(waitingIds);
+    }
+
+    return () => {
+      // Cleanup logic handled by UserContext
+    };
+  }, [waitingIds, setEventSource]);
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
@@ -130,16 +220,7 @@ const RestaurantList = () => {
 
   const handleLogout = async () => {
     try {
-      await fetchData('/users/logout', {
-        method: 'POST',
-      });
-
-      alert('로그아웃되었습니다.')
-      setRole(null);
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('accessToken');
-
+      await logout(); // Logout through UserContext
       navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
