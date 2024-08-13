@@ -43,7 +43,6 @@ function CustomerReservationList() {
 
     const filteredReservations = reservationList.filter(reservation => {
       const value = reservation[column] || '';
-      console.log(`Filtering by ${column}:`, value); // 디버깅 로그 추가
       const matchesSearch = typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter ? reservation.status === statusFilter : true;
       return matchesSearch && matchesStatus;
@@ -176,6 +175,7 @@ function CustomerReservationList() {
                       <th>요청 사항</th>
                       <th>예약 시간</th>
                       <th>상태</th>
+                      <th>동작</th> {/* 추가된 열 */}
                     </tr>
                     </thead>
                     <tbody>
@@ -202,16 +202,29 @@ function CustomerReservationList() {
                               ? '확정됨'
                               : '거부됨'}
                         </span>
+                          </td>
+                          <td>
                             {reservation.status === 'CONFIRMED' && (
-                                <button
-                                    className={styles.cancelBtn}
-                                    onClick={(e) => {
-                                      e.stopPropagation(); // 클릭 이벤트 전파 방지
-                                      openCancelModal(reservation);
-                                    }}
-                                >
-                                  취소
-                                </button>
+                                <div className={styles.actionBtns}>
+                                  <button
+                                      className={styles.cancelBtn}
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                        openCancelModal(reservation);
+                                      }}
+                                  >
+                                    취소
+                                  </button>
+                                  <button
+                                      className={styles.reviewBtn}
+                                      onClick={(e) => {
+                                        e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                        // 리뷰 작성 모달 열기 함수 호출
+                                      }}
+                                  >
+                                    리뷰
+                                  </button>
+                                </div>
                             )}
                           </td>
                         </tr>
@@ -241,10 +254,10 @@ function CustomerReservationList() {
               <div className={styles.modalContent}>
                 <span className={styles.close} onClick={closeDetailsModal}>&times;</span>
                 <h2>예약 상세 정보</h2>
-                <p><strong>식당 이름:</strong> {currentReservation.restaurantName || 'N/A'}</p>
-                <p><strong>요청 사항:</strong> {currentReservation.requirement || 'N/A'}</p>
-                <p><strong>예약 시간:</strong> {new Date(`${currentReservation.date}T${currentReservation.time}`).toLocaleString()}</p>
-                <p><strong>상태:</strong> {currentReservation.status === 'CONFIRMED' ? '확정됨' : '거부됨'}</p>
+                <p>식당 이름: {currentReservation.restaurantName}</p>
+                <p>예약 시간: {new Date(`${currentReservation.date}T${currentReservation.time}`).toLocaleString()}</p>
+                <p>요청 사항: {currentReservation.requirement || 'N/A'}</p>
+                <p>상태: {currentReservation.status === 'CONFIRMED' ? '확정됨' : '거부됨'}</p>
               </div>
             </div>
         )}
@@ -253,8 +266,11 @@ function CustomerReservationList() {
             <div className={styles.modal}>
               <div className={styles.modalContent}>
                 <span className={styles.close} onClick={closeCancelModal}>&times;</span>
-                <h2>예약 취소 확인</h2>
-                <p>이 예약을 취소하시겠습니까?</p>
+                <h2>예약 취소</h2>
+                <p>식당 이름: {currentReservation.restaurantName}</p>
+                <p>예약 시간: {new Date(`${currentReservation.date}T${currentReservation.time}`).toLocaleString()}</p>
+                <p>요청 사항: {currentReservation.requirement || 'N/A'}</p>
+                <p>정말로 이 예약을 취소하시겠습니까?</p>
                 <button onClick={cancelReservation}>확인</button>
                 <button onClick={closeCancelModal}>취소</button>
               </div>

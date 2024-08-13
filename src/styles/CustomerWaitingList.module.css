@@ -256,3 +256,34 @@
 .cancelBtn:hover {
   background-color: #d32f2f; /* 호버 시 배경색 변경 */
 }
+
+.actionBtns {
+  display: flex;
+  gap: 5px; /* Space between buttons */
+  justify-content: center; /* Center buttons */
+}
+
+/* Modify buttons to fit in the action buttons area */
+.actionBtns button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.cancelBtn {
+  background-color: #f44336; /* Red background */
+  color: white; /* White text */
+}
+
+.cancelBtn:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}
+
+.reviewBtn {
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+}
+
+.reviewBtn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
