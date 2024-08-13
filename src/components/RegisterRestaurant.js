@@ -62,6 +62,7 @@ function RegisterRestaurant() {
   const [area, setArea] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
+  const [capacity, setCapacity] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
@@ -87,7 +88,8 @@ function RegisterRestaurant() {
       address,
       area,
       phoneNumber,
-      category
+      category,
+      capacity
     })], { type: 'application/json' }));
     if (imageUrl) {
       formData.append('image', imageUrl);
@@ -178,6 +180,17 @@ function RegisterRestaurant() {
                 <option value="BURGER">버거</option>
                 <option value="CAFE">카페,디저트</option>
               </select>
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="store-capacity">수용 인원</Label>
+              <Input
+                  id="store-capacity"
+                  name="capacity"
+                  required
+                  type="number"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+              />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="store-photo">가게 사진</Label>
