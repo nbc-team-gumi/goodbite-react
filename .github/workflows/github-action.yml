@@ -2,7 +2,7 @@ name: Deploy React App to Docker
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ 80-bug-sse-무한-요청-픽스 ]
 
 env:
   DOCKER_IMAGE_TAG_NAME: good-bite-react

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 const NotificationSubscriber = ({ restaurantId }) => {
   const [messages, setMessages] = useState([]);
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/${restaurantId}`);
+    const eventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/${restaurantId}`);
 
     eventSource.onopen = (event) => {
       console.log('Connection opened', event);

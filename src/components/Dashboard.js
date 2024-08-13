@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
   const { role, setRole, eventSource, setEventSource, logout } = useUser();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -158,7 +159,7 @@ const Dashboard = () => {
   };
 
   const subscribeToRestaurant = (restaurantId) => {
-    const newEventSource = new EventSource(`http://localhost:8080/server-events/subscribe/restaurant/${restaurantId}`);
+    const newEventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/restaurant/${restaurantId}`);
     setEventSource(newEventSource);
 
     newEventSource.onopen = (event) => {
