@@ -61,6 +61,7 @@ function RegisterMenu() {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -77,7 +78,8 @@ function RegisterMenu() {
           restaurantId,
           name,
           price,
-          description
+          description,
+          imageUrl
         }),
       });
       alert('메뉴 등록이 완료되었습니다!');
@@ -126,6 +128,17 @@ function RegisterMenu() {
                   type="text"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="menu-imageUrl">이미지</Label>
+              <Input
+                  id="menu-imageUrl"
+                  name="menuImageUrl"
+                  required
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
               />
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">메뉴 등록하기</SubmitBtn>

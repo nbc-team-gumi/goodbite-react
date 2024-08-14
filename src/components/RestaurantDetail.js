@@ -214,7 +214,7 @@ const RestaurantDetail = () => {
             <div className="menu-list">
               {menu.map((item, index) => (
                   <div key={index} className="menu-item">
-                    <img src={item.img} alt={item.name} width="100%" height="150" />
+                    <img src={item.imageUrl} alt={item.name} width="100%" height="150" />
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>
