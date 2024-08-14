@@ -134,7 +134,10 @@ function CustomerReservationList() {
               <label htmlFor="statusFilter">예약 상태:</label>
               <select id="statusFilter" value={statusFilter} onChange={handleStatusFilterChange}>
                 <option value="">전체</option>
+                <option value="PENDING">대기 중</option>
                 <option value="CONFIRMED">확정됨</option>
+                <option value="CANCELLED">취소됨</option>
+                <option value="COMPLETED">완료됨</option>
                 <option value="REJECTED">거부됨</option>
               </select>
 
@@ -198,32 +201,53 @@ function CustomerReservationList() {
                         <span
                             className={`${styles.status} ${styles[`status-${reservation.status.toLowerCase()}`]}`}
                         >
-                          {reservation.status === 'CONFIRMED'
-                              ? '확정됨'
-                              : '거부됨'}
+                          {reservation.status === 'PENDING'
+                              ? '대기 중'
+                              : reservation.status === 'CONFIRMED'
+                                  ? '확정됨'
+                                  : reservation.status === 'CANCELLED'
+                                      ? '취소됨'
+                                      : reservation.status === 'COMPLETED'
+                                          ? '완료됨'
+                                          : '거부됨'}
                         </span>
                           </td>
                           <td>
-                            {reservation.status === 'CONFIRMED' && (
+                            {(reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') && (
                                 <div className={styles.actionBtns}>
-                                  <button
-                                      className={styles.cancelBtn}
-                                      onClick={(e) => {
-                                        e.stopPropagation(); // 클릭 이벤트 전파 방지
-                                        openCancelModal(reservation);
-                                      }}
-                                  >
-                                    취소
-                                  </button>
-                                  <button
-                                      className={styles.reviewBtn}
-                                      onClick={(e) => {
-                                        e.stopPropagation(); // 클릭 이벤트 전파 방지
-                                        // 리뷰 작성 모달 열기 함수 호출
-                                      }}
-                                  >
-                                    리뷰
-                                  </button>
+                                  {reservation.status === 'PENDING' && (
+                                      <button
+                                          className={styles.cancelBtn}
+                                          onClick={(e) => {
+                                            e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                            openCancelModal(reservation);
+                                          }}
+                                      >
+                                        취소
+                                      </button>
+                                  )}
+                                  {reservation.status === 'CONFIRMED' && (
+                                      <>
+                                        <button
+                                            className={styles.cancelBtn}
+                                            onClick={(e) => {
+                                              e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                              openCancelModal(reservation);
+                                            }}
+                                        >
+                                          취소
+                                        </button>
+                                        <button
+                                            className={styles.reviewBtn}
+                                            onClick={(e) => {
+                                              e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                              // 리뷰 작성 모달 열기 함수 호출
+                                            }}
+                                        >
+                                          리뷰
+                                        </button>
+                                      </>
+                                  )}
                                 </div>
                             )}
                           </td>
@@ -257,7 +281,16 @@ function CustomerReservationList() {
                 <p>식당 이름: {currentReservation.restaurantName}</p>
                 <p>예약 시간: {new Date(`${currentReservation.date}T${currentReservation.time}`).toLocaleString()}</p>
                 <p>요청 사항: {currentReservation.requirement || 'N/A'}</p>
-                <p>상태: {currentReservation.status === 'CONFIRMED' ? '확정됨' : '거부됨'}</p>
+                <p>상태: {currentReservation.status === 'PENDING'
+                    ? '대기 중'
+                    : currentReservation.status === 'CONFIRMED'
+                        ? '확정됨'
+                        : currentReservation.status === 'CANCELLED'
+                            ? '취소됨'
+                            : currentReservation.status === 'COMPLETED'
+                                ? '완료됨'
+                                : '거부됨'}
+                </p>
               </div>
             </div>
         )}
