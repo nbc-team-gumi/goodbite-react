@@ -143,6 +143,20 @@ const RestaurantDetail = () => {
   //   }
   // };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000);
+  }, []);
+
   // 데이터 로딩 중이거나 에러가 있는 경우 처리
   if (loading) {
     return <div>Loading...</div>;
