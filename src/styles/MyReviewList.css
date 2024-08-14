@@ -1,0 +1,130 @@
+body {
+  font-family: 'Nanum Gothic', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #FFE4B5;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.header {
+  width: 100%;
+  background-color: #FFA500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  height: 60px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.review-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.review-item {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.restaurant-name {
+  font-weight: bold;
+  color: #ff9800;
+}
+
+.review-date {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.review-rating {
+  color: #ffc107;
+  font-size: 1.2em;
+}
+
+.review-content {
+  margin-top: 10px;
+  color: #333;
+}
+
+.no-reviews {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+.review-actions {
+  display: flex; /* 플렉스 박스를 사용해 버튼을 나란히 배치 */
+  gap: 10px; /* 버튼 사이의 간격을 10px로 설정 */
+  margin-top: 5px;
+}
+
+.edit-button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.edit-button:hover {
+  background-color: #e68900;
+}
+
+.delete-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.delete-button:hover {
+  background-color: #ff0000;
+}

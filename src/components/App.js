@@ -30,6 +30,10 @@ import DeactivateCustomer from "./DeactivateCustomer";
 import DeactivateOwner from "./DeactivateOwner";
 import Reservation from './Reservation';
 import CustomerReservationList from './CustomerReservationList';
+import KakaoLoginRedirect from "./KakaoLoginRedirect";
+import KakaoSignup from "./KakaoSignup";
+import UpdateReview from "./UpdateReview";
+import MyReviewList from "./MyReviewList";
 
 const App = () => {
   // 역할에 따라 리다이렉트할 경로 결정
@@ -72,6 +76,10 @@ return (
         <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
         <Route path="/restaurants/:restaurantId/reservation" element={<Reservation />} />
         <Route path="/reservations" element={<CustomerReservationList />} />
+        <Route path='/kakao/callback' element={<KakaoLoginRedirect />} />
+        <Route path='/kakao/signup' element={<KakaoSignup />} />
+        <Route path="/update-review/:reviewId" element={<UpdateReview />} />
+        <Route path="/my-reviews" element={<MyReviewList />} />
       </Routes>
     </Router>
     </UserProvider>
