@@ -2,7 +2,7 @@ name: Deploy React App to Docker
 
 on:
   push:
-    branches: [ 74-feat-카카오-로그인 ]
+    branches: [ dev ]
 
 env:
   DOCKER_IMAGE_TAG_NAME: good-bite-react
@@ -26,7 +26,7 @@ jobs:
       - name: Build the React app
         run: |
           REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }} \
-          REACT_APP_API_KEY_KAKAO=${{ secrets.REACT_APP_API_KEY_KAKAO }} \
+          REACT_APP_API_KEY_KAKAO=${{ secrets.KAKAO_API_KEY }} \
           npm run build
 
       - name: Set up Docker Buildx
@@ -41,7 +41,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build --build-arg REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }} \
-                       --build-arg REACT_APP_API_KEY_KAKAO=${{ secrets.REACT_APP_API_KEY_KAKAO }} \
+                       --build-arg REACT_APP_API_KEY_KAKAO=${{ secrets.KAKAO_API_KEY }} \
                        -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
 
