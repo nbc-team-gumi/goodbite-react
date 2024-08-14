@@ -90,20 +90,21 @@ function CustomerWaitingList() {
     }
 
     try {
-      await fetchData('/reviews', {
+      await fetchData('/waiting-reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          waitingId: currentWaiting.waitingId,
           restaurantId: currentWaiting.restaurantId,
           rating: Number(rating),
           content: reviewText,
         }),
       });
 
-      closeReviewModal();
       alert('리뷰가 성공적으로 제출되었습니다!');
+      closeReviewModal();
     } catch (error) {
       console.error('리뷰 제출 에러:', error);
       alert('리뷰 제출 중 오류가 발생했습니다.');

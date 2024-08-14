@@ -13,7 +13,7 @@ const Reservation = () => {
     date: null,
     time: null,
     partySize: '',
-    requirements: '',
+    requirement: '',
     selectedMenus: {}
   });
 
@@ -77,7 +77,7 @@ const Reservation = () => {
           date: formattedDate,
           time: formattedTime,
           partySize: reservationDetails.partySize,
-          requirements: reservationDetails.requirements,
+          requirement: reservationDetails.requirement,
           menus: reservationDetails.selectedMenus
         }),
         headers: {
@@ -85,6 +85,7 @@ const Reservation = () => {
         },
       });
 
+      console.log(response.statusCode);
       if (response.statusCode === 200) {
         alert('예약이 완료되었습니다.');
       } else {
@@ -143,9 +144,9 @@ const Reservation = () => {
                 <label>
                   요청사항:
                   <textarea
-                      value={reservationDetails.requirements}
+                      value={reservationDetails.requirement}
                       onChange={(e) =>
-                          setReservationDetails({ ...reservationDetails, requirements: e.target.value })
+                          setReservationDetails({ ...reservationDetails, requirement: e.target.value })
                       }
                   />
                 </label>
