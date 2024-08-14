@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/Signup.css';
 import goodBiteTitle from '../images/good-bite-title.png';
 
-function Signup() {
+function KakaoSignup() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { nickname = '', email = '', password = '', userType = '' } = location.state || {};
+
   const [formData, setFormData] = useState({
-    email: '',
-    nickname: '',
-    password: '',
+    email: email,
+    nickname: nickname,
+    password: password,
     phoneNumber: '',
-    userType: '',
+    userType: userType,
     businessNumber: '',
   });
+
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
-
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.body.classList.add('signup-body');
@@ -51,6 +55,7 @@ function Signup() {
     e.preventDefault();
 
     setErrors({});
+    setLoading(true);
     let hasError = false;
 
     if (!formData.userType) {
@@ -90,11 +95,16 @@ function Signup() {
         });
 
         setMessage(`Signup successful: ${JSON.stringify(data)}`);
-        alert('회원가입에 성공하였습니다.');
+        alert('회원가입에 성공하였습니다. 카카오 로그인을 다시 진행해주세요.');
         navigate('/login');
       } catch (error) {
         setMessage(`Signup failed: ${error.message}`);
+        console.error('Signup error:', error);
+      } finally {
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   };
 
@@ -115,6 +125,7 @@ function Signup() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
+                disabled
             />
           </div>
           <div className="form-group">
@@ -126,17 +137,7 @@ function Signup() {
                 type="text"
                 value={formData.nickname}
                 onChange={handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
-            <input
-                id="password"
-                name="password"
-                required
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
+                disabled
             />
           </div>
           <div className="form-group">
@@ -164,7 +165,8 @@ function Signup() {
               <option value="customer">일반 사용자</option>
               <option value="owner">사업자</option>
             </select>
-            {errors.userType && <div className="error-message">{errors.userType}</div>}
+            {errors.userType && <div
+                className="error-message">{errors.userType}</div>}
           </div>
           <div className="form-group" id="businessNumberGroup">
             <label htmlFor="businessNumber">사업자 등록 번호</label>
@@ -177,13 +179,16 @@ function Signup() {
                 onChange={handleChange}
                 required={formData.userType === 'owner'}
             />
-            {errors.businessNumber && <div className="error-message">{errors.businessNumber}</div>}
+            {errors.businessNumber && <div
+                className="error-message">{errors.businessNumber}</div>}
           </div>
-          <button className="submit-btn" type="submit">회원가입</button>
+          <button className="submit-btn" type="submit" disabled={loading}>
+            {loading ? '회원가입 중...' : '카카오 계정으로 회원가입'}
+          </button>
         </form>
         {message && <p>{message}</p>}
       </div>
   );
 }
 
-export default Signup;
+export default KakaoSignup;

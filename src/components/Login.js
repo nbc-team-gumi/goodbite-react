@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
 import goodBiteTitle from '../images/good-bite-title.png';
+import kakaoLoginImage from '../images/kakao_login_large_wide.png';
 import { useUser } from '../UserContext';
+import { kakaoLogin } from './KakaoLogin';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isOwner, setIsOwner] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { setRole } = useUser();
@@ -29,6 +32,10 @@ const Login = () => {
     }
   };
 
+  const handleCheckboxChange = (e) => {
+    setIsOwner(e.target.checked);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -39,34 +46,24 @@ const Login = () => {
     }
 
     try {
-      // 로그인 요청을 보냅니다.
       const response = await fetch(`${API_BASE_URL}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, isOwner }),
       });
 
       const responseBody = await response.json();
 
-      console.log("response: ", responseBody);
-      console.log("role: ", responseBody.role);
-
-      // 응답 데이터가 올바른지 확인합니다.
       if (!responseBody.role) {
         throw new Error("응답 데이터에 역할 정보가 없습니다.");
       }
 
-      // 역할 정보를 Context에 저장합니다
       setRole(responseBody.role);
 
-      // 토큰을 로컬 스토리지에 저장하기 전에 콘솔에 출력합니다.
       const accessToken = response.headers.get('Authorization');
       const refreshToken = response.headers.get('Refresh');
-
-      console.log('accessToken:', accessToken);
-      console.log('refreshToken:', refreshToken);
 
       if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
@@ -76,6 +73,7 @@ const Login = () => {
       }
 
       alert('로그인에 성공했습니다!');
+
       setEmail('');
       setPassword('');
       if (responseBody.role === 'ROLE_OWNER') {
@@ -89,6 +87,11 @@ const Login = () => {
       console.error('로그인 에러:', error);
       setError(`로그인 중 오류가 발생했습니다: ${error.message}`);
     }
+  };
+
+  const handleKakaoLogin = async () => {
+    // 카카오 로그인 처리 로직
+    await kakaoLogin(isOwner);
   };
 
   return (
@@ -122,9 +125,29 @@ const Login = () => {
                 onChange={handleChange}
             />
           </div>
+          <label htmlFor="isOwner" className="checkbox-label">
+            사업자 로그인
+          </label>
+          <input
+              id="isOwner"
+              name="isOwner"
+              type="checkbox"
+              checked={isOwner}
+              onChange={handleCheckboxChange}
+          />
           <button className="login-btn" type="submit">로그인</button>
         </form>
         {error && <div className="error-message">{error}</div>}
+
+        <div className="kakao-login-container">
+          <img
+              src={kakaoLoginImage}
+              alt="카카오 로그인"
+              className="kakao-login-button"
+              onClick={handleKakaoLogin}
+          />
+        </div>
+
         <div className="links">
           <a href="/forgot-password">비밀번호를 잊으셨나요?</a> | <a href="/signup">회원가입</a>
         </div>
