@@ -36,11 +36,15 @@ function Signup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-      ...(name === 'userType' && value !== 'owner' ? { businessNumber: '' } : {}),
-    }));
+
+    setFormData((prevFormData) => {
+      const updatedValue = name === 'businessNumber' ? value.replace(/-/g, '') : value;
+      return {
+        ...prevFormData,
+        [name]: updatedValue,
+        ...(name === 'userType' && value !== 'owner' ? { businessNumber: '' } : {}),
+      };
+    });
   };
 
   const handleSignup = async (e) => {
@@ -159,7 +163,6 @@ function Signup() {
               <option value="">선택해주세요</option>
               <option value="customer">일반 사용자</option>
               <option value="owner">사업자</option>
-              {/* <option value="admin">관리자</option> */}
             </select>
             {errors.userType && <div className="error-message">{errors.userType}</div>}
           </div>
