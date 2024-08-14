@@ -107,6 +107,25 @@ th, td {
   border-bottom: 1px solid #ddd;
 }
 
+.date-col {
+  width: 15%;
+}
+.time-col {
+  width: 15%;
+}
+.people-col {
+  width: 10%;
+}
+.name-col {
+  width: 20%;
+}
+.request-col {
+  width: 25%;
+}
+.status-col {
+  width: 15%;
+}
+
 .accept-button {
   background-color: #007bff;
   color: white;
