@@ -13,8 +13,8 @@ const RestaurantDetail = () => {
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [newReviewContent, setNewReviewContent] = useState('');
-  const [newReviewRating, setNewReviewRating] = useState(0);
+  // const [newReviewContent, setNewReviewContent] = useState('');
+  // const [newReviewRating, setNewReviewRating] = useState(0);
 
   const fetchReviews = async (restaurantId) => {
     try {
@@ -112,33 +112,33 @@ const RestaurantDetail = () => {
     fetchRestaurantByName(restaurantName);
   }, [restaurantName]);
 
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetchData('/reviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          restaurantId: restaurant.restaurantId,
-          content: newReviewContent,
-          rating: newReviewRating,
-        }),
-      });
-
-      if (response.statusCode === 200) {
-        setNewReviewContent('');
-        setNewReviewRating(0);
-        await fetchReviews(restaurant.restaurantId); // Fetch reviews again after successful submission
-      } else {
-        setError(`Unexpected response data: ${response.message}`);
-      }
-    } catch (error) {
-      setError(error.message);
-      console.error('Fetch error:', error);
-    }
-  };
+  // const handleReviewSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetchData('/reviews', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         restaurantId: restaurant.restaurantId,
+  //         content: newReviewContent,
+  //         rating: newReviewRating,
+  //       }),
+  //     });
+  //
+  //     if (response.statusCode === 200) {
+  //       setNewReviewContent('');
+  //       setNewReviewRating(0);
+  //       await fetchReviews(restaurant.restaurantId); // Fetch reviews again after successful submission
+  //     } else {
+  //       setError(`Unexpected response data: ${response.message}`);
+  //     }
+  //   } catch (error) {
+  //     setError(error.message);
+  //     console.error('Fetch error:', error);
+  //   }
+  // };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -211,37 +211,39 @@ const RestaurantDetail = () => {
             </div>
 
             <h3>리뷰</h3>
-            {role === 'ROLE_CUSTOMER' ? (
-                <form className="review-form" onSubmit={handleReviewSubmit}>
-              <textarea
-                  value={newReviewContent}
-                  onChange={(e) => setNewReviewContent(e.target.value)}
-                  placeholder="리뷰 내용을 입력하세요"
-              ></textarea>
-                  <select
-                      value={newReviewRating}
-                      onChange={(e) => setNewReviewRating(e.target.value)}
-                  >
-                    <option value="0">평점: 0</option>
-                    <option value="0.5">평점: 0.5</option>
-                    <option value="1">평점: 1</option>
-                    <option value="1.5">평점: 1.5</option>
-                    <option value="2">평점: 2</option>
-                    <option value="2.5">평점: 2.5</option>
-                    <option value="3">평점: 3</option>
-                    <option value="3.5">평점: 3.5</option>
-                    <option value="4">평점: 4</option>
-                    <option value="4.5">평점: 4.5</option>
-                    <option value="5">평점: 5</option>
-                  </select>
-                  <button type="submit">리뷰 등록</button>
-                </form>
-            ) : null}
+            {/*{role === 'ROLE_CUSTOMER' ? (*/}
+            {/*    <form className="review-form" onSubmit={handleReviewSubmit}>*/}
+            {/*  <textarea*/}
+            {/*      value={newReviewContent}*/}
+            {/*      onChange={(e) => setNewReviewContent(e.target.value)}*/}
+            {/*      placeholder="리뷰 내용을 입력하세요"*/}
+            {/*  ></textarea>*/}
+            {/*      <select*/}
+            {/*          value={newReviewRating}*/}
+            {/*          onChange={(e) => setNewReviewRating(e.target.value)}*/}
+            {/*      >*/}
+            {/*        <option value="0">평점: 0</option>*/}
+            {/*        <option value="0.5">평점: 0.5</option>*/}
+            {/*        <option value="1">평점: 1</option>*/}
+            {/*        <option value="1.5">평점: 1.5</option>*/}
+            {/*        <option value="2">평점: 2</option>*/}
+            {/*        <option value="2.5">평점: 2.5</option>*/}
+            {/*        <option value="3">평점: 3</option>*/}
+            {/*        <option value="3.5">평점: 3.5</option>*/}
+            {/*        <option value="4">평점: 4</option>*/}
+            {/*        <option value="4.5">평점: 4.5</option>*/}
+            {/*        <option value="5">평점: 5</option>*/}
+            {/*      </select>*/}
+            {/*      <button type="submit">리뷰 등록</button>*/}
+            {/*    </form>*/}
+            {/*) : null}*/}
             <div className="reviews">
               {reviews.map((review, index) => (
                   <div key={index} className="review">
-                    <p>{review.content}</p>
                     <span>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                    <p>{review.content}</p>
+                    <p>{review.nickname}</p>
+                    <p>{new Date(review.createdAt).toLocaleDateString()}</p>
                   </div>
               ))}
             </div>

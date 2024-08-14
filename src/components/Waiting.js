@@ -64,21 +64,47 @@ const Waiting = () => {
         requestBody.demand = demand;
       }
 
-      const data = await fetchData('/waitings', {
+      const response = await fetchData('/waitings', {
         method: 'POST',
         body: JSON.stringify(requestBody),
       });
-      setMessage(`waiting 등록을 성공했습니다.`);
-      setShowModal(true); // 모달 표시
 
-      // Re-fetch waiting count after successful registration
-      await fetchWaitingCount();
+      if (response && response.data && response.data.waitingId) {
+        const { waitingId } = response.data;
+        setMessage(`waiting 등록을 성공했습니다.`);
+        setShowModal(true); // 모달 표시
 
-      // 모달을 닫은 후 /CustomerWaitingList 페이지로 이동
-      setTimeout(() => {
-        setShowModal(false);
-        navigate('/Waitings');
-      }, 2000); // 2초
+        // 웨이팅 ID로 SSE 구독 시작
+        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
+
+        eventSource.onopen = () => {
+          console.log(`Successfully subscribed to waitingId: ${waitingId}`);
+        };
+
+        eventSource.onmessage = (event) => {
+          console.log('Received SSE event:', event.data);
+          // 크롬 알림 예시
+          new Notification('새 웨이팅 알림', {
+            body: event.data,
+            icon: '/images/good-bite-logo.png'
+          });
+        };
+
+        eventSource.onerror = (error) => {
+          console.error('SSE connection error:', error);
+        };
+
+        // Re-fetch waiting count after successful registration
+        await fetchWaitingCount();
+
+        // 모달을 닫은 후 /CustomerWaitingList 페이지로 이동
+        setTimeout(() => {
+          setShowModal(false);
+          navigate('/Waitings');
+        }, 2000); // 2초
+      } else {
+        throw new Error('등록에 실패했습니다.');
+      }
     } catch (error) {
       setMessage(`waiting 등록 실패: ${error.message}`);
       setShowModal(true);

@@ -64,10 +64,25 @@ function UpdateRestaurant() {
   const [area, setArea] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [category, setCategory] = useState('');
+  const [capacity, setCapacity] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageUrl(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -94,21 +109,22 @@ function UpdateRestaurant() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
-    // console.log(formData);
+    const formData = new FormData();
+    formData.append('restaurantRequestDto', new Blob([JSON.stringify({
+      name,
+      address,
+      area,
+      phoneNumber,
+      category,
+      capacity
+    })], { type: 'application/json' }));
+    if (imageUrl) {
+      formData.append('image', imageUrl);
+    }
     try {
-      const data = await fetchData(`/restaurants/${restaurantId}`, {
+      await fetchData(`/restaurants/${restaurantId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          imageUrl,
-          address,
-          area,
-          phoneNumber,
-          category
-        }),
+        body: formData,
       });
       alert('가게 수정이 완료되었습니다!');
       navigate(`/owner-restaurant-detail/${restaurantId}`);
@@ -170,14 +186,37 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-category">분류</Label>
-              <Input
+              <Label htmlFor="store-category">카테고리</Label>
+              <select
                   id="store-category"
                   name="storeCategory"
                   required
                   type="text"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">카테고리 선택</option>
+                <option value="KOREAN">한식</option>
+                <option value="JAPANESE">일식</option>
+                <option value="CHINESE">중식</option>
+                <option value="WESTERN">양식</option>
+                <option value="ASIAN">아시안</option>
+                <option value="BUNSIK">분식</option>
+                <option value="PIZZA">피자</option>
+                <option value="CHICKEN">치킨</option>
+                <option value="BURGER">버거</option>
+                <option value="CAFE">카페,디저트</option>
+              </select>
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="store-capacity">수용 인원</Label>
+              <Input
+                  id="store-capacity"
+                  name="capacity"
+                  required
+                  type="number"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
               />
             </FormGroup>
             <FormGroup>
@@ -186,13 +225,12 @@ function UpdateRestaurant() {
                   accept="image/*"
                   id="store-photo"
                   name="imageUrl"
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  type="file"
+                  onChange={handleFileChange}
               />
-              {/*<div id="image-preview">*/}
-              {/*  {imagePreview && <img src={imagePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }} />}*/}
-              {/*</div>*/}
+              <div id="image-preview">
+                {imagePreview && <img src={imagePreview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }} />}
+              </div>
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">가게 수정하기</SubmitBtn>
           </Form>
