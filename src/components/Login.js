@@ -5,6 +5,7 @@ import goodBiteTitle from '../images/good-bite-title.png';
 import kakaoLoginImage from '../images/kakao_login_large_wide.png';
 import { useUser } from '../UserContext';
 import { kakaoLogin } from './KakaoLogin';
+import showPopup from './UserTestPopUp'; // 올바른 경로로 import
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -18,7 +19,13 @@ const Login = () => {
 
   useEffect(() => {
     document.body.classList.add('login-body');
+
+    const closePopup = showPopup('Welcome to the login page!', () => {
+      console.log('Popup closed');
+    });
+
     return () => {
+      closePopup();
       document.body.classList.remove('login-body');
     };
   }, []);
