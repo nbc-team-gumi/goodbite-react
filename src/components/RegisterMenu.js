@@ -131,7 +131,7 @@ function RegisterMenu() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="menu-imageUrl">이미지</Label>
+              <Label htmlFor="menu-imageUrl">이미지 URL</Label>
               <Input
                   id="menu-imageUrl"
                   name="menuImageUrl"
