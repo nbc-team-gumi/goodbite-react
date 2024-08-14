@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {fetchData} from '../util/api';
+import React, { useState } from 'react';
+import { fetchData } from '../util/api';
 import styled from 'styled-components';
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`
   max-width: 600px;
@@ -54,7 +54,6 @@ const SubmitBtn = styled.button`
     background-color: #f57c00;
   }
 `;
-
 
 function RegisterMenu() {
   const { restaurantId } = useParams();
@@ -118,6 +117,7 @@ function RegisterMenu() {
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
               />
+              <p>{price.toLocaleString()} 원</p>
             </FormGroup>
             <FormGroup>
               <Label htmlFor="menu-description">설명</Label>

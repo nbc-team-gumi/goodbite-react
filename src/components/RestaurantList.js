@@ -141,11 +141,11 @@ const RestaurantList = () => {
           <div className="restaurant-info">
             <h2 className="restaurant-name">{restaurant.name}</h2>
             <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
-            <div className="restaurant-rating">
-              <span className="stars">{getStars(restaurant.rating)}</span>
-              <span className="rating-value">{restaurant.rating
-                  ? restaurant.rating.toFixed(1) : 'N/A'}</span>
-            </div>
+            {/*<div className="restaurant-rating">*/}
+            {/*  <span className="stars">{getStars(restaurant.rating)}</span>*/}
+            {/*  <span className="rating-value">{restaurant.rating*/}
+            {/*      ? restaurant.rating.toFixed(1) : 'N/A'}</span>*/}
+            {/*</div>*/}
             <div className="buttons-container">
               <button
                   className="reservation-button"
