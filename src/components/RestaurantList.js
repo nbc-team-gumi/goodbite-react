@@ -18,6 +18,7 @@ const RestaurantList = () => {
   const [waitingIds, setWaitingIds] = useState([]);
   const navigate = useNavigate();
   const { role, setRole, setEventSource, logout } = useUser();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -94,7 +95,7 @@ const RestaurantList = () => {
 
     const setupSSEConnections = (waitingIds) => {
       waitingIds.forEach(waitingId => {
-        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
+        const eventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/waiting/${waitingId}`);
 
         eventSource.onopen = () => {
           console.log(`Successfully subscribed to waitingId: ${waitingId}`);
