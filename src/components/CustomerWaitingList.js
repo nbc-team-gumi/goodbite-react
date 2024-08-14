@@ -90,7 +90,7 @@ function CustomerWaitingList() {
     }
 
     try {
-      await fetchData('/reviews', {
+      await fetchData('/waiting-reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -213,6 +213,7 @@ function CustomerWaitingList() {
                       <th>등록 시간</th>
                       <th>삭제 시간</th>
                       <th>대기 상태</th>
+                      <th>동작</th> {/* Added Actions column */}
                     </tr>
                     </thead>
                     <tbody>
@@ -242,11 +243,13 @@ function CustomerWaitingList() {
                                   ? '착석'
                                   : '취소됨'}
                         </span>
+                          </td>
+                          <td>
                             {waiting.waitingStatus === 'WAITING' && (
                                 <button
                                     className={styles.cancelBtn}
                                     onClick={(e) => {
-                                      e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                      e.stopPropagation(); // Prevent event propagation
                                       openCancelModal(waiting);
                                     }}
                                 >
@@ -257,7 +260,7 @@ function CustomerWaitingList() {
                                 <button
                                     className={styles.reviewBtn}
                                     onClick={(e) => {
-                                      e.stopPropagation(); // 클릭 이벤트 전파 방지
+                                      e.stopPropagation(); // Prevent event propagation
                                       openReviewModal(waiting.waitingId, waiting.restaurantId);
                                     }}
                                 >
@@ -266,8 +269,7 @@ function CustomerWaitingList() {
                             )}
                           </td>
                         </tr>
-                      )
-                    )}
+                    ))}
                     </tbody>
                   </table>
                 </div>

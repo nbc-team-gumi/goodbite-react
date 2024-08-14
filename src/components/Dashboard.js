@@ -10,7 +10,7 @@ import logo from '../images/good-bite-logo.png';
 const Dashboard = () => {
   const [restaurantId, setRestaurantId] = useState(null);
   const [apiSuccess, setApiSuccess] = useState(false);
-  const [statistics, setStatistics] = useState(null);
+  const [reservationList, setReservationList] = useState([]);
   const [waitingList, setWaitingList] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
   const { role, setRole, eventSource, setEventSource, logout } = useUser();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchRestaurantId = async () => {
@@ -31,6 +32,7 @@ const Dashboard = () => {
         setRestaurantId(restaurantId);
         setApiSuccess(true);
         fetchStatisticsAndWaitingList(restaurantId, 0);
+        fetchReservations(restaurantId);
         if (!eventSource) {
           subscribeToRestaurant(restaurantId); // 구독 함수 호출
         }
@@ -61,6 +63,18 @@ const Dashboard = () => {
       setTotalPages(waitingListData.data.totalPages);
     } catch (error) {
       console.error('Error fetching statistics and waiting list:', error);
+    }
+  };
+
+  const fetchReservations = async (restaurantId) => {
+    try {
+      const reservationData = await fetchData(
+          `/restaurants/${restaurantId}/reservations`, { // No pagination
+            method: 'GET',
+          });
+      setReservationList(reservationData.data);
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
     }
   };
 
@@ -100,6 +114,26 @@ const Dashboard = () => {
       } catch (error) {
         console.error('Error rejecting waiting:', error);
         alert('요청 거절 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const handleCancelClick = async (reservationId) => {
+    const confirmed = window.confirm(
+        `예약 ID: ${reservationId}\n이 예약을 취소하시겠습니까?`);
+    if (confirmed) {
+      try {
+        await fetchData(`/reservations/${reservationId}`, {
+          method: 'DELETE',
+        });
+        alert('예약이 성공적으로 취소되었습니다.');
+        // Refetch reservations after cancellation
+        if (restaurantId) {
+          fetchReservations(restaurantId);
+        }
+      } catch (error) {
+        console.error('Error cancelling reservation:', error);
+        alert('예약 취소 중 오류가 발생했습니다.');
       }
     }
   };
@@ -158,7 +192,7 @@ const Dashboard = () => {
   };
 
   const subscribeToRestaurant = (restaurantId) => {
-    const newEventSource = new EventSource(`http://localhost:8080/server-events/subscribe/restaurant/${restaurantId}`);
+    const newEventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/restaurant/${restaurantId}`);
     setEventSource(newEventSource);
 
     newEventSource.onopen = (event) => {
@@ -222,7 +256,10 @@ const Dashboard = () => {
                     onRejectClick={handleRejectClick}
                     onEditClick={handleEditClick}
                 />
-                <StatisticsBox statistics={statistics}/>
+                <StatisticsBox
+                    reservationList={reservationList}
+                    onCancelClick={handleCancelClick}
+                />
               </>
           ) : (
               <div className="register-restaurant">
@@ -243,11 +280,38 @@ const Dashboard = () => {
   );
 };
 
-const StatisticsBox = ({ statistics }) => (
+const StatisticsBox = ({ reservationList = [], onCancelClick }) => (
     <div className="statistics-box">
-      <h2>오늘의 통계</h2>
-      <p>별점, 리뷰 통계</p>
-      {/* 실제 통계 데이터를 표시하는 코드 추가 */}
+      <h2>예약 목록</h2>
+      <table>
+        <thead>
+        <tr>
+          <th className="date-col">예약 날짜</th>
+          <th className="time-col">예약 시간</th>
+          <th className="people-col">인원</th>
+          <th className="name-col">예약자</th>
+          <th className="request-col">요청 사항</th>
+          <th className="status-col">예약 상태</th>
+          <th>취소</th>
+        </tr>
+        </thead>
+        <tbody>
+        {reservationList.map((reservation, index) => (
+            <tr key={index}>
+              <td>{reservation.date}</td>
+              <td>{reservation.time}</td>
+              <td>{reservation.partySize}</td>
+              <td>{reservation.customerId}</td>
+              <td>{reservation.requirement}</td>
+              <td>{reservation.status}</td>
+              <td>
+                <button onClick={() => onCancelClick(reservation.reservationId)}>취소</button>
+              </td>
+
+            </tr>
+        ))}
+        </tbody>
+      </table>
     </div>
 );
 

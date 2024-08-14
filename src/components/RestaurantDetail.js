@@ -38,23 +38,25 @@ const RestaurantDetail = () => {
 
   useEffect(() => {
     const fetchRestaurantByName = async (name) => {
+      setLoading(true);
       try {
         const restaurants = await fetchData('/restaurants');
         const restaurant = restaurants.data.find(r => r.name === name);
 
         if (restaurant) {
-          const response = await fetchData(`/restaurants/${restaurant.restaurantId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+          const response = await fetchData(
+              `/restaurants/${restaurant.restaurantId}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
 
           if (response.statusCode === 200) {
             setRestaurant(response.data);
             await fetchRestaurantOperatingHour(restaurant.restaurantId);
             await fetchMenuList(restaurant.restaurantId);
-            await fetchReviews(restaurant.restaurantId); // Fetch reviews for the restaurant
+            await fetchReviews(restaurant.restaurantId);
           } else {
             setError(`Unexpected response data: ${response.message}`);
           }
@@ -71,12 +73,13 @@ const RestaurantDetail = () => {
 
     const fetchRestaurantOperatingHour = async (restaurantId) => {
       try {
-        const response = await fetchData(`/restaurants/${restaurantId}/operating-hours`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetchData(
+            `/restaurants/${restaurantId}/operating-hours`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
 
         if (response.statusCode === 200) {
           setOperatingHour(response.data);
@@ -140,12 +143,31 @@ const RestaurantDetail = () => {
   //   }
   // };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000);
+  }, []);
+
+  // 데이터 로딩 중이거나 에러가 있는 경우 처리
   if (loading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
+  }
+
+  if (!restaurant) {
+    return <div>Restaurant not found</div>;
   }
 
   return (
@@ -169,7 +191,11 @@ const RestaurantDetail = () => {
             <h2>{restaurant.name}</h2>
             <div
                 className="shop-image"
-                style={{ backgroundImage: `url(${restaurant.imageUrl})` }}
+                style={{
+                  backgroundImage: restaurant && restaurant.imageUrl
+                      ? `url(${restaurant.imageUrl})`
+                      : '',
+                }}
             ></div>
             <div className="rating">
               ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
@@ -202,7 +228,7 @@ const RestaurantDetail = () => {
             <div className="menu-list">
               {menu.map((item, index) => (
                   <div key={index} className="menu-item">
-                    <img src={item.img} alt={item.name} width="100%" height="150" />
+                    <img src={item.imageUrl} alt={item.name} width="100%" height="150" />
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>

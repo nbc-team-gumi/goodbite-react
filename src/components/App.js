@@ -28,6 +28,8 @@ import CustomerMypage from "./CustomerMypage";
 import OwnerMypage from "./OwnerMypage";
 import DeactivateCustomer from "./DeactivateCustomer";
 import DeactivateOwner from "./DeactivateOwner";
+import Reservation from './Reservation';
+import CustomerReservationList from './CustomerReservationList';
 import KakaoLoginRedirect from "./KakaoLoginRedirect";
 import KakaoSignup from "./KakaoSignup";
 import UpdateReview from "./UpdateReview";
@@ -72,6 +74,8 @@ return (
         <Route path="/waitings" element={<CustomerWaitingList />} />
         <Route path="/register-menu/:restaurantId" element={<RegisterMenu />} />
         <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
+        <Route path="/restaurants/:restaurantId/reservation" element={<Reservation />} />
+        <Route path="/reservations" element={<CustomerReservationList />} />
         <Route path='/kakao/callback' element={<KakaoLoginRedirect />} />
         <Route path='/kakao/signup' element={<KakaoSignup />} />
         <Route path="/update-review/:reviewId" element={<UpdateReview />} />

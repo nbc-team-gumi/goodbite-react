@@ -18,6 +18,7 @@ const RestaurantList = () => {
   const [waitingIds, setWaitingIds] = useState([]);
   const navigate = useNavigate();
   const { role, setRole, setEventSource, logout } = useUser();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -94,7 +95,7 @@ const RestaurantList = () => {
 
     const setupSSEConnections = (waitingIds) => {
       waitingIds.forEach(waitingId => {
-        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
+        const eventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/waiting/${waitingId}`);
 
         eventSource.onopen = () => {
           console.log(`Successfully subscribed to waitingId: ${waitingId}`);
@@ -131,34 +132,40 @@ const RestaurantList = () => {
 
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
-        <div key={restaurant.restaurantId} className="restaurant-card">
-          <img src={restaurant.imageUrl} alt={restaurant.name}
-               className="restaurant-image"/>
+        <div
+            key={restaurant.restaurantId}
+            className="restaurant-card"
+            onClick={() => navigate(`/restaurants/${restaurant.name}`)} // 카드 클릭 시 상세 페이지로 이동
+        >
+          <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
-            <h2 className="restaurant-name" onClick={() => navigate(
-                `/restaurants/${restaurant.name}`)}>{restaurant.name}</h2>
-            <p className="restaurant-type">{getKoreanType(
-                restaurant.category)}</p>
+            <h2 className="restaurant-name">{restaurant.name}</h2>
+            <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
             <div className="restaurant-rating">
               <span className="stars">{getStars(restaurant.rating)}</span>
               <span className="rating-value">{restaurant.rating
                   ? restaurant.rating.toFixed(1) : 'N/A'}</span>
             </div>
-            <button
-                className="waiting-button"
-                onClick={() => {
-                  if (role === 'ROLE_CUSTOMER') {
-                    navigate(
-                        `/waiting?restaurantId=${restaurant.restaurantId}`);
-                  } else if (role === 'ROLE_OWNER') {
-                    alert('손님 유저만 등록할 수 있습니다.');
-                  } else {
-                    navigate('/login');
-                  }
-                }}
-            >
-              웨이팅 등록
-            </button>
+            <div className="buttons-container">
+              <button
+                  className="reservation-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                    handleReservationClick(restaurant);
+                  }}
+              >
+                예약하기
+              </button>
+              <button
+                  className="waiting-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                    handleWaitingClick(restaurant);
+                  }}
+              >
+                웨이팅 등록
+              </button>
+            </div>
           </div>
         </div>
     ));
@@ -218,6 +225,26 @@ const RestaurantList = () => {
     }
   };
 
+  const handleReservationClick = (restaurant) => {
+    if (role === 'ROLE_CUSTOMER') {
+      navigate(`/restaurants/${restaurant.restaurantId}/reservation`);
+    } else if (role === 'ROLE_OWNER') {
+      alert('손님 유저만 예약할 수 있습니다.');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const handleWaitingClick = (restaurant) => {
+    if (role === 'ROLE_CUSTOMER') {
+      navigate(`/waiting?restaurantId=${restaurant.restaurantId}`);
+    } else if (role === 'ROLE_OWNER') {
+      alert('손님 유저만 등록할 수 있습니다.');
+    } else {
+      navigate('/login');
+    }
+  }
+
   const handleLogout = async () => {
     try {
       await logout(); // Logout through UserContext
@@ -254,6 +281,12 @@ const RestaurantList = () => {
                             onClick={() => navigate('/waitings')}
                         >
                           내 웨이팅 보기
+                        </button>
+                        <button
+                            className="view-reservations-button" // 내 예약 보기 버튼 추가
+                            onClick={() => navigate('/reservations')}
+                        >
+                          내 예약 보기
                         </button>
                         <button
                             className="view-waitings-button"
