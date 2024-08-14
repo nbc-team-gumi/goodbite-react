@@ -122,6 +122,7 @@ function Signup() {
             <input
                 id="nickname"
                 name="nickname"
+                placeholder="2글자 이상 20자 이하"
                 required
                 type="text"
                 value={formData.nickname}
@@ -133,6 +134,7 @@ function Signup() {
             <input
                 id="password"
                 name="password"
+                placeholder="8글자 이상 15글자 이하, 알파벳 대소문자, 숫자, 특수문자로 구성"
                 required
                 type="password"
                 value={formData.password}
