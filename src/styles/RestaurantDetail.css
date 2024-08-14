@@ -101,6 +101,11 @@ th {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 15px;
   width: calc(30.9% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 세로 중앙 정렬 */
+  align-items: center; /* 가로 중앙 정렬 */
+  text-align: center; /* 텍스트 중앙 정렬 */
   transition: transform 0.3s ease;
 }
 
@@ -129,17 +134,6 @@ th {
 
 .menu-item:hover {
   transform: scale(1.05);
-}
-
-.btn-update {
-  background-color: #ff9800;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  font-size: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
   
 /* 리뷰 섹션 스타일 */

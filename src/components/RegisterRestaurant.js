@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {fetchData} from '../util/api';
+import React, { useState } from 'react';
+import { fetchData } from '../util/api';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
 
@@ -110,7 +110,7 @@ function RegisterRestaurant() {
   return (
       <div className="container">
         <Header>
-          <h1 style={{color: 'white'}}>GOOD BITE - 가게 등록</h1>
+          <h1 style={{ color: 'white' }}>GOOD BITE - 가게 등록</h1>
         </Header>
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit} >
