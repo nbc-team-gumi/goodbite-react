@@ -78,7 +78,7 @@ function UpdateReview() {
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        const response = await fetchData(`/reviews/${reviewId}`, {
+        const response = await fetchData(`/waiting-reviews/${reviewId}`, {
           method: 'GET',
         });
         setRating(response.data.rating);
@@ -98,7 +98,7 @@ function UpdateReview() {
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
     try {
-      await fetchData(`/reviews/${reviewId}`, {
+      await fetchData(`/waiting-reviews/${reviewId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ function UpdateReview() {
   const handleDelete = async () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       try {
-        await fetchData(`/reviews/${reviewId}`, {
+        await fetchData(`/waiting-reviews/${reviewId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

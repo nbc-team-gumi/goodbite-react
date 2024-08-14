@@ -90,7 +90,7 @@ function CustomerWaitingList() {
     }
 
     try {
-      await fetchData('/reviews', {
+      await fetchData('/waiting-reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
