@@ -171,7 +171,7 @@ function Signup() {
             <input
                 id="businessNumber"
                 name="businessNumber"
-                placeholder="예: 123-45-67890"
+                placeholder="사업자 등록 번호 10자리"
                 type="text"
                 value={formData.businessNumber}
                 onChange={handleChange}
