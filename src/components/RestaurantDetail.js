@@ -143,6 +143,20 @@ const RestaurantDetail = () => {
   //   }
   // };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000);
+  }, []);
+
   // 데이터 로딩 중이거나 에러가 있는 경우 처리
   if (loading) {
     return <div>Loading...</div>;
@@ -214,7 +228,7 @@ const RestaurantDetail = () => {
             <div className="menu-list">
               {menu.map((item, index) => (
                   <div key={index} className="menu-item">
-                    <img src={item.img} alt={item.name} width="100%" height="150" />
+                    <img src={item.imageUrl} alt={item.name} width="100%" height="150" />
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>

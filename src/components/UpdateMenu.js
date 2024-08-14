@@ -72,6 +72,7 @@ function UpdateMenu() {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -85,6 +86,7 @@ function UpdateMenu() {
         setName(response.data.name);
         setPrice(response.data.price);
         setDescription(response.data.description);
+        setImageUrl(response.data.imageUrl)
       } catch (error) {
         setError(error.message);
       } finally {
@@ -108,7 +110,8 @@ function UpdateMenu() {
         body: JSON.stringify({
           name,
           price,
-          description
+          description,
+          imageUrl
         }),
       });
       alert('메뉴 수정이 완료되었습니다!');
@@ -175,6 +178,17 @@ function UpdateMenu() {
                   type="text"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="menu-imageUrl">이미지</Label>
+              <Input
+                  id="menu-imageUrl"
+                  name="menuImageUrl"
+                  required
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
               />
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">메뉴 수정하기</SubmitBtn>
