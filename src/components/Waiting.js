@@ -16,6 +16,7 @@ const Waiting = () => {
   const [message, setMessage] = useState('');
   const [waitingCount, setWaitingCount] = useState(0);
   const [showModal, setShowModal] = useState(false); // 모달 표시 상태
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   // 모달 컴포넌트
   const Modal = ({ show, onClose, children }) => {
@@ -75,7 +76,7 @@ const Waiting = () => {
         setShowModal(true); // 모달 표시
 
         // 웨이팅 ID로 SSE 구독 시작
-        const eventSource = new EventSource(`http://localhost:8080/server-events/subscribe/waiting/${waitingId}`);
+        const eventSource = new EventSource(`${API_BASE_URL}/server-events/subscribe/waiting/${waitingId}`);
 
         eventSource.onopen = () => {
           console.log(`Successfully subscribed to waitingId: ${waitingId}`);
