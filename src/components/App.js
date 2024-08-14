@@ -28,7 +28,8 @@ import CustomerMypage from "./CustomerMypage";
 import OwnerMypage from "./OwnerMypage";
 import DeactivateCustomer from "./DeactivateCustomer";
 import DeactivateOwner from "./DeactivateOwner";
-import KakaoLoginRedirect from "./KaKaoLoginRedirect";
+import KakaoLoginRedirect from "./KakaoLoginRedirect";
+import KakaoSignup from "./KakaoSignup";
 
 const App = () => {
   // 역할에 따라 리다이렉트할 경로 결정
@@ -70,6 +71,7 @@ return (
         <Route path="/register-menu/:restaurantId" element={<RegisterMenu />} />
         <Route path="/update-menu/:menuId" element={<UpdateMenu />} />
         <Route path='/kakao/callback' element={<KakaoLoginRedirect />} />
+        <Route path='/kakao/signup' element={<KakaoSignup />} />
       </Routes>
     </Router>
     </UserProvider>

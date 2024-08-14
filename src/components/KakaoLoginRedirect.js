@@ -8,13 +8,13 @@ const KakaoLoginRedirect = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code');
-  const isOwner = queryParams.get('state');
+  const isOwner = queryParams.get('state') === 'true';
   const navigate = useNavigate();
   const {setRole} = useUser();
 
   useEffect(() => {
     const handleKakaoLogin = async () => {
-      if (!code || !isOwner) {
+      if (!code || isOwner === null) {
         return;
       }
 
@@ -36,14 +36,6 @@ const KakaoLoginRedirect = () => {
         const responseBody = await response.json();
         if (responseBody && responseBody.data) {
           const {nickname, email} = responseBody.data;
-
-          // 필요에 따라 role 설정 등의 추가 작업
-          if (isOwner === true) {
-            setRole('ROLE_OWNER');
-          } else {
-            setRole('ROLE_CUSTOMER');
-          }
-
           const accessToken = response.headers.get('Authorization');
           const refreshToken = response.headers.get('Refresh');
 
@@ -52,17 +44,24 @@ const KakaoLoginRedirect = () => {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
 
+            // 필요에 따라 role 설정 등의 추가 작업
+            if (isOwner === true) {
+              setRole('ROLE_OWNER');
+            } else {
+              setRole('ROLE_CUSTOMER');
+            }
+
             alert('로그인에 성공했습니다!');
             navigate('/');
           } else {
-            //-------------------------
-            // 카카오 전용 회원가입 페이지로
-            // 다음 nickname, email 회원가입 페이지에 넘김
-            //-------------------------
-            console.log('Kakao User Nickname:', nickname);
-            console.log('Kakao User Email:', email);
-          }
+            const password = generateRandomString();
 
+            // 카카오 전용 회원가입 페이지로
+            const userType = isOwner ? 'owner' : 'customer';
+            navigate('/kakao/signup', {
+              state: { nickname, email, password, userType }
+            });
+          }
         } else {
           throw new Error('Invalid response data');
         }
@@ -74,9 +73,32 @@ const KakaoLoginRedirect = () => {
     };
 
     handleKakaoLogin();
-  }, [code, isOwner, navigate]);
+  }, [code, isOwner, navigate, setRole]);
 
   return <div>로그인 중입니다.</div>;
+};
+
+const generateRandomString = () => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const specialChars = '@$!%*?&';
+
+  const getRandomChar = (charset) => charset[Math.floor(Math.random() * charset.length)];
+
+  // 각 그룹에서 하나씩 문자를 뽑아 최소 요구 조건을 만족
+  let randomString = '';
+  randomString += getRandomChar(letters);
+  randomString += getRandomChar(numbers);
+  randomString += getRandomChar(specialChars);
+
+  // 나머지 자리를 랜덤하게 채움
+  const allChars = letters + numbers + specialChars;
+  while (randomString.length < 10) {
+    randomString += getRandomChar(allChars);
+  }
+
+  // 문자열을 무작위로 섞음
+  return randomString.split('').sort(() => 0.5 - Math.random()).join('');
 };
 
 export default KakaoLoginRedirect;
