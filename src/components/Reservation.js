@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate를 import
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fetchData } from '../util/api';
@@ -7,6 +7,7 @@ import '../styles/Reservation.css';
 
 const Reservation = () => {
   const { restaurantId } = useParams(); // URL에서 restaurantId를 가져옴
+  const navigate = useNavigate(); // useNavigate 훅 사용
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [reservationDetails, setReservationDetails] = useState({
@@ -88,6 +89,7 @@ const Reservation = () => {
       console.log(response.statusCode);
       if (response.statusCode === 200) {
         alert('예약이 완료되었습니다.');
+        navigate(-1); // 이전 페이지로 이동
       } else {
         alert('예약에 실패했습니다. 다시 시도해주세요.');
       }
