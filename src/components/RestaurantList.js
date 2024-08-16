@@ -345,12 +345,16 @@ const RestaurantList = () => {
                   onChange={e => setFilterType(e.target.value)}
               >
                 <option value="all">모든 종류</option>
-                <option value="korean">한식</option>
-                <option value="italian">이탈리안</option>
-                <option value="japanese">일식</option>
-                <option value="chinese">중식</option>
-                <option value="seafood">해산물</option>
-                <option value="bbq">바베큐</option>
+                <option value="KOREAN">한식</option>
+                <option value="WESTERN">양식</option>
+                <option value="JAPANESE">일식</option>
+                <option value="CHINESE">중식</option>
+                <option value="ASIAN">아시안</option>
+                <option value="BUNSIK">분식</option>
+                <option value="PIZZA">피자</option>
+                <option value="CHICKEN">치킨</option>
+                <option value="BURGER">버거</option>
+                <option value="CAFE">카페/디저트</option>
               </select>
               <select
                   id="filterRating"
