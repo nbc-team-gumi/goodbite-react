@@ -12,6 +12,7 @@ function OwnerRestaurantDetail() {
   const [error, setError] = useState(null);
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +32,8 @@ function OwnerRestaurantDetail() {
         await Promise.all([
           fetchRestaurant(currentRestaurantId),
           fetchRestaurantOperatingHour(currentRestaurantId),
-          fetchMenuList(currentRestaurantId)
+          fetchMenuList(currentRestaurantId),
+          fetchReviews(currentRestaurantId),
         ]);
 
         setApiSuccess(true);
@@ -107,6 +109,26 @@ function OwnerRestaurantDetail() {
     }
   };
 
+  const fetchReviews = async (restaurantId) => {
+    try {
+      const response = await fetchData(`/restaurants/${restaurantId}/reviews`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.statusCode === 200) {
+        setReviews(response.data);
+      } else {
+        setError(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
+
   const navigateToUpdateRestaurant = () => {
     navigate(`/update-restaurant/${restaurantId}`);
   };
@@ -163,7 +185,7 @@ function OwnerRestaurantDetail() {
             <h2>{restaurant.name} <button onClick={navigateToUpdateRestaurant}>정보 수정하기</button></h2>
             <div className="shop-image" style={{ backgroundImage: `url(${restaurant.imageUrl})` }}></div>
             <div className="rating">
-              ★★★★☆ <span className="review-count">(리뷰 152개)</span>
+              ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
             </div>
             <p>{restaurant.category}</p>
             <table>
@@ -199,6 +221,18 @@ function OwnerRestaurantDetail() {
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}</p>
+                  </div>
+              ))}
+            </div>
+
+            <h3>리뷰</h3>
+            <div className="reviews">
+              {reviews.map((review, index) => (
+                  <div key={index} className="review">
+                    <span>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                    <p>{review.content}</p>
+                    <p>{review.nickname}</p>
+                    <p>{new Date(review.createdAt).toLocaleDateString()}</p>
                   </div>
               ))}
             </div>
