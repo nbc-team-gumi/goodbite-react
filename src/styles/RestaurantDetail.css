@@ -247,3 +247,12 @@ form {
   font-size: 0.9rem;
   color: #666;
 }
+
+.reservation-button {
+  margin-right: 5%;
+  width: 47.5%;
+}
+
+.waiting-button {
+  width: 47.5%;
+}
