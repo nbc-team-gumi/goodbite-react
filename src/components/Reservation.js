@@ -164,7 +164,7 @@ const Reservation = () => {
                                 checked={reservationDetails.selectedMenus[item.menuId] || false}
                             />
                             <label htmlFor={`menu-${item.menuId}`}>
-                              <img src={item.img} alt={item.name} width="50" height="50" />
+                              <img src={item.imageUrl} alt={item.name} width="50" height="50" />
                               {item.name} - {item.price}원
                             </label>
                             {reservationDetails.selectedMenus[item.menuId] && (
