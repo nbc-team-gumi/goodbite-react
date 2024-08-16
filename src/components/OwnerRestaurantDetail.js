@@ -79,7 +79,12 @@ function OwnerRestaurantDetail() {
       });
 
       if (response.statusCode === 200) {
-        setOperatingHour(response.data);
+        const formattedHours = response.data.map(hour => ({
+          ...hour,
+          openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
+          closeTime: hour.closeTime.substring(0, 5), // hh:mm:ss -> hh:mm
+        }));
+        setOperatingHour(formattedHours);
       } else {
         throw new Error(`Unexpected response data: ${response.message}`);
       }
