@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/RestaurantDetail.css';
 import { useUser } from '../UserContext';
@@ -13,6 +13,7 @@ const RestaurantDetail = () => {
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
 
   const fetchReviews = async (restaurantId) => {
     try {
@@ -138,6 +139,26 @@ const RestaurantDetail = () => {
     return <div>Restaurant not found</div>;
   }
 
+  const handleReservationClick = () => {
+    if (role === 'ROLE_CUSTOMER') {
+      navigate(`/restaurants/${restaurantId}/reservation`);
+    } else if (role === 'ROLE_OWNER') {
+      alert('손님 유저만 예약할 수 있습니다.');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const handleWaitingClick = () => {
+    if (role === 'ROLE_CUSTOMER') {
+      navigate(`/waiting?restaurantId=${restaurantId}`);
+    } else if (role === 'ROLE_OWNER') {
+      alert('손님 유저만 등록할 수 있습니다.');
+    } else {
+      navigate('/login');
+    }
+  }
+
   return (
       <div className="container">
         <header className="header">
@@ -157,6 +178,24 @@ const RestaurantDetail = () => {
         <div className="content">
           <div className="shop-info">
             <h2>{restaurant.name}</h2>
+            <button
+                className="detail-reservation-button"
+                onClick={(e) => {
+                  e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                  handleReservationClick(restaurant);
+                }}
+            >
+              예약하기
+            </button>
+            <button
+                className="detail-waiting-button"
+                onClick={(e) => {
+                  e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                  handleWaitingClick(restaurant);
+                }}
+            >
+              웨이팅 등록
+            </button>
             <div
                 className="shop-image"
                 style={{
