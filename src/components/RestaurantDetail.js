@@ -157,7 +157,7 @@ const RestaurantDetail = () => {
                   <a href="/dashboard">대시보드</a>
                 </>
             ) : role === 'ROLE_CUSTOMER' ? (
-                <a href="/customer">마이페이지</a>
+                <a href="/customers">마이페이지</a>
             ) : null}
           </nav>
         </header>
