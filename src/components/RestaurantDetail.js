@@ -5,7 +5,7 @@ import '../styles/RestaurantDetail.css';
 import { useUser } from '../UserContext';
 
 const RestaurantDetail = () => {
-  const { restaurantName } = useParams();
+  const { restaurantId } = useParams();
   const { role } = useUser();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,15 +35,11 @@ const RestaurantDetail = () => {
   };
 
   useEffect(() => {
-    const fetchRestaurantByName = async (name) => {
+    const fetchRestaurant = async () => {
       setLoading(true);
       try {
-        const restaurants = await fetchData('/restaurants');
-        const restaurant = restaurants.data.find(r => r.name === name);
-
-        if (restaurant) {
           const response = await fetchData(
-              `/restaurants/${restaurant.restaurantId}`, {
+              `/restaurants/${restaurantId}`, {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
@@ -52,15 +48,12 @@ const RestaurantDetail = () => {
 
           if (response.statusCode === 200) {
             setRestaurant(response.data);
-            await fetchRestaurantOperatingHour(restaurant.restaurantId);
-            await fetchMenuList(restaurant.restaurantId);
-            await fetchReviews(restaurant.restaurantId);
+            await fetchRestaurantOperatingHour(restaurantId);
+            await fetchMenuList(restaurantId);
+            await fetchReviews(restaurantId);
           } else {
             setError(`Unexpected response data: ${response.message}`);
           }
-        } else {
-          setError('Restaurant not found');
-        }
       } catch (error) {
         setError(error.message);
         console.error('Fetch error:', error);
@@ -116,15 +109,15 @@ const RestaurantDetail = () => {
       }
     };
 
-    fetchRestaurantByName(restaurantName);
-  }, [restaurantName]);
+    fetchRestaurant();
+  }, [restaurantId]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (loading) {
         window.location.reload();
       }
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [loading]);
