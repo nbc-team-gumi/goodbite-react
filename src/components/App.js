@@ -58,7 +58,7 @@ return (
         <Route path="/update-operatinghour/:operatingHourId" element={<UpdateOperatingHour />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/restaurant-detail" element={<RestaurantDetail/>}/>*/}
-        <Route path="/restaurants/:restaurantName" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
+        <Route path="/restaurants/:restaurantId" element={<RestaurantDetail />} /> {/* 동적 경로 설정 */}
         <Route path="/register-restaurant" element={<RegisterRestaurant/>}/>
         {/*<Route path="/update-restaurant" element={<UpdateRestaurant/>}/>*/}
         <Route path="/update-restaurant/:restaurantId" element={<UpdateRestaurant />} />

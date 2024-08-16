@@ -166,6 +166,16 @@ function CustomerReservationList() {
       (currentPage + 1) * pageSize
   );
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   return (
       <div>
         <div className={styles.banner}>

@@ -59,6 +59,20 @@ function MyReviewList() {
     navigate(`/update-review/${reviewId}`);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 5000);
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }

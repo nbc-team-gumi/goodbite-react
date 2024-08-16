@@ -19,6 +19,7 @@ const RestaurantList = () => {
   const navigate = useNavigate();
   const { role, setRole, setEventSource, logout } = useUser();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const [loading, setLoading] = useState(true);
 
   const subLocations = {
     seoul: ["마포구", "영등포구", "강남구"],
@@ -27,6 +28,7 @@ const RestaurantList = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const fetchRestaurants = async () => {
       try {
         const data = await fetchData('/restaurants');
@@ -37,6 +39,8 @@ const RestaurantList = () => {
         }
       } catch (error) {
         console.error('Error fetching restaurants:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -130,12 +134,26 @@ const RestaurantList = () => {
     };
   }, [waitingIds, setEventSource]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const renderRestaurants = (restaurantsToRender) => {
     return restaurantsToRender.map(restaurant => (
         <div
             key={restaurant.restaurantId}
             className="restaurant-card"
-            onClick={() => navigate(`/restaurants/${restaurant.name}`)} // 카드 클릭 시 상세 페이지로 이동
+            onClick={() => navigate(`/restaurants/${restaurant.restaurantId}`)} // 카드 클릭 시 상세 페이지로 이동
         >
           <img src={restaurant.imageUrl} alt={restaurant.name} className="restaurant-image" />
           <div className="restaurant-info">
@@ -345,12 +363,16 @@ const RestaurantList = () => {
                   onChange={e => setFilterType(e.target.value)}
               >
                 <option value="all">모든 종류</option>
-                <option value="korean">한식</option>
-                <option value="italian">이탈리안</option>
-                <option value="japanese">일식</option>
-                <option value="chinese">중식</option>
-                <option value="seafood">해산물</option>
-                <option value="bbq">바베큐</option>
+                <option value="KOREAN">한식</option>
+                <option value="WESTERN">양식</option>
+                <option value="JAPANESE">일식</option>
+                <option value="CHINESE">중식</option>
+                <option value="ASIAN">아시안</option>
+                <option value="BUNSIK">분식</option>
+                <option value="PIZZA">피자</option>
+                <option value="CHICKEN">치킨</option>
+                <option value="BURGER">버거</option>
+                <option value="CAFE">카페/디저트</option>
               </select>
               <select
                   id="filterRating"

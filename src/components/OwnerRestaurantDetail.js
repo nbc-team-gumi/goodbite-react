@@ -127,6 +127,16 @@ function OwnerRestaurantDetail() {
     navigate(`/update-menu/${menuId}`);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   if (loading) {
     return <div>Loading...</div>;
   }

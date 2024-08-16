@@ -134,6 +134,16 @@ function UpdateReview() {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   return (
       <div className="container">
         <Header>
