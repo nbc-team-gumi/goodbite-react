@@ -248,11 +248,11 @@ form {
   color: #666;
 }
 
-.reservation-button {
+.detail-reservation-button {
   margin-right: 5%;
   width: 47.5%;
 }
 
-.waiting-button {
+.detail-waiting-button {
   width: 47.5%;
 }

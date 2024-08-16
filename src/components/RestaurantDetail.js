@@ -179,7 +179,7 @@ const RestaurantDetail = () => {
           <div className="shop-info">
             <h2>{restaurant.name}</h2>
             <button
-                className="reservation-button"
+                className="detail-reservation-button"
                 onClick={(e) => {
                   e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
                   handleReservationClick(restaurant);
@@ -188,7 +188,7 @@ const RestaurantDetail = () => {
               예약하기
             </button>
             <button
-                className="waiting-button"
+                className="detail-waiting-button"
                 onClick={(e) => {
                   e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
                   handleWaitingClick(restaurant);
