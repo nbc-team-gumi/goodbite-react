@@ -107,7 +107,7 @@ const Waiting = () => {
         throw new Error('등록에 실패했습니다.');
       }
     } catch (error) {
-      setMessage(`waiting 등록 실패: ${error.message}`);
+      setMessage(`waiting 등록 실패: `+ error.message);
       setShowModal(true);
     }
   };
