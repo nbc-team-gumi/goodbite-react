@@ -62,24 +62,39 @@ function RegisterMenu() {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const navigate = useNavigate();
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageUrl(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
+    const formData = new FormData();
+    formData.append('createMenuRequestDto', new Blob([JSON.stringify({
+      restaurantId,
+      name,
+      price,
+      description
+    })], { type: 'application/json' }));
+    if (imageUrl) {
+      formData.append('image', imageUrl);
+    }
     try {
       await fetchData('/menus', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          restaurantId,
-          name,
-          price,
-          description,
-          imageUrl
-        }),
+        body: formData,
       });
       alert('메뉴 등록이 완료되었습니다!');
       navigate(`/owner-restaurant-detail/${restaurantId}`);
@@ -133,13 +148,21 @@ function RegisterMenu() {
             <FormGroup>
               <Label htmlFor="menu-imageUrl">이미지 URL</Label>
               <Input
+                  accept="image/*"
                   id="menu-imageUrl"
-                  name="menuImageUrl"
-                  required
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  name="imageUrl"
+                  type="file"
+                  onChange={handleFileChange}
               />
+              <div id="image-preview">
+                {imagePreview && (
+                    <img
+                        src={imagePreview}
+                        alt="Preview"
+                        style={{ maxWidth: '100px', maxHeight: '100px', margin: '5px' }}
+                    />
+                )}
+              </div>
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">메뉴 등록하기</SubmitBtn>
           </Form>

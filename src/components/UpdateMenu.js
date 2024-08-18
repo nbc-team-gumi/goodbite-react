@@ -66,9 +66,8 @@ const Btn = styled.button`
   transition: background-color 0.3s ease;
 `;
 
-
 function UpdateMenu() {
-  const { menuId } = useParams();
+  const {menuId} = useParams();
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
@@ -76,6 +75,20 @@ function UpdateMenu() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImageUrl(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -101,18 +114,19 @@ function UpdateMenu() {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
     // console.log(formData);
+    const formData = new FormData();
+    formData.append('updateMenuRequestDto', new Blob([JSON.stringify({
+      name,
+      price,
+      description
+    })], {type: 'application/json'}));
+    if (imageUrl) {
+      formData.append('image', imageUrl);
+    }
     try {
       await fetchData(`/menus/${menuId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          price,
-          description,
-          imageUrl
-        }),
+        body: formData,
       });
       alert('메뉴 수정이 완료되었습니다!');
       navigate('/owner-restaurant-detail');
@@ -193,16 +207,23 @@ function UpdateMenu() {
             <FormGroup>
               <Label htmlFor="menu-imageUrl">이미지 URL</Label>
               <Input
+                  accept="image/*"
                   id="menu-imageUrl"
-                  name="menuImageUrl"
-                  required
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  name="imageUrl"
+                  type="file"
+                  onChange={handleFileChange}
               />
+              <div id="image-preview">
+                {imagePreview && <img src={imagePreview} alt="Preview" style={{
+                  maxWidth: '100px',
+                  maxHeight: '100px',
+                  margin: '5px'
+                }}/>}
+              </div>
             </FormGroup>
             <SubmitBtn className="submit-btn" type="submit">메뉴 수정하기</SubmitBtn>
-            <Btn className="btn-danger" type="button" onClick={handleDelete}>메뉴 삭제하기</Btn>
+            <Btn className="btn-danger" type="button" onClick={handleDelete}>메뉴
+              삭제하기</Btn>
           </Form>
         </Container>
       </div>
