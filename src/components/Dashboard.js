@@ -280,6 +280,17 @@ const Dashboard = () => {
   );
 };
 
+const getKoreanType = (type) => {
+  const types = {
+    PENDING: "예약 확정 대기중",
+    COMPLETED: "완료된 예약",
+    CONFIRMED: "확정된 예약",
+    CANCELLED: "취소된 예약",
+    REJECTED: "거부된 예약"
+  };
+  return types[type] || type;
+};
+
 const StatisticsBox = ({ reservationList = [], onCancelClick }) => (
     <div className="statistics-box">
       <h2>예약 목록</h2>
@@ -303,7 +314,7 @@ const StatisticsBox = ({ reservationList = [], onCancelClick }) => (
               <td>{reservation.partySize}</td>
               <td>{reservation.customerId}</td>
               <td>{reservation.requirement}</td>
-              <td>{reservation.status}</td>
+              <td>{getKoreanType(reservation.status)}</td>
               <td>
                 <button onClick={() => onCancelClick(reservation.reservationId)}>취소</button>
               </td>
