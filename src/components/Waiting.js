@@ -101,7 +101,7 @@ const Waiting = () => {
         // 모달을 닫은 후 /CustomerWaitingList 페이지로 이동
         setTimeout(() => {
           setShowModal(false);
-          navigate('/Waitings');
+          navigate('/waitings');
         }, 2000); // 2초
       } else {
         throw new Error('등록에 실패했습니다.');
