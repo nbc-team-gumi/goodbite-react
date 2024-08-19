@@ -291,7 +291,7 @@ function CustomerWaitingList() {
                     이전
                   </button>
                   <span>
-                페이지 {page + 1} / {totalPages}
+                페이지 {page + 1} / {totalPages === 0 ? totalPages + 1 : totalPages}
               </span>
                   <button onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages - 1}>
                     다음

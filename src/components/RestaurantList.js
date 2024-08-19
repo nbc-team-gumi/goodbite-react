@@ -7,7 +7,6 @@ import '../styles/RestaurantList.css';
 import { useUser } from '../UserContext';
 import logo from '../images/good-bite-logo.png';
 
-
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +15,8 @@ const RestaurantList = () => {
   const [filterType, setFilterType] = useState('all');
   const [filterRating, setFilterRating] = useState('all');
   const [waitingIds, setWaitingIds] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
   const { role, setRole, setEventSource, logout } = useUser();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -27,25 +28,34 @@ const RestaurantList = () => {
     gangwon: ["춘천시", "원주시", "강릉시"],
   };
 
-  useEffect(() => {
+  const fetchRestaurants = async (page) => {
     setLoading(true);
-    const fetchRestaurants = async () => {
-      try {
-        const data = await fetchData('/restaurants');
-        if (data && data.data && Array.isArray(data.data)) {
-          setRestaurants(data.data);
-        } else {
-          throw new Error('Invalid data format received from server');
-        }
-      } catch (error) {
-        console.error('Error fetching restaurants:', error);
-      } finally {
-        setLoading(false);
+    try {
+      const data = await fetchData(`/restaurants?page=${page}`);
+      if (data && data.data.content && Array.isArray(data.data.content)) {
+        setRestaurants(data.data.content);
+        setCurrentPage(data.data.number);
+        setTotalPages(data.data.totalPages);
+      } else {
+        throw new Error('Invalid data format received from server');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchRestaurants();
-  }, []);
+  useEffect(() => {
+    fetchRestaurants(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+      fetchRestaurants(page); // 페이지 변경 시 해당 페이지 데이터 로드
+    }
+  };
 
   useEffect(() => {
     const fetchAllWaitings = async () => {
@@ -159,11 +169,6 @@ const RestaurantList = () => {
           <div className="restaurant-info">
             <h2 className="restaurant-name">{restaurant.name}</h2>
             <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
-            {/*<div className="restaurant-rating">*/}
-            {/*  <span className="stars">{getStars(restaurant.rating)}</span>*/}
-            {/*  <span className="rating-value">{restaurant.rating*/}
-            {/*      ? restaurant.rating.toFixed(1) : 'N/A'}</span>*/}
-            {/*</div>*/}
             <div className="buttons-container">
               <button
                   className="reservation-button"
@@ -201,30 +206,18 @@ const RestaurantList = () => {
     return types[type] || type;
   };
 
-  const getStars = (rating) => {
-    return rating ? '★'.repeat(Math.floor(rating)) + '☆'.repeat(
-        5 - Math.floor(rating)) : '☆☆☆☆☆';
-  };
-
   const filterRestaurants = () => {
     if (!Array.isArray(restaurants)) {
       console.error('restaurants is not an array:', restaurants);
       return [];
     }
     const filteredRestaurants = restaurants.filter(restaurant => {
-      const nameMatch = restaurant.name.toLowerCase().includes(
-          searchTerm.toLowerCase());
-      const locationMatch = filterLocation === 'all' || restaurant.area
-          === filterLocation;
-      const subLocationMatch = filterSubLocation === 'all'
-          || (restaurant.address && restaurant.address.includes(
-              filterSubLocation));
-      const typeMatch = filterType === 'all' || restaurant.category
-          === filterType;
-      const ratingMatch = filterRating === 'all' || restaurant.rating
-          >= parseFloat(filterRating);
-      return nameMatch && locationMatch && subLocationMatch && typeMatch
-          && ratingMatch;
+      const nameMatch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const locationMatch = filterLocation === 'all' || restaurant.area === filterLocation;
+      const subLocationMatch = filterSubLocation === 'all' || (restaurant.address && restaurant.address.includes(filterSubLocation));
+      const typeMatch = filterType === 'all' || restaurant.category === filterType;
+      const ratingMatch = filterRating === 'all' || restaurant.rating >= parseFloat(filterRating);
+      return nameMatch && locationMatch && subLocationMatch && typeMatch && ratingMatch;
     });
     return filteredRestaurants;
   };
@@ -398,6 +391,17 @@ const RestaurantList = () => {
           </div>
           <div className="restaurant-grid">
             {renderRestaurants(filterRestaurants())}
+          </div>
+          <div className="pagination">
+            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+              이전
+            </button>
+            <span>
+              페이지 {currentPage + 1} / {totalPages}
+            </span>
+            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
+              다음
+            </button>
           </div>
         </div>
       </div>
