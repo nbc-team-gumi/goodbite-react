@@ -196,6 +196,29 @@ function OwnerRestaurantDetail() {
     return <div>No restaurant details available</div>;
   }
 
+  const getKoreanType = (type) => {
+    const types = {
+      KOREAN: "한식",
+      WESTERN: "양식",
+      JAPANESE: "일식",
+      CHINESE: "중식",
+      ASIAN: "아시안",
+      BUNSIK: "분식",
+      PIZZA: "피자",
+      CHICKEN: "치킨",
+      BURGER: "버거",
+      CAFE: "카페/디저트",
+      MONDAY: "월요일",
+      TUESDAY: "화요일",
+      WEDNESDAY: "수요일",
+      THURSDAY: "목요일",
+      FRIDAY: "금요일",
+      SATURDAY: "토요일",
+      SUNDAY: "일요일"
+    };
+    return types[type] || type;
+  };
+
   return (
       <div className="container">
         <header className="header">
@@ -212,7 +235,7 @@ function OwnerRestaurantDetail() {
             <div className="rating">
               ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
             </div>
-            <p>{restaurant.category}</p>
+            <p>{getKoreanType(restaurant.category)}</p>
             <table>
               <tbody>
               <tr>
@@ -228,7 +251,7 @@ function OwnerRestaurantDetail() {
                 <td>
                   {operatingHour.map((hour, index) => (
                       <div key={index}>
-                        {hour.dayOfWeek}: {hour.openTime} - {hour.closeTime}
+                        {getKoreanType(hour.dayOfWeek)}: {hour.openTime} - {hour.closeTime}
                         <button className="btn-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
                       </div>
                   ))}
