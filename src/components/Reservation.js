@@ -99,7 +99,7 @@ const Reservation = () => {
       }
     } catch (error) {
       console.error('예약 중 오류가 발생했습니다:', error);
-      alert(error + ' 다시 시도해주세요.');
+      alert(error + '\n 다시 시도해주세요.');
     }
   };
 
