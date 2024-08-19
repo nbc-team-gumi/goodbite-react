@@ -1,39 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/MyReviewList.css';
-import {fetchData} from "../util/api";
-import {useNavigate} from "react-router-dom";
-
-const sampleReviews = [
-  {
-    restaurantName: "맛있는 짜장면",
-    date: "2023-05-15",
-    rating: 4.5,
-    content: "짜장면이 정말 맛있었어요. 면이 쫄깃하고 소스도 진해서 좋았습니다."
-  },
-  {
-    restaurantName: "신선한 초밥",
-    date: "2023-05-10",
-    rating: 5,
-    content: "초밥의 밥과 생선 모두 신선했습니다. 특히 연어 초밥이 일품이었어요!"
-  },
-  {
-    restaurantName: "화덕 피자",
-    date: "2023-05-05",
-    rating: 4,
-    content: "화덕에서 구운 피자라 그런지 도우가 정말 맛있었어요. 토핑도 풍성해서 좋았습니다."
-  }
-];
+import { fetchData } from "../util/api";
+import { useNavigate } from "react-router-dom";
 
 function MyReviewList() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchMyReviews = async () => {
+    const fetchMyReviews = async (page) => {
       try {
-        const response = await fetchData(`/reviews/my`, {
+        const response = await fetchData(`/reviews/my?page=${page}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -41,7 +22,9 @@ function MyReviewList() {
         });
 
         if (response.statusCode === 200) {
-          setReviews(response.data);
+          setReviews(response.data.content);
+          setTotalPages(response.data.totalPages);
+          setCurrentPage(response.data.number);
         } else {
           setError(`Unexpected response data: ${response.message}`);
         }
@@ -49,14 +32,20 @@ function MyReviewList() {
         setError(error.message);
         console.error('Fetch error:', error);
       } finally {
-        setLoading(false); // 로딩 상태 해제
+        setLoading(false);
       }
     };
-    fetchMyReviews();
-  }, []);
+    fetchMyReviews(currentPage);
+  }, [currentPage]);
 
   const navigateToUpdateReview = (reviewId) => {
     navigate(`/update-review/${reviewId}`);
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   useEffect(() => {
@@ -68,10 +57,6 @@ function MyReviewList() {
 
     return () => clearTimeout(timer);
   }, [loading]);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 5000);
-  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -87,22 +72,34 @@ function MyReviewList() {
 
   return (
       <>
-        {reviews.map((review, index) => (
-            <li className="review-item" key={index}>
-              <div className="review-header">
-                <span className="restaurant-name">{review.restaurantName}</span>
-                <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
-              </div>
-              <div className="review-rating">★ {review.rating.toFixed(1)}</div>
-              <p className="review-content">{review.content}</p>
-              <button
-                  className="edit-button"
-                  onClick={() => navigateToUpdateReview(review.reviewId)}
-              >
-                수정
-              </button>
-            </li>
-        ))}
+        <ul className="review-list">
+          {reviews.map((review, index) => (
+              <li className="review-item" key={index}>
+                <div className="review-header">
+                  <span className="restaurant-name">{review.restaurantName}</span>
+                  <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className="review-rating">★ {review.rating.toFixed(1)}</div>
+                <p className="review-content">{review.content}</p>
+                <button
+                    className="edit-button"
+                    onClick={() => navigateToUpdateReview(review.reviewId)}
+                >
+                  수정
+                </button>
+              </li>
+          ))}
+        </ul>
+
+        <div className="pagination">
+          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage <= 0}>
+            이전
+          </button>
+          <span>페이지 {currentPage + 1} / {totalPages === 0 ? totalPages + 1 : totalPages}</span>
+          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
+            다음
+          </button>
+        </div>
       </>
   );
 }
@@ -118,9 +115,7 @@ function App() {
         </header>
         <div className="container">
           <h2>내가 쓴 리뷰 목록</h2>
-          <ul className="review-list">
-            <MyReviewList />
-          </ul>
+          <MyReviewList />
         </div>
       </div>
   );

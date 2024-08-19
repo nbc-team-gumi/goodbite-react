@@ -11,15 +11,17 @@ const Dashboard = () => {
   const [restaurantId, setRestaurantId] = useState(null);
   const [apiSuccess, setApiSuccess] = useState(false);
   const [reservationList, setReservationList] = useState([]);
+  const [reservationTotalPages, setReservationTotalPages] = useState(1);
+  const [reservationPage, setReservationPage] = useState(0);
   const [waitingList, setWaitingList] = useState([]);
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [waitingTotalPages, setWaitingTotalPages] = useState(1);
+  const [waitingPage, setWaitingPage] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentWaitingId, setCurrentWaitingId] = useState(null);
   const [currentPartySize, setCurrentPartySize] = useState(0);
   const [currentDemand, setCurrentDemand] = useState('');
   const navigate = useNavigate();
-  const { role, setRole, eventSource, setEventSource, logout } = useUser();
+  const { eventSource, setEventSource, logout } = useUser();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const Dashboard = () => {
         setRestaurantId(restaurantId);
         setApiSuccess(true);
         fetchStatisticsAndWaitingList(restaurantId, 0);
-        fetchReservations(restaurantId);
+        fetchReservations(restaurantId, 0);
         if (!eventSource) {
           subscribeToRestaurant(restaurantId); // 구독 함수 호출
         }
@@ -60,28 +62,38 @@ const Dashboard = () => {
             method: 'GET',
           });
       setWaitingList(waitingListData.data.content);
-      setTotalPages(waitingListData.data.totalPages);
+      setWaitingTotalPages(waitingListData.data.totalPages);
+      setWaitingPage(waitingListData.data.number);
     } catch (error) {
       console.error('Error fetching statistics and waiting list:', error);
     }
   };
 
-  const fetchReservations = async (restaurantId) => {
+  const fetchReservations = async (restaurantId, page) => {
     try {
       const reservationData = await fetchData(
-          `/restaurants/${restaurantId}/reservations`, { // No pagination
+          `/restaurants/${restaurantId}/reservations?page=${page}`, {
             method: 'GET',
           });
-      setReservationList(reservationData.data);
+      setReservationList(reservationData.data.content);
+      setReservationTotalPages(reservationData.data.totalPages);
+      setReservationPage(reservationData.data.number);
     } catch (error) {
       console.error('Error fetching reservations:', error);
     }
   };
 
-  const handlePageChange = (newPage) => {
-    if (restaurantId !== null) {
+  const handleWaitingPageChange = (newPage) => {
+    if (restaurantId !== null && newPage >= 0 && newPage < waitingTotalPages) {
       fetchStatisticsAndWaitingList(restaurantId, newPage);
-      setPage(newPage);
+      setWaitingPage(newPage);
+    }
+  };
+
+  const handleReservationPageChange = (newPage) => {
+    if (restaurantId !== null && newPage >= 0 && newPage < reservationTotalPages) {
+      fetchReservations(restaurantId, newPage);
+      setReservationPage(newPage);
     }
   };
 
@@ -94,7 +106,7 @@ const Dashboard = () => {
           method: 'PUT',
         });
         alert('요청이 성공적으로 수락되었습니다.');
-        fetchStatisticsAndWaitingList(restaurantId, page);
+        fetchStatisticsAndWaitingList(restaurantId, waitingPage);
       } catch (error) {
         console.error('Error accepting waiting:', error);
         alert('요청 수락 중 오류가 발생했습니다.');
@@ -110,7 +122,7 @@ const Dashboard = () => {
           method: 'DELETE',
         });
         alert('요청이 성공적으로 거절되었습니다.');
-        fetchStatisticsAndWaitingList(restaurantId, page);
+        fetchStatisticsAndWaitingList(restaurantId, waitingPage);
       } catch (error) {
         console.error('Error rejecting waiting:', error);
         alert('요청 거절 중 오류가 발생했습니다.');
@@ -127,10 +139,7 @@ const Dashboard = () => {
           method: 'DELETE',
         });
         alert('예약이 성공적으로 취소되었습니다.');
-        // Refetch reservations after cancellation
-        if (restaurantId) {
-          fetchReservations(restaurantId);
-        }
+        fetchReservations(restaurantId, reservationPage);
       } catch (error) {
         console.error('Error cancelling reservation:', error);
         alert('예약 취소 중 오류가 발생했습니다.');
@@ -162,7 +171,7 @@ const Dashboard = () => {
         }),
       });
       alert('수정이 성공적으로 완료되었습니다.');
-      fetchStatisticsAndWaitingList(restaurantId, page);
+      fetchStatisticsAndWaitingList(restaurantId, waitingPage);
       setModalVisible(false);
     } catch (error) {
       console.error('Error updating waiting:', error);
@@ -227,7 +236,7 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <Link to="/">
-            <img src={titleImage} alt="GOOD BITE" className="title-image"/>
+            <img src={titleImage} alt="GOOD BITE" className="title-image" />
           </Link>
           <div className="profile-icon">
             <Link to="/owners">
@@ -249,15 +258,18 @@ const Dashboard = () => {
               <>
                 <WaitingListBox
                     waitingList={waitingList}
-                    page={page}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
+                    page={waitingPage}
+                    totalPages={waitingTotalPages}
+                    onPageChange={handleWaitingPageChange}
                     onAcceptClick={handleAcceptClick}
                     onRejectClick={handleRejectClick}
                     onEditClick={handleEditClick}
                 />
                 <StatisticsBox
                     reservationList={reservationList}
+                    page={reservationPage}
+                    totalPages={reservationTotalPages}
+                    onPageChange={handleReservationPageChange}
                     onCancelClick={handleCancelClick}
                 />
               </>
@@ -291,7 +303,7 @@ const getKoreanType = (type) => {
   return types[type] || type;
 };
 
-const StatisticsBox = ({ reservationList = [], onCancelClick }) => (
+const StatisticsBox = ({ reservationList = [], page, totalPages, onPageChange, onCancelClick }) => (
     <div className="statistics-box">
       <h2>예약 목록</h2>
       <table>
@@ -318,11 +330,15 @@ const StatisticsBox = ({ reservationList = [], onCancelClick }) => (
               <td>
                 <button onClick={() => onCancelClick(reservation.reservationId)}>취소</button>
               </td>
-
             </tr>
         ))}
         </tbody>
       </table>
+      <div className="pagination">
+        <button onClick={() => onPageChange(page - 1)} disabled={page <= 0}>이전</button>
+        <span>페이지 {page + 1} / {totalPages === 0 ? totalPages + 1 : totalPages}</span>
+        <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages - 1}>다음</button>
+      </div>
     </div>
 );
 
@@ -373,7 +389,7 @@ const WaitingListBox = ({
       </table>
       <div className="pagination">
         <button onClick={() => onPageChange(page - 1)} disabled={page <= 0}>이전</button>
-        <span>{page + 1} / {totalPages}</span>
+        <span>페이지 {page + 1} / {totalPages === 0 ? totalPages + 1 : totalPages}</span>
         <button onClick={() => onPageChange(page + 1)} disabled={page >= totalPages - 1}>다음</button>
       </div>
     </div>

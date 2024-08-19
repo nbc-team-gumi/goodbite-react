@@ -12,12 +12,16 @@ const RestaurantDetail = () => {
   const [error, setError] = useState(null);
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [menuPage, setMenuPage] = useState(0);
+  const [menuTotalPages, setMenuTotalPages] = useState(1);
   const [reviews, setReviews] = useState([]);
+  const [reviewPage, setReviewPage] = useState(0);
+  const [reviewTotalPages, setReviewTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  const fetchReviews = async (restaurantId) => {
+  const fetchReviews = async (restaurantId, page = 0) => {
     try {
-      const response = await fetchData(`/restaurants/${restaurantId}/reviews`, {
+      const response = await fetchData(`/restaurants/${restaurantId}/reviews?page=${page}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -25,7 +29,31 @@ const RestaurantDetail = () => {
       });
 
       if (response.statusCode === 200) {
-        setReviews(response.data);
+        setReviews(response.data.content);
+        setReviewPage(response.data.number);
+        setReviewTotalPages(response.data.totalPages);
+      } else {
+        setError(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
+
+  const fetchMenuList = async (restaurantId, page = 0) => {
+    try {
+      const response = await fetchData(`/restaurants/${restaurantId}/menus?page=${page}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.statusCode === 200) {
+        setMenu(response.data.content);
+        setMenuPage(response.data.number);
+        setMenuTotalPages(response.data.totalPages);
       } else {
         setError(`Unexpected response data: ${response.message}`);
       }
@@ -39,22 +67,21 @@ const RestaurantDetail = () => {
     const fetchRestaurant = async () => {
       setLoading(true);
       try {
-          const response = await fetchData(
-              `/restaurants/${restaurantId}`, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              });
+        const response = await fetchData(`/restaurants/${restaurantId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-          if (response.statusCode === 200) {
-            setRestaurant(response.data);
-            await fetchRestaurantOperatingHour(restaurantId);
-            await fetchMenuList(restaurantId);
-            await fetchReviews(restaurantId);
-          } else {
-            setError(`Unexpected response data: ${response.message}`);
-          }
+        if (response.statusCode === 200) {
+          setRestaurant(response.data);
+          await fetchRestaurantOperatingHour(restaurantId);
+          await fetchMenuList(restaurantId);
+          await fetchReviews(restaurantId);
+        } else {
+          setError(`Unexpected response data: ${response.message}`);
+        }
       } catch (error) {
         setError(error.message);
         console.error('Fetch error:', error);
@@ -65,20 +92,18 @@ const RestaurantDetail = () => {
 
     const fetchRestaurantOperatingHour = async (restaurantId) => {
       try {
-        const response = await fetchData(
-            `/restaurants/${restaurantId}/operating-hours`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
+        const response = await fetchData(`/restaurants/${restaurantId}/operating-hours`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (response.statusCode === 200) {
-          // 시간을 hh:mm 형식으로 변환하여 상태를 업데이트
           const formattedHours = response.data.map(hour => ({
             ...hour,
-            openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
-            closeTime: hour.closeTime.substring(0, 5), // hh:mm:ss -> hh:mm
+            openTime: hour.openTime.substring(0, 5),
+            closeTime: hour.closeTime.substring(0, 5),
           }));
           setOperatingHour(formattedHours);
         } else {
@@ -90,54 +115,8 @@ const RestaurantDetail = () => {
       }
     };
 
-    const fetchMenuList = async (restaurantId) => {
-      try {
-        const response = await fetchData(`/restaurants/${restaurantId}/menus`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.statusCode === 200) {
-          setMenu(response.data);
-        } else {
-          setError(`Unexpected response data: ${response.message}`);
-        }
-      } catch (error) {
-        setError(error.message);
-        console.error('Fetch error:', error);
-      }
-    };
-
     fetchRestaurant();
   }, [restaurantId]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (loading) {
-        window.location.reload();
-      }
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [loading]);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 5000);
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!restaurant) {
-    return <div>Restaurant not found</div>;
-  }
 
   const handleReservationClick = () => {
     if (role === 'ROLE_CUSTOMER') {
@@ -182,6 +161,30 @@ const RestaurantDetail = () => {
     return types[type] || type;
   };
 
+  const handleMenuPageChange = (newPage) => {
+    if (newPage >= 0 && newPage < menuTotalPages) {
+      fetchMenuList(restaurantId, newPage);
+    }
+  };
+
+  const handleReviewPageChange = (newPage) => {
+    if (newPage >= 0 && newPage < reviewTotalPages) {
+      fetchReviews(restaurantId, newPage);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!restaurant) {
+    return <div>Restaurant not found</div>;
+  }
+
   return (
       <div className="container">
         <header className="header">
@@ -204,7 +207,7 @@ const RestaurantDetail = () => {
             <button
                 className="detail-reservation-button"
                 onClick={(e) => {
-                  e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                  e.stopPropagation();
                   handleReservationClick(restaurant);
                 }}
             >
@@ -213,7 +216,7 @@ const RestaurantDetail = () => {
             <button
                 className="detail-waiting-button"
                 onClick={(e) => {
-                  e.stopPropagation(); // 부모의 클릭 이벤트 전파를 막기 위해 추가
+                  e.stopPropagation();
                   handleWaitingClick(restaurant);
                 }}
             >
@@ -235,7 +238,7 @@ const RestaurantDetail = () => {
               <tbody>
               <tr>
                 <th>주소</th>
-                <td>{restaurant.area} {restaurant.address}</td>
+                <td>{restaurant.address} {restaurant.detailAddress}</td>
               </tr>
               <tr>
                 <th>전화번호</th>
@@ -265,6 +268,21 @@ const RestaurantDetail = () => {
                   </div>
               ))}
             </div>
+            <div className="pagination">
+              <button
+                  onClick={() => handleMenuPageChange(menuPage - 1)}
+                  disabled={menuPage <= 0}
+              >
+                이전
+              </button>
+              <span>페이지 {menuPage + 1} / {menuTotalPages === 0 ? menuTotalPages + 1 : menuTotalPages}</span>
+              <button
+                  onClick={() => handleMenuPageChange(menuPage + 1)}
+                  disabled={menuPage >= menuTotalPages - 1}
+              >
+                다음
+              </button>
+            </div>
 
             <h3>리뷰</h3>
             <div className="reviews">
@@ -276,6 +294,21 @@ const RestaurantDetail = () => {
                     <p>{new Date(review.createdAt).toLocaleDateString()}</p>
                   </div>
               ))}
+            </div>
+            <div className="pagination">
+              <button
+                  onClick={() => handleReviewPageChange(reviewPage - 1)}
+                  disabled={reviewPage <= 0}
+              >
+                이전
+              </button>
+              <span>페이지 {reviewPage + 1} / {reviewTotalPages === 0 ? reviewTotalPages + 1 : reviewTotalPages}</span>
+              <button
+                  onClick={() => handleReviewPageChange(reviewPage + 1)}
+                  disabled={reviewPage >= reviewTotalPages - 1}
+              >
+                다음
+              </button>
             </div>
           </div>
         </div>

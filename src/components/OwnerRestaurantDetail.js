@@ -1,7 +1,7 @@
 import '../styles/RestaurantDetail.css';
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../util/api';
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function OwnerRestaurantDetail() {
   const { restaurantId: paramRestaurantId } = useParams();
@@ -12,7 +12,11 @@ function OwnerRestaurantDetail() {
   const [error, setError] = useState(null);
   const [operatingHour, setOperatingHour] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [menuPage, setMenuPage] = useState(0);
+  const [menuTotalPages, setMenuTotalPages] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [reviewPage, setReviewPage] = useState(0);
+  const [reviewTotalPages, setReviewTotalPages] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,8 +36,8 @@ function OwnerRestaurantDetail() {
         await Promise.all([
           fetchRestaurant(currentRestaurantId),
           fetchRestaurantOperatingHour(currentRestaurantId),
-          fetchMenuList(currentRestaurantId),
-          fetchReviews(currentRestaurantId),
+          fetchMenuList(currentRestaurantId, 0), // 초기 페이지는 0으로 설정
+          fetchReviews(currentRestaurantId, 0), // 초기 페이지는 0으로 설정
         ]);
 
         setApiSuccess(true);
@@ -94,9 +98,9 @@ function OwnerRestaurantDetail() {
     }
   };
 
-  const fetchMenuList = async (restaurantId) => {
+  const fetchMenuList = async (restaurantId, page) => {
     try {
-      const response = await fetchData(`/restaurants/${restaurantId}/menus`, {
+      const response = await fetchData(`/restaurants/${restaurantId}/menus?page=${page}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +108,9 @@ function OwnerRestaurantDetail() {
       });
 
       if (response.statusCode === 200) {
-        setMenu(response.data);
+        setMenu(response.data.content);
+        setMenuPage(response.data.number);
+        setMenuTotalPages(response.data.totalPages);
       } else {
         throw new Error(`Unexpected response data: ${response.message}`);
       }
@@ -114,9 +120,9 @@ function OwnerRestaurantDetail() {
     }
   };
 
-  const fetchReviews = async (restaurantId) => {
+  const fetchReviews = async (restaurantId, page) => {
     try {
-      const response = await fetchData(`/restaurants/${restaurantId}/reviews`, {
+      const response = await fetchData(`/restaurants/${restaurantId}/reviews?page=${page}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +130,9 @@ function OwnerRestaurantDetail() {
       });
 
       if (response.statusCode === 200) {
-        setReviews(response.data);
+        setReviews(response.data.content);
+        setReviewPage(response.data.number);
+        setReviewTotalPages(response.data.totalPages);
       } else {
         setError(`Unexpected response data: ${response.message}`);
       }
@@ -152,6 +160,18 @@ function OwnerRestaurantDetail() {
 
   const navigateToUpdateMenu = (menuId) => {
     navigate(`/update-menu/${menuId}`);
+  };
+
+  const handleMenuPageChange = (newPage) => {
+    if (newPage >= 0 && newPage < menuTotalPages) {
+      fetchMenuList(restaurantId, newPage);
+    }
+  };
+
+  const handleReviewPageChange = (newPage) => {
+    if (newPage >= 0 && newPage < reviewTotalPages) {
+      fetchReviews(restaurantId, newPage);
+    }
   };
 
   useEffect(() => {
@@ -248,9 +268,14 @@ function OwnerRestaurantDetail() {
                     <button className="btn-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
-                    <p className="price">{item.price}</p>
+                    <p className="price">{item.price}원</p>
                   </div>
               ))}
+            </div>
+            <div className="pagination">
+              <button onClick={() => handleMenuPageChange(menuPage - 1)} disabled={menuPage <= 0}>이전</button>
+              <span>{menuPage + 1} / {menuTotalPages}</span>
+              <button onClick={() => handleMenuPageChange(menuPage + 1)} disabled={menuPage >= menuTotalPages - 1}>다음</button>
             </div>
 
             <h3>리뷰</h3>
@@ -263,6 +288,11 @@ function OwnerRestaurantDetail() {
                     <p>{new Date(review.createdAt).toLocaleDateString()}</p>
                   </div>
               ))}
+            </div>
+            <div className="pagination">
+              <button onClick={() => handleReviewPageChange(reviewPage - 1)} disabled={reviewPage <= 0}>이전</button>
+              <span>{reviewPage + 1} / {reviewTotalPages === 0 ? reviewTotalPages + 1 : reviewTotalPages}</span>
+              <button onClick={() => handleReviewPageChange(reviewPage + 1)} disabled={reviewPage >= reviewTotalPages - 1}>다음</button>
             </div>
           </div>
         </div>

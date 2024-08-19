@@ -70,6 +70,8 @@ const Reservation = () => {
     const formattedDate = reservationDetails.date.toLocaleDateString('en-CA'); // YYYY-MM-DD 형식
     const formattedTime = reservationDetails.time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // 24시간 형식의 HH:mm
 
+    let message = '1234'; // 기본 오류 메시지
+
     try {
       const response = await fetchData('/reservations', {
         method: 'POST',
@@ -86,16 +88,18 @@ const Reservation = () => {
         },
       });
 
-      console.log(response.statusCode);
-      if (response.statusCode === 200) {
-        alert('예약이 완료되었습니다.');
+      // response에서 statusCode와 message를 가져오는 방법을 확인합니다.
+      const { statusCode, message: responseMessage } = response;
+
+      if (statusCode === 200) {
+        alert('예약이 완료되었습니다. ' + (responseMessage || ''));
         navigate(-1); // 이전 페이지로 이동
       } else {
-        alert('예약에 실패했습니다. 다시 시도해주세요.');
+        alert('예약에 실패했습니다. ' + (responseMessage || '') + ' 다시 시도해주세요.');
       }
     } catch (error) {
       console.error('예약 중 오류가 발생했습니다:', error);
-      alert('예약 중 오류가 발생했습니다. 다시 시도해주세요.');
+      alert(error + '\n 다시 시도해주세요.');
     }
   };
 
