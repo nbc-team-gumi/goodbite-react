@@ -67,13 +67,12 @@ const RestaurantDetail = () => {
     const fetchRestaurant = async () => {
       setLoading(true);
       try {
-        const response = await fetchData(
-            `/restaurants/${restaurantId}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
+        const response = await fetchData(`/restaurants/${restaurantId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (response.statusCode === 200) {
           setRestaurant(response.data);
@@ -88,13 +87,8 @@ const RestaurantDetail = () => {
         console.error('Fetch error:', error);
       } finally {
         setLoading(false);
-
       }
-    } catch (error) {
-      setError(error.message);
-      console.error('Fetch error:', error);
-    }
-  };
+    };
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -122,6 +116,8 @@ const RestaurantDetail = () => {
         setLoading(false);
       }
     };
+    fetchResetaurant();
+  }, [restaurantId]);
 
     const fetchRestaurantOperatingHour = async (restaurantId) => {
       try {

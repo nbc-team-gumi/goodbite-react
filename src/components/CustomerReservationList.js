@@ -139,6 +139,16 @@ function CustomerReservationList() {
     setCurrentPage(0); // Reset to first page when page size changes
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   return (
       <div>
         <div className={styles.banner}>
