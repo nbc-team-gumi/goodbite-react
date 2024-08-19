@@ -272,3 +272,27 @@ form {
 .pagination button:not(:disabled):hover {
   background-color: #555;
 }
+
+.btn-hour-update{
+  width: 100px;
+  height: 45px;
+  margin-left: 50%;
+}
+
+.btn-menu-update{
+  width: 100px;
+  height: 45px;
+  margin-left: 8px;
+}
+
+.add-button{
+  width: 100px;
+  height: 45px;
+  margin-left: 8px;
+}
+
+.update-button{
+  width: 150px;
+  height: 45px;
+  margin-top: 0px;
+}
