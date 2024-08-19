@@ -191,12 +191,16 @@ const RestaurantList = () => {
 
   const getKoreanType = (type) => {
     const types = {
-      korean: "한식",
-      italian: "이탈리안",
-      japanese: "일식",
-      chinese: "중식",
-      seafood: "해산물",
-      bbq: "바베큐"
+      KOREAN: "한식",
+      WESTERN: "양식",
+      JAPANESE: "일식",
+      CHINESE: "중식",
+      ASIAN: "아시안",
+      BUNSIK: "분식",
+      PIZZA: "피자",
+      CHICKEN: "치킨",
+      BURGER: "버거",
+      CAFE: "카페/디저트",
     };
     return types[type] || type;
   };
