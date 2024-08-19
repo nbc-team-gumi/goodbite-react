@@ -4,7 +4,6 @@ import { fetchData } from '../util/api';
 
 function CustomerReservationList() {
   const [reservationList, setReservationList] = useState([]);
-  const [filteredReservationList, setFilteredReservationList] = useState([]);
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
@@ -16,6 +15,8 @@ function CustomerReservationList() {
   const [statusFilter, setStatusFilter] = useState('');
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1); // 서버에서 제공하는 전체 페이지 수
+
   const [reviewText, setReviewText] = useState('');
   const [rating, setRating] = useState(0);
   const [reviewError, setReviewError] = useState(null);
@@ -23,17 +24,14 @@ function CustomerReservationList() {
 
   useEffect(() => {
     fetchReservations();
-  }, []);
-
-  useEffect(() => {
-    filterAndSortReservations();
-  }, [reservationList, searchColumn, searchTerm, statusFilter]);
+  }, [currentPage, pageSize, searchColumn, searchTerm, statusFilter]);
 
   const fetchReservations = async () => {
     setLoading(true);
     try {
-      const response = await fetchData('/reservations/my', { method: 'GET' });
-      setReservationList(response.data || []);
+      const response = await fetchData(`/reservations/my?page=${currentPage}&size=${pageSize}`, { method: 'GET' });
+      setReservationList(response.data.content || []);
+      setTotalPages(response.data.totalPages || 1);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching reservations:', error);
@@ -42,23 +40,10 @@ function CustomerReservationList() {
     }
   };
 
-  const filterAndSortReservations = () => {
-    const validSearchColumns = ['restaurantName', 'requirement'];
-    const column = validSearchColumns.includes(searchColumn) ? searchColumn : 'restaurantName';
-
-    const filteredReservations = reservationList.filter(reservation => {
-      const value = reservation[column] || '';
-      const matchesSearch = typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter ? reservation.status === statusFilter : true;
-      return matchesSearch && matchesStatus;
-    });
-
-    const sortedReservations = filteredReservations.sort((a, b) =>
-        new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`)
-    );
-
-    setFilteredReservationList(sortedReservations);
-    setCurrentPage(0); // Reset to first page when filters change
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   const openDetailsModal = (reservation) => {
@@ -137,13 +122,6 @@ function CustomerReservationList() {
     }
   };
 
-  const handlePageChange = (newPage) => {
-    const maxPage = Math.ceil(filteredReservationList.length / pageSize) - 1;
-    if (newPage >= 0 && newPage <= maxPage) {
-      setCurrentPage(newPage);
-    }
-  };
-
   const handleSearchColumnChange = (e) => {
     setSearchColumn(e.target.value);
   };
@@ -160,21 +138,6 @@ function CustomerReservationList() {
     setPageSize(Number(e.target.value));
     setCurrentPage(0); // Reset to first page when page size changes
   };
-
-  const currentReservations = filteredReservationList.slice(
-      currentPage * pageSize,
-      (currentPage + 1) * pageSize
-  );
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (loading) {
-        window.location.reload();
-      }
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [loading]);
 
   return (
       <div>
@@ -237,7 +200,7 @@ function CustomerReservationList() {
                     </tr>
                     </thead>
                     <tbody>
-                    {currentReservations.map(reservation => (
+                    {reservationList.map(reservation => (
                         <tr
                             key={reservation.reservationId}
                             className={styles.reservationRow}
@@ -301,10 +264,11 @@ function CustomerReservationList() {
                   >
                     이전
                   </button>
+                  <span>페이지 {currentPage + 1} / {totalPages}</span>
                   <button
                       className={styles.nextButton}
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage >= Math.ceil(filteredReservationList.length / pageSize) - 1}
+                      disabled={currentPage >= totalPages - 1}
                   >
                     다음
                   </button>
