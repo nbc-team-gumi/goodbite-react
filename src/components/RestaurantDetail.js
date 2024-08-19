@@ -67,6 +67,39 @@ const RestaurantDetail = () => {
     const fetchRestaurant = async () => {
       setLoading(true);
       try {
+        const response = await fetchData(
+            `/restaurants/${restaurantId}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+        if (response.statusCode === 200) {
+          setRestaurant(response.data);
+          await fetchRestaurantOperatingHour(restaurantId);
+          await fetchMenuList(restaurantId);
+          await fetchReviews(restaurantId);
+        } else {
+          setError(`Unexpected response data: ${response.message}`);
+        }
+      } catch (error) {
+        setError(error.message);
+        console.error('Fetch error:', error);
+      } finally {
+        setLoading(false);
+
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      setLoading(true);
+      try {
         const response = await fetchData(`/restaurants/${restaurantId}`, {
           method: 'GET',
           headers: {
@@ -215,7 +248,7 @@ const RestaurantDetail = () => {
               <tbody>
               <tr>
                 <th>주소</th>
-                <td>{restaurant.area} {restaurant.address}</td>
+                <td>{restaurant.address} {restaurant.detailAddress}</td>
               </tr>
               <tr>
                 <th>전화번호</th>
