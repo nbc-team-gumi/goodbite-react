@@ -89,32 +89,28 @@ th {
 }
 
 .menu-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3개의 열로 설정 */
+  gap: 20px; /* 카드 간의 간격을 설정 */
   margin-top: 20px;
 }
 
 .menu-item {
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  width: calc(30.9% - 20px);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
   display: flex;
-  flex-direction: column;
-  justify-content: center; /* 세로 중앙 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
-  text-align: center; /* 텍스트 중앙 정렬 */
-  transition: transform 0.3s ease;
+  flex-direction: column; /* 요소를 세로로 배치 */
+  align-items: center; /* 가운데 정렬 */
+  justify-content: space-between;
 }
 
 .menu-item img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
 .menu-item h3 {
@@ -257,30 +253,22 @@ form {
   width: 47.5%;
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
+.pagination button {
+  background-color: #ccc;
+  color: #666;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: not-allowed;
+  border-radius: 5px;
 }
 
-.pagination button {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  margin: 0 5px;
-  font-size: 14px; /* 버튼 텍스트 크기 */
-  width: 50px;
-  border-radius: 3px;
+.pagination button:not(:disabled) {
+  background-color: #333;
+  color: white;
   cursor: pointer;
 }
 
-.pagination span {
-  font-size: 14px; /* 페이지 번호 텍스트 크기 */
-  margin: 0 10px;
-}
-
-.pagination button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
+.pagination button:not(:disabled):hover {
+  background-color: #555;
 }
