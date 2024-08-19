@@ -6,6 +6,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import '../styles/RestaurantList.css';
 import { useUser } from '../UserContext';
 import logo from '../images/good-bite-logo.png';
+import { locations, getAllSido } from '../util/locations';
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -21,12 +22,6 @@ const RestaurantList = () => {
   const { role, setRole, setEventSource, logout } = useUser();
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(true);
-
-  const subLocations = {
-    seoul: ["마포구", "영등포구", "강남구"],
-    gyeonggi: ["성남시", "수원시", "고양시"],
-    gangwon: ["춘천시", "원주시", "강릉시"],
-  };
 
   const fetchRestaurants = async (page) => {
     setLoading(true);
@@ -211,15 +206,20 @@ const RestaurantList = () => {
       console.error('restaurants is not an array:', restaurants);
       return [];
     }
-    const filteredRestaurants = restaurants.filter(restaurant => {
-      const nameMatch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const locationMatch = filterLocation === 'all' || restaurant.area === filterLocation;
-      const subLocationMatch = filterSubLocation === 'all' || (restaurant.address && restaurant.address.includes(filterSubLocation));
-      const typeMatch = filterType === 'all' || restaurant.category === filterType;
-      const ratingMatch = filterRating === 'all' || restaurant.rating >= parseFloat(filterRating);
-      return nameMatch && locationMatch && subLocationMatch && typeMatch && ratingMatch;
+    return restaurants.filter(restaurant => {
+      const nameMatch = restaurant.name.toLowerCase().includes(
+          searchTerm.toLowerCase());
+      const locationMatch = filterLocation === 'all' || restaurant.sido
+          === filterLocation;
+      const subLocationMatch = filterSubLocation === 'all'
+          || (restaurant.sigungu && restaurant.sigungu.includes(filterSubLocation));
+      const typeMatch = filterType === 'all' || restaurant.category
+          === filterType;
+      const ratingMatch = filterRating === 'all' || restaurant.rating
+          >= parseFloat(filterRating);
+      return nameMatch && locationMatch && subLocationMatch && typeMatch
+          && ratingMatch;
     });
-    return filteredRestaurants;
   };
 
   const handleLocationChange = (e) => {
@@ -333,9 +333,11 @@ const RestaurantList = () => {
                   onChange={handleLocationChange}
               >
                 <option value="all">모든 위치</option>
-                <option value="seoul">서울</option>
-                <option value="gyeonggi">경기</option>
-                <option value="gangwon">강원</option>
+                {getAllSido().map(location => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
+                ))}
               </select>
               <select
                   id="filterSubLocation"
@@ -344,10 +346,11 @@ const RestaurantList = () => {
                   disabled={filterLocation === 'all'}
               >
                 <option value="all">모든 세부 위치</option>
-                {filterLocation !== 'all' && subLocations[filterLocation].map(
+                {filterLocation !== 'all' && locations[filterLocation].map(
                     subLocation => (
-                        <option key={subLocation}
-                                value={subLocation}>{subLocation}</option>
+                        <option key={subLocation} value={subLocation}>
+                          {subLocation}
+                        </option>
                     ))}
               </select>
               <select
