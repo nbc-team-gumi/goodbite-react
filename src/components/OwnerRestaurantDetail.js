@@ -245,7 +245,7 @@ function OwnerRestaurantDetail() {
                     <button className="btn-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
-                    <p className="price">{item.price}</p>
+                    <p className="price">{item.price}원</p>
                   </div>
               ))}
             </div>
@@ -268,7 +268,7 @@ function OwnerRestaurantDetail() {
             </div>
             <div className="pagination">
               <button onClick={() => handleReviewPageChange(reviewPage - 1)} disabled={reviewPage <= 0}>이전</button>
-              <span>{reviewPage + 1} / {reviewTotalPages}</span>
+              <span>{reviewPage + 1} / {reviewTotalPages === 0 ? reviewTotalPages + 1 : reviewTotalPages}</span>
               <button onClick={() => handleReviewPageChange(reviewPage + 1)} disabled={reviewPage >= reviewTotalPages - 1}>다음</button>
             </div>
           </div>
