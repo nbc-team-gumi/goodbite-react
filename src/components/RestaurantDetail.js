@@ -90,35 +90,6 @@ const RestaurantDetail = () => {
       }
     };
 
-  useEffect(() => {
-    const fetchRestaurant = async () => {
-      setLoading(true);
-      try {
-        const response = await fetchData(`/restaurants/${restaurantId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.statusCode === 200) {
-          setRestaurant(response.data);
-          await fetchRestaurantOperatingHour(restaurantId);
-          await fetchMenuList(restaurantId);
-          await fetchReviews(restaurantId);
-        } else {
-          setError(`Unexpected response data: ${response.message}`);
-        }
-      } catch (error) {
-        setError(error.message);
-        console.error('Fetch error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchResetaurant();
-  }, [restaurantId]);
-
     const fetchRestaurantOperatingHour = async (restaurantId) => {
       try {
         const response = await fetchData(`/restaurants/${restaurantId}/operating-hours`, {
