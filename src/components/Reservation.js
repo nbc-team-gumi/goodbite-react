@@ -16,6 +16,8 @@ const Reservation = () => {
   const navigate = useNavigate(); // useNavigate 훅 사용
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
+  const [menuPage, setMenuPage] = useState(0);
+  const [menuTotalPages, setMenuTotalPages] = useState(1);
   const [operatingHour, setOperatingHour] = useState([]);
   const [reservationDetails, setReservationDetails] = useState({
     date: null,
@@ -25,25 +27,44 @@ const Reservation = () => {
     selectedMenus: {}
   });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMenuList = async (restaurantId, page = 0) => {
+    try {
+      const response = await fetchData(`/restaurants/${restaurantId}/menus?page=${page}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.statusCode === 200) {
+        setMenuItems(response.data.content);
+        setMenuPage(response.data.number);
+        setMenuTotalPages(response.data.totalPages);
+      } else {
+        setError(`Unexpected response data: ${response.message}`);
+      }
+    } catch (error) {
+      setError(error.message);
+      console.error('Fetch error:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
+      setLoading(true);
       try {
         const data = await fetchData(`/restaurants/${restaurantId}`);
         setRestaurant(data);
 
-        const menuData = await fetchData(`/restaurants/${restaurantId}/menus`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        // menuData가 배열인지 확인하고, 배열이 아니면 빈 배열로 초기화
-        setMenuItems(Array.isArray(menuData.data) ? menuData.data : []);
+        await fetchMenuList(restaurantId);
         await fetchRestaurantOperatingHour(restaurantId);
       } catch (error) {
         console.error('Error fetching restaurant data:', error);
         setMenuItems([]); // 오류 발생 시 메뉴를 빈 배열로 설정
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -115,6 +136,12 @@ const Reservation = () => {
     return types[type] || type;
   };
 
+  const handleMenuPageChange = (newPage) => {
+    if (newPage >= 0 && newPage < menuTotalPages) {
+      fetchMenuList(restaurantId, newPage);
+    }
+  };
+
   const handleReservationSubmit = async (e) => {
     e.preventDefault();
 
@@ -154,6 +181,20 @@ const Reservation = () => {
       alert(error + '\n 다시 시도해주세요.');
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
+        window.location.reload();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
       <div className="reservation-container">
@@ -220,8 +261,8 @@ const Reservation = () => {
                       }
                   />
                 </label>
-                <div className="menu-selection">
-                  <h3>메뉴 선택</h3>
+                <h3>메뉴 선택</h3>
+                <div className="menu-list">
                   {menuItems.length > 0 ? (
                       menuItems.map((item) => (
                           <div key={item.menuId} className="menu-item">
@@ -232,7 +273,7 @@ const Reservation = () => {
                                 checked={reservationDetails.selectedMenus[item.menuId] || false}
                             />
                             <label htmlFor={`menu-${item.menuId}`}>
-                              <img src={item.imageUrl} alt={item.name} width="50" height="50" />
+                              <img src={item.imageUrl} alt={item.name} width="100%" height="150" />
                               {item.name} - {item.price}원
                             </label>
                             {reservationDetails.selectedMenus[item.menuId] && (
@@ -255,6 +296,21 @@ const Reservation = () => {
                   ) : (
                       <p>메뉴가 없습니다.</p>
                   )}
+                </div>
+                <div className="pagination">
+                  <button
+                      onClick={() => handleMenuPageChange(menuPage - 1)}
+                      disabled={menuPage <= 0}
+                  >
+                    이전
+                  </button>
+                  <span>페이지 {menuPage + 1} / {menuTotalPages === 0 ? menuTotalPages + 1 : menuTotalPages}</span>
+                  <button
+                      onClick={() => handleMenuPageChange(menuPage + 1)}
+                      disabled={menuPage >= menuTotalPages - 1}
+                  >
+                    다음
+                  </button>
                 </div>
                 <button type="submit" className="reservation-submit-button">
                   예약 완료
