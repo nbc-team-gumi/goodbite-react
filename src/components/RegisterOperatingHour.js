@@ -1,13 +1,9 @@
 import React, {useState} from 'react';
 import {fetchData} from '../util/api';
-// import { useParams } from 'react-router-dom';
 import '../styles/RegisterOperatingHour.css';
 import {useNavigate, useParams} from "react-router-dom";
 function RegisterOperatingHour() {
   const { restaurantId } = useParams();
-  // const [dayOfWeek, setDayOfWeek] = useState('');
-  // const [openTime, setOpenTime] = useState('');
-  // const [closeTime, setCloseTime] = useState('');
   const navigate = useNavigate();
   const daysOfWeek = [
     { value: 'MONDAY', label: '월요일' },
@@ -35,7 +31,7 @@ function RegisterOperatingHour() {
     e.preventDefault();
     console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL);
       const formattedData = operatingHours
-      .filter(hour => hour.openTime && hour.closeTime); // Only submit days with complete times
+      .filter(hour => hour.openTime && hour.closeTime);
 
       if (formattedData.length === 0) {
         alert('적어도 하루의 영업시간을 입력해주세요.');
@@ -46,11 +42,10 @@ function RegisterOperatingHour() {
         const requests = formattedData.map(hour => ({
           restaurantId,
           dayOfWeek: hour.dayOfWeek,
-          openTime: `${hour.openTime}`,  // Ensure time format is HH:MM:SS
-          closeTime: `${hour.closeTime}` // Ensure time format is HH:MM:SS
+          openTime: `${hour.openTime}`,
+          closeTime: `${hour.closeTime}`
         }));
 
-        // Send each request one by one
         for (const requestBody of requests) {
           await fetchData('/operating-hours', {
             method: 'POST',
