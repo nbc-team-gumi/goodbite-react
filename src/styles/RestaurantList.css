@@ -206,3 +206,21 @@ body {
 .pagination button:not(:disabled):hover {
   background-color: #555;
 }
+
+.restaurant-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.restaurant-rating .stars {
+  font-size: 15px;
+  color: #ffc107;
+}
+
+.restaurant-rating .rating-value {
+  font-size: 12px; /* 숫자 크기 */
+  font-weight: 300;
+  color: #333;
+  margin-left: 0.5rem;
+}

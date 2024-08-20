@@ -3,6 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/RestaurantDetail.css';
 import { useUser } from '../UserContext';
+import { renderStars } from '../util/renderStars';
 
 const RestaurantDetail = () => {
   const { restaurantId } = useParams();
@@ -234,7 +235,9 @@ const RestaurantDetail = () => {
                 }}
             ></div>
             <div className="rating">
-              ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
+              <span className="stars">{renderStars(restaurant.rating)}</span>
+              <span className="restaurant-raintg">{restaurant.rating}</span>
+              <span className="review-count">(리뷰 {reviews.length}개)</span>
             </div>
             <p>{getKoreanType(restaurant.category)}</p>
             <table>
@@ -291,7 +294,7 @@ const RestaurantDetail = () => {
             <div className="reviews">
               {reviews.map((review, index) => (
                   <div key={index} className="review">
-                    <span>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                    <span className="stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
                     <p>{review.content}</p>
                     <p>{review.nickname}</p>
                     <p>{new Date(review.createdAt).toLocaleDateString()}</p>

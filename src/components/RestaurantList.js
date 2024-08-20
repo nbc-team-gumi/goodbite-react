@@ -7,6 +7,7 @@ import '../styles/RestaurantList.css';
 import { useUser } from '../UserContext';
 import logo from '../images/good-bite-logo.png';
 import { locations, getAllSido } from '../util/locations';
+import { renderStars } from '../util/renderStars';
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -164,6 +165,10 @@ const RestaurantList = () => {
           <div className="restaurant-info">
             <h2 className="restaurant-name">{restaurant.name}</h2>
             <p className="restaurant-type">{getKoreanType(restaurant.category)}</p>
+            <div className="restaurant-rating">
+              <span className="stars">{renderStars(restaurant.rating)}</span>
+              <span className="rating-value">{restaurant.rating}</span>
+            </div>
             <div className="buttons-container">
               <button
                   className="reservation-button"
