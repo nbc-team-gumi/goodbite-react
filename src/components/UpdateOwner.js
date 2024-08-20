@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/UpdateOwner.module.css';
 import { fetchData } from '../util/api';
-import {useNavigate} from "react-router-dom";
-import {useUser} from "../UserContext";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserContext";
 
 function UpdateOwner() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -49,8 +49,10 @@ function UpdateOwner() {
     try {
       await fetchData('/owners/password', {
         method: 'PATCH',
-        body: JSON.stringify({   "currentPassword": currentPassword,
-          "newPassword": newPassword }),
+        body: JSON.stringify({
+          "currentPassword": currentPassword,
+          "newPassword": newPassword
+        }),
       });
       alert('비밀번호가 수정되었습니다. 다시 로그인해주세요.');
       await handleLogout();
@@ -86,20 +88,12 @@ function UpdateOwner() {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (loading) {
-        window.location.reload();
-      }
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [loading]);
-
+  // 로딩이 완료되지 않았을 때는 로딩 메시지만 보여줌
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // 오류가 있을 경우 오류 메시지 표시
   if (error) {
     return <div>{error}</div>;
   }
