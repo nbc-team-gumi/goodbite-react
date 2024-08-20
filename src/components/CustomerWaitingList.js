@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/CustomerWaitingList.module.css';
 import { fetchData } from '../util/api';
+import styled from "styled-components";
+
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 
 function CustomerWaitingList() {
   const [waitingList, setWaitingList] = useState([]);
@@ -307,7 +313,7 @@ function CustomerWaitingList() {
                 <span className={styles.close} onClick={closeReviewModal}>&times;</span>
                 <h2>리뷰 작성</h2>
                 <form className={styles.reviewForm} onSubmit={submitReview}>
-                  <label>평점:</label>
+                  <label><Asterisk>*</Asterisk> 평점:</label>
                   <div>
                     <label>
                       <input type="radio" name="rating" value="1" required /> 1
@@ -325,7 +331,7 @@ function CustomerWaitingList() {
                       <input type="radio" name="rating" value="5" required /> 5
                     </label>
                   </div>
-                  <label>리뷰 내용:</label>
+                  <label><Asterisk>*</Asterisk> 리뷰 내용:</label>
                   <textarea name="reviewText" required></textarea>
                   <button type="submit">제출</button>
                 </form>

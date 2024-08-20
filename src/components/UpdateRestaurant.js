@@ -3,6 +3,11 @@ import {fetchData} from '../util/api';
 import styled from 'styled-components';
 import {useNavigate, useParams} from "react-router-dom";
 
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
+
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
@@ -96,6 +101,7 @@ function UpdateRestaurant() {
         setArea(response.data.area);
         setPhoneNumber(response.data.phoneNumber);
         setCategory(response.data.category);
+        setCapacity(response.data.capacity);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -152,7 +158,7 @@ function UpdateRestaurant() {
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="store-name">가게 이름</Label>
+              <Label htmlFor="store-name">가게 이름<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-name"
                   name="storeName"
@@ -163,7 +169,7 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-area">지역</Label>
+              <Label htmlFor="store-area">지역<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-area"
                   name="storeArea"
@@ -174,7 +180,7 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-address">가게 주소</Label>
+              <Label htmlFor="store-address">가게 주소<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-address"
                   name="storeAddress"
@@ -185,7 +191,7 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-phonenumber">가게 전화번호</Label>
+              <Label htmlFor="store-phonenumber">가게 전화번호<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-phonenumber"
                   name="storePhoneNumber"
@@ -196,7 +202,7 @@ function UpdateRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-category">카테고리</Label>
+              <Label htmlFor="store-category">카테고리<Asterisk>*</Asterisk></Label>
               <select
                   id="store-category"
                   name="storeCategory"
@@ -219,7 +225,7 @@ function UpdateRestaurant() {
               </select>
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-capacity">수용 인원</Label>
+              <Label htmlFor="store-capacity">수용 인원<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-capacity"
                   name="capacity"

@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import styles from '../styles/Waiting.module.css';
+import styled from "styled-components";
 
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 const Waiting = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -120,7 +125,7 @@ const Waiting = () => {
             <div>현재 대기중인 팀</div>
             <div className={styles.waitingCount} id="waiting-count">{waitingCount} 팀</div>
           </div>
-          <label htmlFor="party-size">인원 수:</label>
+          <label htmlFor="party-size"><Asterisk>*</Asterisk> 인원 수:</label>
           <input
               type="number"
               id="party-size"

@@ -66,6 +66,10 @@ const Btn = styled.button`
   transition: background-color 0.3s ease;
 `;
 
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 
 function UpdateReview() {
   const { reviewId } = useParams();

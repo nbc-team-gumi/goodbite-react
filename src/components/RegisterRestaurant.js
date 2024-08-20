@@ -111,6 +111,11 @@ const PopupOverlay = styled.div`
   z-index: 99;
 `;
 
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
+
 function RegisterRestaurant() {
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
@@ -181,7 +186,7 @@ function RegisterRestaurant() {
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="store-name">식당 이름</Label>
+              <Label htmlFor="store-name">식당 이름<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-name"
                   name="name"
@@ -192,7 +197,7 @@ function RegisterRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-address">식당 주소</Label>
+              <Label htmlFor="store-address">식당 주소<Asterisk>*</Asterisk></Label>
               <AddressWrapper>
                 <AddressInput
                     id="store-address"
@@ -209,7 +214,7 @@ function RegisterRestaurant() {
               </AddressWrapper>
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="detail-address">상세 주소</Label>
+              <Label htmlFor="detail-address">상세 주소<Asterisk>*</Asterisk></Label>
               <Input
                   id="detail-address"
                   name="detailAddress"
@@ -220,7 +225,7 @@ function RegisterRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-phonenumber">식당 전화번호</Label>
+              <Label htmlFor="store-phonenumber">식당 전화번호<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-phonenumber"
                   name="phoneNumber"
@@ -231,7 +236,7 @@ function RegisterRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-category">카테고리</Label>
+              <Label htmlFor="store-category">카테고리<Asterisk>*</Asterisk></Label>
               <select
                   id="store-category"
                   name="category"
@@ -253,7 +258,7 @@ function RegisterRestaurant() {
               </select>
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-capacity">수용 인원</Label>
+              <Label htmlFor="store-capacity">수용 인원<Asterisk>*</Asterisk></Label>
               <Input
                   id="store-capacity"
                   name="capacity"
@@ -264,7 +269,7 @@ function RegisterRestaurant() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="store-photo">식당 사진</Label>
+              <Label htmlFor="store-photo">식당 사진<Asterisk>*</Asterisk></Label>
               <Input
                   accept="image/*"
                   id="store-photo"
