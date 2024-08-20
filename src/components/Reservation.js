@@ -10,6 +10,7 @@ const Reservation = () => {
   const navigate = useNavigate(); // useNavigate 훅 사용
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
+  const [operatingHour, setOperatingHour] = useState([]);
   const [reservationDetails, setReservationDetails] = useState({
     date: null,
     time: null,
@@ -17,6 +18,7 @@ const Reservation = () => {
     requirement: '',
     selectedMenus: {}
   });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -32,14 +34,45 @@ const Reservation = () => {
         });
         // menuData가 배열인지 확인하고, 배열이 아니면 빈 배열로 초기화
         setMenuItems(Array.isArray(menuData.data) ? menuData.data : []);
+        await fetchRestaurantOperatingHour(restaurantId);
       } catch (error) {
         console.error('Error fetching restaurant data:', error);
         setMenuItems([]); // 오류 발생 시 메뉴를 빈 배열로 설정
       }
     };
 
+    const fetchRestaurantOperatingHour = async (restaurantId) => {
+      try {
+        const response = await fetchData(`/restaurants/${restaurantId}/operating-hours`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.statusCode === 200) {
+          const formattedHours = response.data.map(hour => {
+            const isNextDay = hour.closeTime < hour.openTime; // Compare times
+            return {
+              ...hour,
+              openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
+              closeTime: `${isNextDay ? ' 익일 ' : ''}${hour.closeTime.substring(0, 5)}`, // Append "익일" if necessary
+            };
+          });
+          setOperatingHour(formattedHours);
+        } else {
+          setError(`Unexpected response data: ${response.message}`);
+        }
+      } catch (error) {
+        setError(error.message);
+        console.error('Fetch error:', error);
+      }
+    };
+
     fetchRestaurantData();
   }, [restaurantId]);
+
+
 
   const handleMenuSelect = (menuId) => {
     setReservationDetails((prevDetails) => {
@@ -61,6 +94,19 @@ const Reservation = () => {
         [menuId]: quantity,
       },
     }));
+  };
+
+  const getKoreanType = (type) => {
+    const types = {
+      MONDAY: "월요일",
+      TUESDAY: "화요일",
+      WEDNESDAY: "수요일",
+      THURSDAY: "목요일",
+      FRIDAY: "금요일",
+      SATURDAY: "토요일",
+      SUNDAY: "일요일"
+    };
+    return types[type] || type;
   };
 
   const handleReservationSubmit = async (e) => {
@@ -108,6 +154,18 @@ const Reservation = () => {
         {restaurant && (
             <>
               <h1>{restaurant.name} 예약하기</h1>
+              <table>
+              <tr>
+                <th>영업시간</th>
+                <td>
+                  {operatingHour.map((hour, index) => (
+                      <div key={index}>
+                        {getKoreanType(hour.dayOfWeek)}: {hour.openTime} - {hour.closeTime}
+                      </div>
+                  ))}
+                </td>
+              </tr>
+              </table>
               <form onSubmit={handleReservationSubmit}>
                 <label>
                   날짜:

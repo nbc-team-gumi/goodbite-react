@@ -272,3 +272,43 @@ form {
 .pagination button:not(:disabled):hover {
   background-color: #555;
 }
+
+.operating-hour-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.btn-hour-update {
+  margin-left: auto;
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  width: 100px;
+  height: 45px;
+}
+
+.btn-hour-update:hover {
+  background-color: #555;
+}
+
+.btn-menu-update{
+  width: 100px;
+  height: 45px;
+  margin-left: 8px;
+}
+
+.add-button{
+  width: 100px;
+  height: 45px;
+  margin-left: 8px;
+}
+
+.update-button{
+  width: 150px;
+  height: 45px;
+  margin-top: 0px;
+}

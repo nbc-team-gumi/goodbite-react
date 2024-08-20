@@ -83,11 +83,14 @@ function OwnerRestaurantDetail() {
       });
 
       if (response.statusCode === 200) {
-        const formattedHours = response.data.map(hour => ({
-          ...hour,
-          openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
-          closeTime: hour.closeTime.substring(0, 5), // hh:mm:ss -> hh:mm
-        }));
+        const formattedHours = response.data.map(hour => {
+          const isNextDay = hour.closeTime < hour.openTime; // Compare times
+          return {
+            ...hour,
+            openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
+            closeTime: `${isNextDay ? ' 익일 ' : ''}${hour.closeTime.substring(0, 5)}`, // Append "익일" if necessary
+          };
+        });
         setOperatingHour(formattedHours);
       } else {
         throw new Error(`Unexpected response data: ${response.message}`);
@@ -230,7 +233,7 @@ function OwnerRestaurantDetail() {
         </header>
         <div className="content">
           <div className="shop-info">
-            <h2>{restaurant.name} <button onClick={navigateToUpdateRestaurant}>정보 수정하기</button></h2>
+            <h2>{restaurant.name}<p><button className="update-button" onClick={navigateToUpdateRestaurant}>정보 수정하기</button></p></h2>
             <div className="shop-image" style={{ backgroundImage: `url(${restaurant.imageUrl})` }}></div>
             <div className="rating">
               ★★★★☆ <span className="review-count">(리뷰 {reviews.length}개)</span>
@@ -247,12 +250,12 @@ function OwnerRestaurantDetail() {
                 <td>{restaurant.phoneNumber}</td>
               </tr>
               <tr>
-                <th>영업시간<button onClick={navigateToRegisterOperatingHour}>추가하기</button></th>
+                <th>영업시간<button className="add-button" onClick={navigateToRegisterOperatingHour}>추가하기</button></th>
                 <td>
                   {operatingHour.map((hour, index) => (
-                      <div key={index}>
+                      <div key={index} className="operating-hour-row">
                         {getKoreanType(hour.dayOfWeek)}: {hour.openTime} - {hour.closeTime}
-                        <button className="btn-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
+                        <button className="btn-hour-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
                       </div>
                   ))}
                 </td>
@@ -260,12 +263,12 @@ function OwnerRestaurantDetail() {
               </tbody>
             </table>
 
-            <h3>메뉴 <button onClick={navigateToRegisterMenu}>추가하기</button></h3>
+            <h3>메뉴 <button className="add-button" onClick={navigateToRegisterMenu}>추가하기</button></h3>
             <div className="menu-list">
               {menu.map((item, index) => (
                   <div key={index} className="menu-item">
                     <img src={item.imageUrl} alt={item.name} width="100%" height="150" />
-                    <button className="btn-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
+                    <button className="btn-menu-update" onClick={() => navigateToUpdateMenu(item.menuId)}>수정하기</button>
                     <h3>{item.name}</h3>
                     <p>{item.description}</p>
                     <p className="price">{item.price}원</p>
