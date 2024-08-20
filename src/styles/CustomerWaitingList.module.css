@@ -320,3 +320,9 @@
 .pagination button:not(:disabled):hover {
   background-color: #555;
 }
+
+.radioGroup {
+  display: flex;
+  gap: 10px; /* 라디오 버튼들 사이의 간격을 설정 */
+  margin-top: 8px; /* 라디오 버튼 그룹과 라벨 사이의 간격 */
+}
