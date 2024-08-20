@@ -3,6 +3,11 @@ import { fetchData } from '../util/api';
 import styled from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
 
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
+
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
@@ -112,7 +117,7 @@ function RegisterMenu() {
         <Container>
           <Form id="store-register-form" onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="menu-name">메뉴 이름</Label>
+              <Label htmlFor="menu-name">메뉴 이름<Asterisk>*</Asterisk></Label>
               <Input
                   id="menu-name"
                   name="menuName"
@@ -123,7 +128,7 @@ function RegisterMenu() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="menu-price">가격</Label>
+              <Label htmlFor="menu-price">가격<Asterisk>*</Asterisk></Label>
               <Input
                   id="menu-price"
                   name="menuPrice"
@@ -135,7 +140,7 @@ function RegisterMenu() {
               <p>{price.toLocaleString()} 원</p>
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="menu-description">설명</Label>
+              <Label htmlFor="menu-description">설명<Asterisk>*</Asterisk></Label>
               <Input
                   id="menu-description"
                   name="menuDescription"
@@ -146,7 +151,7 @@ function RegisterMenu() {
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="menu-imageUrl">이미지 URL</Label>
+              <Label htmlFor="menu-imageUrl">이미지<Asterisk>*</Asterisk></Label>
               <Input
                   accept="image/*"
                   id="menu-imageUrl"

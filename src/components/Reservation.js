@@ -4,6 +4,12 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fetchData } from '../util/api';
 import '../styles/Reservation.css';
+import styled from "styled-components";
+
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 
 const Reservation = () => {
   const { restaurantId } = useParams(); // URL에서 restaurantId를 가져옴
@@ -168,7 +174,7 @@ const Reservation = () => {
               </table>
               <form onSubmit={handleReservationSubmit}>
                 <label>
-                  날짜:
+                  <Asterisk>*</Asterisk> 날짜:
                   <DatePicker
                       selected={reservationDetails.date}
                       onChange={(date) => setReservationDetails({ ...reservationDetails, date })}
@@ -177,7 +183,7 @@ const Reservation = () => {
                   />
                 </label>
                 <label>
-                  시간:
+                  <Asterisk>*</Asterisk> 시간:
                   <DatePicker
                       selected={reservationDetails.time}
                       onChange={(time) => setReservationDetails({ ...reservationDetails, time })}
@@ -190,7 +196,7 @@ const Reservation = () => {
                   />
                 </label>
                 <label>
-                  인원수:
+                  <Asterisk>*</Asterisk> 인원수:
                   <select
                       value={reservationDetails.partySize}
                       onChange={(e) =>

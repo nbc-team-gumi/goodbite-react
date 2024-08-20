@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/CustomerReservationList.module.css';
 import { fetchData } from '../util/api';
+import styled from "styled-components";
+
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 
 function CustomerReservationList() {
   const [reservationList, setReservationList] = useState([]);
@@ -318,13 +324,14 @@ function CustomerReservationList() {
             <div className={styles.modal}>
               <div className={styles.modalContent}>
                 <h2>리뷰 작성</h2>
+                <label><Asterisk>*</Asterisk> 내용:</label>
                 <textarea
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
                     placeholder="리뷰를 작성하세요"
                 />
                 <div>
-                  <label>평점:</label>
+                  <label><Asterisk>*</Asterisk> 평점:</label>
                   <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
                     <option value={0}>선택하세요</option>
                     <option value={1}>1</option>

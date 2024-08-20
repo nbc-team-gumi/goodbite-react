@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchData } from '../util/api';
 import '../styles/Signup.css';
 import goodBiteTitle from '../images/good-bite-title.png';
+import styled from "styled-components";
+
+const Asterisk = styled.span`
+  color: red;
+  margin-left: 5px;
+`;
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -107,7 +113,7 @@ function Signup() {
         </div>
         <form id="signupForm" onSubmit={handleSignup}>
           <div className="form-group">
-            <label htmlFor="email">이메일</label>
+            <label htmlFor="email"><Asterisk>*</Asterisk> 이메일</label>
             <input
                 id="email"
                 name="email"
@@ -118,7 +124,7 @@ function Signup() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="nickname">닉네임</label>
+            <label htmlFor="nickname"><Asterisk>*</Asterisk> 닉네임</label>
             <input
                 id="nickname"
                 name="nickname"
@@ -130,7 +136,7 @@ function Signup() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">비밀번호</label>
+            <label htmlFor="password"><Asterisk>*</Asterisk> 비밀번호</label>
             <input
                 id="password"
                 name="password"
@@ -142,7 +148,7 @@ function Signup() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="phoneNumber">휴대폰 번호</label>
+            <label htmlFor="phoneNumber"><Asterisk>*</Asterisk> 휴대폰 번호</label>
             <input
                 id="phoneNumber"
                 name="phoneNumber"
@@ -154,7 +160,7 @@ function Signup() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="userType">사용자 유형</label>
+            <label htmlFor="userType"><Asterisk>*</Asterisk> 사용자 유형</label>
             <select
                 id="userType"
                 name="userType"
@@ -169,7 +175,7 @@ function Signup() {
             {errors.userType && <div className="error-message">{errors.userType}</div>}
           </div>
           <div className="form-group" id="businessNumberGroup">
-            <label htmlFor="businessNumber">사업자 등록 번호</label>
+            <label htmlFor="businessNumber"><Asterisk>*</Asterisk> 사업자 등록 번호</label>
             <input
                 id="businessNumber"
                 name="businessNumber"
