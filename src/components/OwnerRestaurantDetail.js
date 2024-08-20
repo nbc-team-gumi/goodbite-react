@@ -83,11 +83,14 @@ function OwnerRestaurantDetail() {
       });
 
       if (response.statusCode === 200) {
-        const formattedHours = response.data.map(hour => ({
-          ...hour,
-          openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
-          closeTime: hour.closeTime.substring(0, 5), // hh:mm:ss -> hh:mm
-        }));
+        const formattedHours = response.data.map(hour => {
+          const isNextDay = hour.closeTime < hour.openTime; // Compare times
+          return {
+            ...hour,
+            openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
+            closeTime: `${isNextDay ? ' 익일 ' : ''}${hour.closeTime.substring(0, 5)}`, // Append "익일" if necessary
+          };
+        });
         setOperatingHour(formattedHours);
       } else {
         throw new Error(`Unexpected response data: ${response.message}`);
@@ -250,7 +253,7 @@ function OwnerRestaurantDetail() {
                 <th>영업시간<button className="add-button" onClick={navigateToRegisterOperatingHour}>추가하기</button></th>
                 <td>
                   {operatingHour.map((hour, index) => (
-                      <div key={index}>
+                      <div key={index} className="operating-hour-row">
                         {getKoreanType(hour.dayOfWeek)}: {hour.openTime} - {hour.closeTime}
                         <button className="btn-hour-update" onClick={() => navigateToUpdateOperatingHour(hour.operatingHourId)}>수정하기</button>
                       </div>
