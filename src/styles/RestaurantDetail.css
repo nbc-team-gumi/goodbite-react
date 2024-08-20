@@ -77,17 +77,6 @@ th {
   margin-bottom: 20px;
 }
 
-.rating {
-  font-size: 24px;
-  color: #ffc107;
-  margin-bottom: 10px;
-}
-
-.review-count {
-  color: #666;
-  font-size: 14px;
-}
-
 .menu-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3개의 열로 설정 */
@@ -197,14 +186,6 @@ th {
   margin: 0;
 }
 
-.filled-star {
-  color: #ffc107;
-}
-
-.empty-star {
-  color: #ddd;
-}
-
 form {
   display: flex;
   flex-direction: column;
@@ -311,4 +292,26 @@ form {
   width: 150px;
   height: 45px;
   margin-top: 0px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.rating .stars {
+  color: #ffc107;
+  font-size: 20px; /* 별 크기 */
+  margin-right: 8px; /* 별과 숫자 사이의 기본 간격 */
+}
+
+.rating .restaurant-rating {
+  font-size: 20px; /* 평점 숫자 크기 */
+  color: #333333; /* 평점 숫자 색상 */
+  margin-right: 10px; /* 숫자와 리뷰 개수 사이의 간격 */
+}
+
+.rating .review-count {
+  font-size: 16px; /* 리뷰 개수 글씨 크기 */
+  color: #777777; /* 리뷰 개수 색상 */
 }

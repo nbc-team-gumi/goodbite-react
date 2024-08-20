@@ -314,21 +314,24 @@ function CustomerWaitingList() {
                 <h2>리뷰 작성</h2>
                 <form className={styles.reviewForm} onSubmit={submitReview}>
                   <label><Asterisk>*</Asterisk> 평점:</label>
-                  <div>
+                  <div className={styles.radioGroup}>
                     <label>
-                      <input type="radio" name="rating" value="1" required /> 1
+                      <input type="radio" name="rating" value="0" required/> 0
                     </label>
                     <label>
-                      <input type="radio" name="rating" value="2" required /> 2
+                      <input type="radio" name="rating" value="1" required/> 1
                     </label>
                     <label>
-                      <input type="radio" name="rating" value="3" required /> 3
+                      <input type="radio" name="rating" value="2" required/> 2
                     </label>
                     <label>
-                      <input type="radio" name="rating" value="4" required /> 4
+                      <input type="radio" name="rating" value="3" required/> 3
                     </label>
                     <label>
-                      <input type="radio" name="rating" value="5" required /> 5
+                      <input type="radio" name="rating" value="4" required/> 4
+                    </label>
+                    <label>
+                      <input type="radio" name="rating" value="5" required/> 5
                     </label>
                   </div>
                   <label><Asterisk>*</Asterisk> 리뷰 내용:</label>
