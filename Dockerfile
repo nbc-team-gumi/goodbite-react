@@ -18,13 +18,19 @@ ENV REACT_APP_DOMAIN_URL=${REACT_APP_DOMAIN_URL}
 
 RUN npm run build
 
-# Step 2: Serve the app with Nginx
-FROM nginx:alpine
+# Step 2: Serve the app with Node.js
+FROM node:20 AS server
 
-COPY --from=build /app/build /usr/share/nginx/html
+WORKDIR /app
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the built React files
+COPY --from=build /app/build /app/build
+
+COPY server.js ./
+
+# Install a simple HTTP server like Express
+RUN npm install express
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "server.js"]
