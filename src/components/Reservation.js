@@ -51,11 +51,14 @@ const Reservation = () => {
         });
 
         if (response.statusCode === 200) {
-          const formattedHours = response.data.map(hour => ({
-            ...hour,
-            openTime: hour.openTime.substring(0, 5),
-            closeTime: hour.closeTime.substring(0, 5),
-          }));
+          const formattedHours = response.data.map(hour => {
+            const isNextDay = hour.closeTime < hour.openTime; // Compare times
+            return {
+              ...hour,
+              openTime: hour.openTime.substring(0, 5), // hh:mm:ss -> hh:mm
+              closeTime: `${isNextDay ? ' 익일 ' : ''}${hour.closeTime.substring(0, 5)}`, // Append "익일" if necessary
+            };
+          });
           setOperatingHour(formattedHours);
         } else {
           setError(`Unexpected response data: ${response.message}`);
