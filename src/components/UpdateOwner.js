@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/UpdateOwner.module.css'; // 스타일을 이 파일로 분리했습니다.
+import '../styles/UpdateOwner.module.css';
 import { fetchData } from '../util/api';
 import {useNavigate} from "react-router-dom";
-import {useUser} from "../UserContext"; // fetchData 메서드 가져오기
+import {useUser} from "../UserContext";
 
 function UpdateOwner() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [nickname, setNickname] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [businessNumber, setBusinessNumber] = useState('');
-  const [user, setUser] = useState(null); // 사용자 정보 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 오류 상태
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { role, setRole } = useUser();
 
@@ -22,10 +20,8 @@ function UpdateOwner() {
         const response = await fetchData('/owners', {
           method: 'GET',
         });
-        setUser(response.data);
         setNickname(response.data.nickname);
         setPhoneNumber(response.data.phoneNumber);
-        setBusinessNumber(response.data.businessNumber);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -34,7 +30,7 @@ function UpdateOwner() {
     };
 
     fetchUser();
-  }, []);//추가
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -43,7 +39,6 @@ function UpdateOwner() {
       });
 
       setRole(null);
-
       navigate('/restaurants');
     } catch (error) {
       console.error('로그아웃 오류:', error);
@@ -57,7 +52,7 @@ function UpdateOwner() {
         body: JSON.stringify({   "currentPassword": currentPassword,
           "newPassword": newPassword }),
       });
-      alert('비밀번호가 수정되었습니다.');
+      alert('비밀번호가 수정되었습니다. 다시 로그인해주세요.');
       await handleLogout();
     } catch (error) {
       alert('비밀번호 수정 중 오류가 발생했습니다.');
@@ -88,19 +83,6 @@ function UpdateOwner() {
     } catch (error) {
       alert('휴대폰번호 수정 중 오류가 발생했습니다.');
       console.error('Error updating phone number:', error);
-    }
-  };
-
-  const updateBusinessNumber = async () => {
-    try {
-      await fetchData('/owners/business-number', {
-        method: 'PATCH',
-        body: JSON.stringify({ "newBusinessNumber": businessNumber }),
-      });
-      alert('사업자번호가 수정되었습니다.');
-    } catch (error) {
-      alert('사업자번호 수정 중 오류가 발생했습니다.');
-      console.error('Error updating business number:', error);
     }
   };
 
@@ -168,17 +150,6 @@ function UpdateOwner() {
             />
             <button type="button" onClick={updatePhoneNumber}>
               휴대폰번호 수정
-            </button>
-
-            <input
-                type="text"
-                placeholder="사업자번호"
-                value={businessNumber}
-                onChange={(e) => setBusinessNumber(e.target.value)}
-                required
-            />
-            <button type="button" onClick={updateBusinessNumber}>
-              사업자번호 수정
             </button>
           </form>
           <div className="footer-link">
