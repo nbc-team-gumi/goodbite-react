@@ -71,6 +71,23 @@ const Asterisk = styled.span`
   margin-left: 5px;
 `;
 
+const RadioGroup = styled.div`
+  display: flex;
+  gap: 10px; /* 버튼 사이의 간격 */
+  margin-top: 8px; /* 라디오 버튼 그룹과 라벨 사이의 간격 */
+`;
+
+const RadioButton = styled.input`
+  margin-right: 5px; /* 라디오 버튼과 텍스트 사이의 간격 */
+  cursor: pointer;
+`;
+
+const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
 function UpdateReview() {
   const { reviewId } = useParams();
   const [rating, setRating] = useState(1);
@@ -157,14 +174,20 @@ function UpdateReview() {
           <Form id="store-register-form" onSubmit={handleSubmit}>
             <FormGroup>
               <Label htmlFor="review-rating">리뷰 평점</Label>
-              <Input
-                  id="review-rating"
-                  name="reviewRating"
-                  required
-                  type="textarea"
-                  value={rating}
-                  onChange={(e) => setRating(e.target.value)}
-              />
+              <RadioGroup>
+                {[0, 1, 2, 3, 4, 5].map(value => (
+                    <RadioLabel key={value}>
+                      <RadioButton
+                          type="radio"
+                          name="reviewRating"
+                          value={value}
+                          checked={rating === value}
+                          onChange={(e) => setRating(parseInt(e.target.value))}
+                      />
+                      {value}
+                    </RadioLabel>
+                ))}
+              </RadioGroup>
             </FormGroup>
             <FormGroup>
               <Label htmlFor="review-content">리뷰 내용</Label>
