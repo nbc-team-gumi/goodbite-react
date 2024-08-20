@@ -35,6 +35,8 @@ useEffect(() => {
 
       if (response.statusCode === 200) {
         setOperatingHour(response.data);
+        setOpenTime(response.data.openTime.substring(0, 5));
+        setCloseTime(response.data.closeTime.substring(0, 5));
       } else {
         throw new Error(`Unexpected response data: ${response.message}`);
       }
