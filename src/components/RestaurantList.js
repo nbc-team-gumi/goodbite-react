@@ -24,10 +24,27 @@ const RestaurantList = () => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [loading, setLoading] = useState(true);
 
-  const fetchRestaurants = async (page) => {
+  const fetchRestaurants = async (sido, sigungu, category, rating, page) => {
     setLoading(true);
     try {
-      const data = await fetchData(`/restaurants?page=${page}`);
+      let data;
+
+      // 모든 필터가 'all'일 경우 기존 API 사용
+      if (sido === 'all' && sigungu === 'all' && category === 'all' && rating === 'all') {
+        data = await fetchData(`/restaurants?page=${page}`);
+      } else {
+        // 필터가 있는 경우 필터링 API 사용
+        const params = new URLSearchParams();
+
+        if (sido !== 'all') params.append('sido', sido);
+        if (sigungu !== 'all') params.append('sigungu', sigungu);
+        if (category !== 'all') params.append('category', category);
+        if (rating !== 'all') params.append('rating', rating);
+
+        params.append('page', page);
+
+        data = await fetchData(`/restaurants/filter?${params.toString()}`);
+      }
       if (data && data.data.content && Array.isArray(data.data.content)) {
         setRestaurants(data.data.content);
         setCurrentPage(data.data.number);
@@ -43,13 +60,13 @@ const RestaurantList = () => {
   };
 
   useEffect(() => {
-    fetchRestaurants(currentPage);
-  }, [currentPage]);
+    fetchRestaurants(filterLocation, filterSubLocation, filterType, filterRating,currentPage);
+  }, [filterLocation, filterSubLocation, filterType, filterRating, currentPage]);
 
   const handlePageChange = (page) => {
     if (page >= 0 && page < totalPages) {
       setCurrentPage(page);
-      fetchRestaurants(page); // 페이지 변경 시 해당 페이지 데이터 로드
+      fetchRestaurants(filterLocation, filterSubLocation, filterType, filterRating, page); // 필터와 함께 페이지 데이터 로드
     }
   };
 
@@ -216,8 +233,6 @@ const RestaurantList = () => {
       return [];
     }
     return restaurants.filter(restaurant => {
-      const nameMatch = restaurant.name.toLowerCase().includes(
-          searchTerm.toLowerCase());
       const locationMatch = filterLocation === 'all' || restaurant.sido
           === filterLocation;
       const subLocationMatch = filterSubLocation === 'all'
@@ -226,8 +241,9 @@ const RestaurantList = () => {
           === filterType;
       const ratingMatch = filterRating === 'all' || restaurant.rating
           >= parseFloat(filterRating);
-      return nameMatch && locationMatch && subLocationMatch && typeMatch
-          && ratingMatch;
+      const nameMatch = restaurant.name.toLowerCase().includes(
+          searchTerm.toLowerCase());
+      return locationMatch && subLocationMatch && typeMatch && ratingMatch && nameMatch;
     });
   };
 
@@ -409,7 +425,7 @@ const RestaurantList = () => {
               이전
             </button>
             <span>
-              페이지 {currentPage + 1} / {totalPages}
+              페이지 {currentPage + 1} / {totalPages === 0 ? totalPages + 1 : totalPages}
             </span>
             <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
               다음
