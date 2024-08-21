@@ -257,7 +257,7 @@ function CustomerReservationList() {
                                   리뷰 작성
                                 </button>
                             )}
-                            {reservation.status === 'PENDING' && (
+                            {reservation.status === 'CONFIRMED' && (
                                 <button onClick={(e) => {
                                   e.stopPropagation();
                                   openCancelModal(reservation);
