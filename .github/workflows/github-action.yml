@@ -2,7 +2,7 @@ name: Deploy React App to Docker
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ 137-feat-express-http2-설정 ]
 
 env:
   DOCKER_IMAGE_TAG_NAME: good-bite-react
@@ -64,7 +64,10 @@ jobs:
               sudo usermod -aG docker $USER
               newgrp docker
               
-              CONTAINER_ID=$(sudo docker ps -q --filter "publish=80-80")
+              echo "${{ secrets.SERVER_KEY_PEM }}" > goodbite.site-key.pem
+              echo "${{ secrets.SERVER_CERT_PEM }}" > goodbite.site-crt.pem
+              
+              CONTAINER_ID=$(sudo docker ps -q --filter "publish=443-443")
           
               if [ ! -z "$CONTAINER_ID" ]; then
               sudo docker stop $CONTAINER_ID
@@ -73,5 +76,10 @@ jobs:
             
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
 
-              sudo docker run -d -p 80:80 \
+              sudo docker run -d -p 443:443 \
+              -v $(pwd)/goodbite.site-key.pem:/app/goodbite.site-key.pem \
+              -v $(pwd)/goodbite.site-crt.pem:/app/goodbite.site-crt.pem \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
+
+              # PEM 파일 삭제
+              rm goodbite.site-key.pem goodbite.site-crt.pem
