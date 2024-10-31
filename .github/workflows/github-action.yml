@@ -28,7 +28,6 @@ jobs:
           REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }} \
           REACT_APP_API_KEY_KAKAO=${{ secrets.KAKAO_API_KEY }} \
           REACT_APP_DOMAIN_URL=${{ vars.DOMAIN_URL }} \
-          REACT_APP_SERVER_KEY_PASSWORD=${{ secrets.SERVER_KEY_PASSWORD }} \
           npm run build
 
       - name: Set up Docker Buildx
@@ -45,7 +44,6 @@ jobs:
           docker build --build-arg REACT_APP_API_BASE_URL=${{ vars.REACT_APP_API_BASE_URL }} \
                        --build-arg REACT_APP_API_KEY_KAKAO=${{ secrets.KAKAO_API_KEY }} \
                        --build-arg REACT_APP_DOMAIN_URL=${{ vars.DOMAIN_URL }} \
-                       --build-arg REACT_APP_DOMAIN_URL=${{ secrets.SERVER_KEY_PASSWORD }} \
                        -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_TAG_NAME }}:latest
 
