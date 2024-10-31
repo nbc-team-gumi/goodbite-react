@@ -4,6 +4,7 @@ const http2 = require('http2');
 const fs = require('fs');
 const app = express();
 const port = 443;
+const SERVER_KEY_PASSWORD = process.env.REACT_APP_SERVER_KEY_PASSWORD;
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -16,7 +17,8 @@ app.get('*', function(req, res) {
 // HTTPS/HTTP2 서버를 생성
 const server = http2.createSecureServer({
   key: fs.readFileSync(path.join(__dirname, 'goodbite.site-key.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'goodbite.site-crt.pem'))
+  cert: fs.readFileSync(path.join(__dirname, 'goodbite.site-crt.pem')),
+  passphrase: SERVER_KEY_PASSWORD
 }, app);
 
 server.listen(port, () => {
