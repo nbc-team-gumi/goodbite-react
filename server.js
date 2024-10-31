@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const http2 = require('http2');
+const https = require('https');
 const fs = require('fs');
 const app = express();
 const port = 443;
@@ -13,12 +13,12 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// HTTPS/HTTP2 서버를 생성
-const server = http2.createSecureServer({
+// HTTPS 서버를 생성
+const server = https.createServer({
   key: fs.readFileSync(path.join(__dirname, 'goodbite.site-key.pem')),
   cert: fs.readFileSync(path.join(__dirname, 'goodbite.site-crt.pem'))
 }, app);
 
 server.listen(port, () => {
-  console.log(`HTTP/2 Server running on port ${port}`);
+  console.log(`HTTPS Server running on port ${port}`);
 });
